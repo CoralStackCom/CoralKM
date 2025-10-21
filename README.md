@@ -8,10 +8,10 @@ This is an early demo of the protocol, a lot of details still need fleshing out,
 
 The demo builds on the [Veramo Agent Framework](https://veramo.io/) from the Identity Foundation to provide the core DID/Key/DIDComm protocol support.
 
-- **Protocol Specification (Draft)**: [./docs/protocol-overview.md](./docs/protocol-overview.md)
-- **Demo Instructions**: [./docs/demo-instructions.md](./docs/demo-instructions.md)
+- **Protocol Specification (Draft)**: [./docs/protocol-overview.md](./docs/coralkm.md)
+- **Demo Instructions**: [./docs/demo-instructions.md](./docs/demo.md)
 
-![Wallet screenshot](./docs/imgs/wallet-screenshot.png)
+![Wallet screenshot](./docs/assets/imgs/wallet-screenshot.png)
 
 ## Repository layout
 
