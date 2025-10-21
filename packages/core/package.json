@@ -1,0 +1,55 @@
+{
+  "name": "@coralkm/core",
+  "version": "0.1.0",
+  "description": "Core key management protocol for CoralKM",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "rimraf dist",
+    "dev": "tsc --build --watch",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext .ts"
+  },
+  "dependencies": {
+    "@veramo/core": "6.0.1-next.52",
+    "@veramo/did-comm": "6.0.1-next.52",
+    "@veramo/did-manager": "6.0.1-next.52",
+    "@veramo/did-provider-peer": "6.0.1-next.52",
+    "@veramo/did-provider-web": "6.0.1-next.52",
+    "@veramo/did-resolver": "6.0.1-next.52",
+    "@veramo/key-manager": "6.0.1-next.52",
+    "@veramo/kms-local": "6.0.1-next.52",
+    "@veramo/kv-store": "6.0.1-next.52",
+    "debug": "^4.4.3",
+    "did-resolver": "^4.1.0",
+    "peer-did-resolver": "^2.0.0",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/debug": "^4",
+    "@types/node": "*",
+    "typescript": "*",
+    "vitest": "*"
+  }
+}

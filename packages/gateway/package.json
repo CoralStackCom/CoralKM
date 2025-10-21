@@ -1,0 +1,40 @@
+{
+  "name": "@coralkm/gateway",
+  "version": "0.1.0",
+  "description": "Wallet Gateway Implementation of the CoralKM protocol",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
+    "apply-migrations": "wrangler d1 migrations apply wallet-gateway-db",
+    "clean": "rimraf dist",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext .ts"
+  },
+  "dependencies": {
+    "@coralkm/core": "workspace:^",
+    "@veramo/mediation-manager": "6.0.1-next.52",
+    "hono": "^4.9.9"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.9.10",
+    "@types/node": "*",
+    "@vitest/runner": "^3.2.4",
+    "@vitest/snapshot": "^3.2.4",
+    "typescript": "*",
+    "vitest": "*",
+    "wrangler": "^4.4.0"
+  }
+}

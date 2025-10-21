@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "esnext",
+    "lib": ["esnext"],
+    "moduleResolution": "bundler",
+    "composite": true
+  },
+  "include": ["worker-configuration.d.ts", "src/**/*"],
+  "exclude": ["test"],
+  "references": [{ "path": "../core" }]
+}

@@ -1,0 +1,53 @@
+###############################################################
+###           SECTION 1: General Configuration              ###
+###############################################################
+
+# Worker name
+name = "coralkm-wallet-gateway"
+
+# Entrypoint/path to the file that will be executed
+main = "src/index.ts"
+
+# Date in yyyy-mm-dd to determine which version of Workers runtime to use
+# Details: https://developers.cloudflare.com/workers/platform/compatibility-dates/ 
+compatibility_date = "2025-09-01"
+
+compatibility_flags = ["nodejs_compat"]
+
+# Minify before uploading?
+minify = false
+
+[observability]
+enabled = true
+
+###############################################################
+###         SECTION 2: Durable Object Configuration         ###
+###############################################################
+
+[[durable_objects.bindings]]
+name = "WS_HUB"                 # env.WS_HUB in your worker
+class_name = "WebSocketsHub"    # the exported class name from your DO module
+
+# --- Required migration block (once per new/renamed class) ---
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["WebSocketsHub"]
+
+###############################################################
+###         SECTION 3: Serivices Configuration              ###
+###############################################################
+
+# Bind a D1 database. D1 is Cloudflare’s native serverless SQL database.
+# Docs: https://developers.cloudflare.com/workers/wrangler/configuration/#d1-databases
+[[d1_databases]]
+binding = "WALLET_GW_DB"
+database_name = "wallet-gateway-db"
+database_id = "002d618e-cdea-4001-a81c-a6ec4865b4c8"
+migrations_dir = "./migrations"
+
+###############################################################
+###         SECTION 3: Local Dev Configuration              ###
+###############################################################
+
+[dev]
+port = 8787

@@ -1,0 +1,7 @@
+# Copy this file to `.dev.vars` in same directory with your local values for dev/testing
+# https://developers.cloudflare.com/workers/configuration/environment-variables/
+
+# Secret key for encrypting/decrypting data using Veramo's SecretBox
+# Store as secret in Cloudflare dashboard
+# Generate using: await SecretBox.createSecretKey()
+SECRET_BOX_KEY = '05747cb32ee5faf9feb3d2088b4aad79f8d6c3e3fb02f60bb0912768640a6f68'
