@@ -29,7 +29,7 @@ description: >- # this means to ignore newlines until "baseurl:"
   Get started quickly with our open-source SDKs and comprehensive documentation.
   Join our community of developers building the next generation of secure applications.
   Experience the Coral Stack difference today!
-baseurl: '' # the subpath of your site, e.g. /blog
+baseurl: '/CoralKM' # the subpath of your site, e.g. /blog
 url: 'https://coralstack.com' # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: jekyllrb
 github_username: CoralStackCom
