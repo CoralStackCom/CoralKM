@@ -1,0 +1,37 @@
+import './shim'
+
+import { Slot } from 'expo-router'
+import { useEffect, useState } from 'react'
+import { ActivityIndicator, View } from 'react-native'
+
+export default function RootLayout() {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
+  // Simulate loading user session
+  useEffect(() => {
+    const checkAuth = async () => {
+      const loggedIn = false
+      setTimeout(() => setIsAuthenticated(loggedIn), 500) // simulate delay
+    }
+    checkAuth()
+  }, [])
+
+  if (isAuthenticated === null) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <ActivityIndicator size="large" color="#000" />
+      </View>
+    )
+  }
+
+  return (
+    <View style={{ flex: 1 }}>
+      {isAuthenticated ? <Slot initialRouteName="tabs" /> : <Slot initialRouteName="index" />}
+    </View>
+  )
+}

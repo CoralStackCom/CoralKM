@@ -7,7 +7,7 @@ import { WalletProvider } from './providers/wallet'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <WalletProvider gatewayDID="did:web:localhost%3A8787">
+    <WalletProvider gatewayDID="did:web:coralkm-wallet-gateway.developers-6d6.workers.dev">
       <App />
     </WalletProvider>
   </StrictMode>
