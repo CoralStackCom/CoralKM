@@ -1,3 +1,5 @@
+import '../../shim'
+
 import Wallet from '@/components/ui/WalletScreen/Wallet'
 
 /**
