@@ -126,7 +126,7 @@ export default function App() {
                 <Info className="h-3.5 w-3.5" />
               </Button>
               <Button
-                title="Scan Barcode"
+                title="Scan QR code"
                 variant="ghost"
                 size="icon"
                 className="h-6 w-6 hover:bg-black/10"
@@ -230,7 +230,7 @@ export default function App() {
         handleCloseDrawer={() => {
           setIsScannerDrawerOpen(false)
         }}
-        title="Barcode Scanner"
+        title="QR Code Scanner"
       >
         <Scanner onScanSuccess={handleScanSuccess} onClose={() => setIsScannerDrawerOpen(false)} />
       </Drawer>
