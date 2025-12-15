@@ -1,4 +1,4 @@
-import { Check, Copy, Info, RotateCcw } from 'lucide-react'
+import { Check, Copy, Info, RotateCcw, ScanBarcode } from 'lucide-react'
 import React from 'react'
 
 import { ChannelList } from '../components/channel-list'
@@ -7,6 +7,7 @@ import { MessageComposer } from '../components/message-composer'
 import { UserProfileSelector } from '../components/profile-selector'
 import { RecoverModal } from '../components/recover-modal'
 import { RecoverSuccessModal } from '../components/recover-success-modal'
+import { Scanner } from '../components/scanner'
 import { Button } from '../components/ui/button'
 import { Drawer } from '../components/ui/drawer'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
@@ -21,6 +22,10 @@ export default function App() {
   const [isUserDrawerOpen, setIsUserDrawerOpen] = React.useState(false)
   const [copied, setCopied] = React.useState<'did' | 'namespace' | null>(null)
   const [isRotating, setIsRotating] = React.useState(false)
+  const [isScannerDrawerOpen, setIsScannerDrawerOpen] = React.useState(false)
+  const handleScanSuccess = (decodedText: string, format: string) => {
+    console.log(format, decodedText)
+  }
   const {
     user: currentUser,
     channels,
@@ -121,6 +126,15 @@ export default function App() {
                 <Info className="h-3.5 w-3.5" />
               </Button>
               <Button
+                title="Scan Barcode"
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6 hover:bg-black/10"
+                onClick={() => setIsScannerDrawerOpen(true)}
+              >
+                <ScanBarcode className="h-3.5 w-3.5" />
+              </Button>
+              <Button
                 title="Copy DID"
                 variant="ghost"
                 size="icon"
@@ -210,6 +224,15 @@ export default function App() {
             )}
           </TabsContent>
         </Tabs>
+      </Drawer>
+      <Drawer
+        isOpen={isScannerDrawerOpen}
+        handleCloseDrawer={() => {
+          setIsScannerDrawerOpen(false)
+        }}
+        title="Barcode Scanner"
+      >
+        <Scanner onScanSuccess={handleScanSuccess} onClose={() => setIsScannerDrawerOpen(false)} />
       </Drawer>
 
       <div className="flex flex-1 min-h-0">
