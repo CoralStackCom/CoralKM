@@ -6,8 +6,7 @@ import { AuthProvider, useAuth } from '@/providers/AuthContext'
 import { WalletProvider } from '@/providers/wallet'
 import { Tabs, usePathname } from 'expo-router'
 import React from 'react'
-import { Animated, Text, TouchableOpacity } from 'react-native'
-import { styles } from './layout.style'
+import { Animated, StyleSheet, Text, TouchableOpacity } from 'react-native'
 
 interface TabButtonProps {
   label: string
@@ -15,7 +14,6 @@ interface TabButtonProps {
   isFocused: boolean
   onPress: (...args: any[]) => void
 }
-const MAIN_COLOR = '#1B5678'
 
 const TabButton: React.FC<TabButtonProps> = ({ label, iconName, isFocused, onPress }) => {
   const scaleAnim = React.useRef(new Animated.Value(isFocused ? 1.1 : 1)).current
@@ -39,8 +37,8 @@ const TabButton: React.FC<TabButtonProps> = ({ label, iconName, isFocused, onPre
           },
         ]}
       >
-        <IconSymbol name={iconName} size={24} color={isFocused ? MAIN_COLOR : '#fff'} />
-        <Text style={[styles.tabLabel, { color: isFocused ? MAIN_COLOR : '#fff' }]}>{label}</Text>
+        <IconSymbol name={iconName} size={24} color={isFocused ? '#1B5678' : '#fff'} />
+        <Text style={[styles.tabLabel, { color: isFocused ? '#1B5678' : '#fff' }]}>{label}</Text>
       </Animated.View>
     </TouchableOpacity>
   )
@@ -113,14 +111,14 @@ function TabsContent() {
         }}
       />
       <Tabs.Screen
-        name="wallet/index"
+        name="Wallet/index"
         options={{
           tabBarButton: ({ onPress }) => (
             <TabButton
               onPress={onPress!}
               isFocused={pathname === '/(tabs)/wallet'}
               label="Wallet"
-              iconName="MessageCircle"
+              iconName="chat"
             />
           ),
         }}
@@ -137,3 +135,40 @@ export default function TabLayout() {
     </WalletProvider>
   )
 }
+
+const styles = StyleSheet.create({
+  tabBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    // position: 'absolute',
+    bottom: 16,
+    left: 16,
+    right: 16,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#1B5678',
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 6,
+    alignItems: 'center',
+  },
+  tabButtonContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  tabButton: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    height: 30,
+  },
+  tabLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    marginTop: 4,
+  },
+})

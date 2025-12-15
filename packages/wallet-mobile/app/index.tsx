@@ -1,3 +1,5 @@
+import './shim'
+
 import { ThemedView } from '@/components/others/themed-view'
 import { Background } from '@/components/Shared/Background'
 import AuthScreen from '@/components/ui/AuthScreen/AuthScreen'
