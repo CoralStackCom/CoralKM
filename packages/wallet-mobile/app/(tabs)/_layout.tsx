@@ -71,7 +71,7 @@ function TabsContent() {
           ),
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="Generator/index"
         options={{
           tabBarButton: ({ onPress }) => (
@@ -83,7 +83,7 @@ function TabsContent() {
             />
           ),
         }}
-      />
+      /> */}
       <Tabs.Screen
         name="Scanner/index"
         options={{
