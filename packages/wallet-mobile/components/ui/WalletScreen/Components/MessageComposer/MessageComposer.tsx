@@ -1,21 +1,16 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { Ionicons } from '@expo/vector-icons'
 import type { IDIDCommMessage } from '@veramo/did-comm'
-import { Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import 'react-native-get-random-values'
 import { v4 as uuidv4 } from 'uuid'
-import { MessageComposerProps } from './MessageComposer.interfaces'
-import { styles } from './MessageComposer.style'
 
-/**
- * MessageComposer Component
- *
- * Handles channel interactions including:
- * - Sending a DIDComm Ping message
- * - Adding / removing a guardian for the channel
- * - Displaying the current user's DID
- *
- * @param {MessageComposerProps} props
- */
+interface MessageComposerProps {
+  selectedChannel: any
+  currentUser: any
+  sendMessage: (message: IDIDCommMessage) => void
+  addGuardian: (guardianDID: string) => void
+  removeGuardian: (guardianDID: string) => void
+}
 
 export function MessageComposer({
   selectedChannel,
@@ -30,50 +25,80 @@ export function MessageComposer({
       id: uuidv4(),
       to: [selectedChannel.id],
       from: currentUser.routing_id || currentUser.mediator_id,
-      body: { responseRequested: true },
+      body: {
+        responseRequested: true,
+      },
     }
-
     sendMessage(didCommMessage)
   }
 
   return (
     <View style={styles.container}>
-      {/* User DID */}
-      <View style={styles.userDidSection}>
-        <Text style={styles.userDidText}>
-          Your DID: {currentUser.routing_id || currentUser.mediator_id}
-        </Text>
-      </View>
+      <TouchableOpacity style={styles.button} onPress={handlePing} activeOpacity={0.7}>
+        <Ionicons name="send" size={16} color="#ffffff" style={styles.icon} />
+        <Text style={styles.buttonText}>Ping</Text>
+      </TouchableOpacity>
 
-      <View style={styles.actionsRow}>
-        {/* Ping */}
-        <TouchableOpacity style={[styles.button, styles.pingButton]} onPress={handlePing}>
-          <MaterialCommunityIcons name="send" size={16} color="#fff" />
-          <Text style={styles.buttonText}>Ping</Text>
+      {selectedChannel.supports_guardian && !selectedChannel.is_guardian && (
+        <TouchableOpacity
+          style={[styles.button, styles.guardianButton]}
+          onPress={() => addGuardian(selectedChannel.id)}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="shield-checkmark" size={16} color="#000000" style={styles.icon} />
+          <Text style={[styles.buttonText, styles.guardianButtonText]}>Request Guardianship</Text>
         </TouchableOpacity>
+      )}
 
-        {/* Guardian */}
-        {selectedChannel.supports_guardian && !selectedChannel.is_guardian && (
-          <TouchableOpacity
-            style={[styles.button, styles.guardianButton]}
-            onPress={() => addGuardian(selectedChannel.id)}
-          >
-            <MaterialCommunityIcons name="shield-plus" size={16} color="#fff" />
-            <Text style={styles.guardianText}>Guardian</Text>
-          </TouchableOpacity>
-        )}
-
-        {/* Revoke Guardian */}
-        {selectedChannel.is_guardian && (
-          <TouchableOpacity
-            style={[styles.button, styles.revokeButton]}
-            onPress={() => removeGuardian(selectedChannel.id)}
-          >
-            <MaterialCommunityIcons name="shield-remove" size={16} color="#fff" />
-            <Text style={styles.revokeText}>Revoke</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+      {selectedChannel.is_guardian && (
+        <TouchableOpacity
+          style={[styles.button, styles.revokeButton]}
+          onPress={() => removeGuardian(selectedChannel.id)}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="shield-outline" size={16} color="#ffffff" style={styles.icon} />
+          <Text style={styles.buttonText}>Revoke Guardianship</Text>
+        </TouchableOpacity>
+      )}
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    borderTopWidth: 1,
+    borderTopColor: '#e5e7eb',
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 16,
+    paddingBottom: 78,
+    paddingTop: 16,
+    flexDirection: 'row',
+    gap: 8,
+    flexWrap: 'wrap',
+  },
+  button: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#3b82f6',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 6,
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  icon: {
+    marginRight: 6,
+  },
+  guardianButton: {
+    backgroundColor: '#22c55e',
+  },
+  guardianButtonText: {
+    color: '#000000',
+  },
+  revokeButton: {
+    backgroundColor: '#ef4444',
+  },
+})

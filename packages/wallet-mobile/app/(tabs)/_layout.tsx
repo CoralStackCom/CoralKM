@@ -71,19 +71,6 @@ function TabsContent() {
           ),
         }}
       />
-      {/* <Tabs.Screen
-        name="Generator/index"
-        options={{
-          tabBarButton: ({ onPress }) => (
-            <TabButton
-              onPress={onPress!}
-              isFocused={pathname === '/(tabs)/Generator'}
-              label="Generator"
-              iconName="sparkles"
-            />
-          ),
-        }}
-      /> */}
       <Tabs.Screen
         name="Scanner/index"
         options={{
@@ -118,7 +105,7 @@ function TabsContent() {
               onPress={onPress!}
               isFocused={pathname === '/(tabs)/wallet'}
               label="Wallet"
-              iconName="chat"
+              iconName="wallet-outline"
             />
           ),
         }}
@@ -140,7 +127,7 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    // position: 'absolute',
+    position: 'absolute',
     bottom: 16,
     left: 16,
     right: 16,

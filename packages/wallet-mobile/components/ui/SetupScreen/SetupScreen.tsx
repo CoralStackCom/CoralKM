@@ -60,7 +60,7 @@ export default function SetupScreen() {
       <View style={styles.background}>
         <Stepper
           activeStep={activeStep}
-          labels={['Profile', 'Household', 'Complete']}
+          labels={['Profile', 'Household', 'Encryption', 'Complete']}
           open={isOpen}
           onTransitionEnd={() => console.log('Setup closed')}
         >

@@ -41,7 +41,7 @@ export function ChatMessage({ message, channel, onViewMessage, styleMessage }: C
       {!message.is_sent && (
         <ChatAvatar
           name={channel.profile.displayName}
-          picture={channel.profile.displayPicture}
+          picture={channel?.profile?.displayPicture}
           size={32}
         />
       )}

@@ -23,12 +23,8 @@ export function UserProfileSelector({ currentProfile, onProfileChange }: UserPro
       <TouchableOpacity style={styles.trigger} onPress={() => setIsOpen(true)}>
         <ChatAvatar
           name={currentProfile.displayName}
-          picture={
-            currentProfile.displayPicture
-              ? `data:image/png;base64,${currentProfile.displayPicture}`
-              : undefined
-          }
-          size={20}
+          picture={currentProfile.displayPicture}
+          size={40}
         />
 
         <View style={{ flex: 1 }}>

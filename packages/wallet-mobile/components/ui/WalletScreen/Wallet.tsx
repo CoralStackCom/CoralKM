@@ -1,4 +1,4 @@
-import { ChannelView } from '@/components/ui/WalletScreen/Components/ChannelView/ChannelView'
+import { styleMessage } from '@/lib/style-messages'
 import { useWallet } from '@/providers/wallet'
 import { Ionicons } from '@expo/vector-icons'
 import * as Clipboard from 'expo-clipboard'
@@ -9,22 +9,20 @@ import {
   Platform,
   ScrollView,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native'
 import { ChannelList } from './Components/ChannelList'
+import ChannelView from './Components/ChannelView'
 import { MessageComposer } from './Components/MessageComposer/MessageComposer'
 import { UserProfileSelector } from './Components/UserProfileSelector/UserProfileSelector'
-import { IChannel, IChannelMessage } from './wallet.interfaces'
+import { IChannelMessage } from './wallet.interfaces'
 import { styles } from './wallet.style'
 
 export default function Wallet() {
-  const { user: currentUser, wallet, namespace, walletKey, backupData, restoredData } = useWallet()
-  const [selectedChannelId, setSelectedChannelId] = useState<string | null>(null)
-  const [channels, setChannels] = useState<IChannel[]>([])
-  const [isAddChannelModalOpen, setIsAddChannelModalOpen] = useState(false)
-  const [newChannelId, setNewChannelId] = useState('')
+  const { user: currentUser, wallet, namespace, walletKey, backupData, channels } = useWallet()
+  const [didAddress, setDidAddress] = useState<string>('null')
+  const [selectedChannelId, setSelectedChannelId] = useState<any>(null)
   const [isMessageDetailsOpen, setIsMessageDetailsOpen] = useState(false)
   const [selectedMessage, setSelectedMessage] = useState<IChannelMessage | null>(null)
   const [isUserDrawerOpen, setIsUserDrawerOpen] = useState(false)
@@ -32,10 +30,11 @@ export default function Wallet() {
   const [isRotating, setIsRotating] = useState(false)
   const [activeTab, setActiveTab] = useState<'wallet' | 'identifiers'>('wallet')
 
-  const selectedChannel = channels.find(c => c.id === selectedChannelId) || null
-
+  const selectedChannel = selectedChannelId ? channels.get(selectedChannelId) || null : null
   // --- Handlers ---
-
+  const handleChannelSelect = (channel: any) => {
+    setSelectedChannelId(channel?.id)
+  }
   const handleCopy = useCallback(async (value: string, label: 'did' | 'namespace') => {
     try {
       await Clipboard.setStringAsync(value)
@@ -54,26 +53,6 @@ export default function Wallet() {
     await wallet.rotateKeys?.()
     setTimeout(() => setIsRotating(false), 1000)
   }, [wallet])
-
-  const handleAddChannel = () => {
-    if (!newChannelId.trim()) return
-    const newChannel: IChannel = {
-      id: newChannelId,
-      profile: { displayName: newChannelId.substring(0, 20) },
-      messages: [],
-      did: newChannelId,
-    }
-    setChannels(prev => [...prev, newChannel])
-    setSelectedChannelId(newChannelId)
-    setNewChannelId('')
-    setIsAddChannelModalOpen(false)
-    wallet.addChannel?.(newChannelId)
-  }
-
-  const handleViewMessage = (message: IChannelMessage) => {
-    setSelectedMessage(message)
-    setIsMessageDetailsOpen(true)
-  }
 
   // --- Safe Wrapper ---
   const SafeWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -96,12 +75,18 @@ export default function Wallet() {
                       displayName: profile.displayName,
                       displayPicture: profile.displayPicture,
                     })
-                    console.log(currentUser.displayName, 'profile changed')
+                    // if (currentUser?.routing_id) {
+                    //   setDidAddress(currentUser.routing_id)
+                    // } else if (currentUser?.mediator_id) {
+                    //   setDidAddress(currentUser.mediator_id)
+                    // } else {
+                    //   setDidAddress('null')
+                    // }
                   }}
                 />
               ) : null}
               <Text style={styles.userDid} numberOfLines={1}>
-                ({currentUser?.mediator_id || currentUser?.routing_id || 'No DID'})
+                ({didAddress})
               </Text>
             </View>
             <View style={styles.headerRight}>
@@ -124,9 +109,7 @@ export default function Wallet() {
                 <Ionicons name="information-circle" size={20} color="#007AFF" />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() =>
-                  handleCopy(currentUser?.routing_id || currentUser?.mediator_id || '', 'did')
-                }
+                onPress={() => handleCopy(didAddress, 'did')}
                 style={styles.headerButton}
               >
                 <Ionicons
@@ -139,61 +122,18 @@ export default function Wallet() {
           </View>
           <View>
             <Text style={styles.userDid} numberOfLines={1}>
-              ({currentUser?.mediator_id || currentUser?.routing_id || 'No DID'})
+              ({didAddress || 'No DID'})
             </Text>
           </View>
           {/* Channel List */}
           <ChannelList
-            channels={channels}
-            selectedChannelId={selectedChannelId}
-            onSelectChannel={setSelectedChannelId}
-            handleAddChannel={handleAddChannel}
-            placeholder="Contact DID"
-            value={newChannelId}
-            onChangeText={setNewChannelId}
-            onAddChannel={() => setIsAddChannelModalOpen(true)}
+            channels={Array.from(channels.values())}
+            selectedChannel={selectedChannel}
+            onSelectChannel={handleChannelSelect}
+            onAddChannel={async (did: any) => {
+              await wallet.addChannel?.(did)
+            }}
           />
-
-          {/* Add Channel Modal */}
-          <Modal
-            visible={isAddChannelModalOpen}
-            transparent
-            animationType="slide"
-            onRequestClose={() => setIsAddChannelModalOpen(false)}
-          >
-            <View
-              style={{
-                paddingVertical: 16,
-                paddingHorizontal: 16,
-                borderBottomWidth: 1,
-                borderBottomColor: '#e0e0e0',
-              }}
-            >
-              <Text style={styles.modalTitle}>Add New Contact</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Contact DID"
-                value={newChannelId}
-                onChangeText={setNewChannelId}
-                placeholderTextColor="#999"
-              />
-              <View style={styles.modalButtonContainer}>
-                <TouchableOpacity
-                  style={[styles.button, styles.buttonOutline]}
-                  onPress={() => setIsAddChannelModalOpen(false)}
-                >
-                  <Text style={styles.buttonTextOutline}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.button, !newChannelId.trim() && styles.buttonDisabled]}
-                  onPress={handleAddChannel}
-                  disabled={!newChannelId.trim()}
-                >
-                  <Text style={styles.buttonText}>Add Contact</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Modal>
 
           {/* User Info Drawer */}
           <Modal
@@ -316,15 +256,21 @@ export default function Wallet() {
       <View style={styles.chatContainer}>
         <ChannelView
           channel={selectedChannel}
-          onBack={() => setSelectedChannelId(null)}
-          onViewMessage={handleViewMessage}
+          styleMessage={styleMessage}
+          selectChannel={setSelectedChannelId}
         />
         <MessageComposer
           currentUser={currentUser}
           selectedChannel={selectedChannel}
-          sendMessage={async message => wallet.sendMessage?.(message)}
-          addGuardian={async did => wallet.addGuardian?.(did)}
-          removeGuardian={async did => wallet.removeGuardian?.(did)}
+          sendMessage={async message => {
+            await wallet.sendMessage(message)
+          }}
+          addGuardian={async guardianDID => {
+            await wallet.addGuardian(guardianDID)
+          }}
+          removeGuardian={async guardianDID => {
+            await wallet.removeGuardian(guardianDID)
+          }}
         />
       </View>
     </SafeWrapper>

@@ -1,6 +1,17 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import * as Clipboard from 'expo-clipboard'
-import { Alert, FlatList, Text, TouchableOpacity, View } from 'react-native'
+import { useState } from 'react'
+import {
+  Alert,
+  FlatList,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 import ChatAvatar from '../ChatAvatar'
 import { styles } from './ChannelList.style'
 
@@ -14,29 +25,36 @@ import { styles } from './ChannelList.style'
  * @param {Array} props.channels - List of channel objects
  * @param {Object|null} props.selectedChannel - Currently selected channel
  * @param {Function} props.onSelectChannel - Called when a channel is selected
- * @param {Function} props.onAddChannel - (unused)
- * @param {string} props.placeholder - (unused)
- * @param {string} props.value - (unused)
- * @param {Function} props.onChangeText - (unused)
- * @param {Function} props.handleAddChannel - (unused)
  */
-export function ChannelList({
-  channels,
-  selectedChannel,
-  onSelectChannel,
-  onAddChannel,
-  placeholder,
-  value,
-  onChangeText,
-  handleAddChannel,
-}: any) {
-  /**
-   * Copies text to clipboard with a success alert.
-   * @param {string} value - Text to copy.
-   */
+export function ChannelList({ channels, selectedChannel, onSelectChannel, onAddChannel }: any) {
+  const DID_REGEX = /^did:[a-z0-9]+:[a-zA-Z0-9.\-_:%]+$/
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [newChannelId, setNewChannelId] = useState('')
+  const [didError, setDidError] = useState<string | null>(null)
+
   const copyToClipboard = async (value: string) => {
     await Clipboard.setStringAsync(value)
     Alert.alert('Copied!', 'DID copied to clipboard.')
+  }
+
+  const isValidDid = (did: string) => {
+    return DID_REGEX.test(did)
+  }
+
+  const handleAddChannel = () => {
+    const did = newChannelId.trim()
+
+    if (!did) return
+
+    if (!isValidDid(did)) {
+      setDidError('Invalid DID address')
+      return
+    }
+
+    onAddChannel(did)
+    setNewChannelId('')
+    setDidError(null)
+    setIsDialogOpen(false)
   }
 
   /**
@@ -44,12 +62,9 @@ export function ChannelList({
    */
   const renderChannelItem = ({ item }: any) => {
     const isSelected = selectedChannel?.id === item.id
-
+    console.log('Rendering channel item:', 'Selected:', selectedChannel?.id, isSelected, 's')
     return (
-      <TouchableOpacity
-        onPress={() => onSelectChannel(item)}
-        style={[styles.channelItem, isSelected && styles.channelItemSelected]}
-      >
+      <View style={[styles.channelItem, isSelected && styles.channelItemSelected]}>
         <ChatAvatar
           name={item.profile.displayName}
           picture={item.profile.displayPicture}
@@ -59,17 +74,22 @@ export function ChannelList({
         <View style={styles.channelInfo}>
           {/* FIRST ROW */}
           <View style={styles.nameRow}>
-            <Text style={styles.nameText}>{item.profile.displayName}</Text>
+            <TouchableOpacity onPress={() => onSelectChannel(item)} style={styles.touchableName}>
+              <Text style={styles.nameText}>{item.profile.displayName}</Text>
 
-            {item.supports_guardian && !item.is_guardian && (
-              <MaterialCommunityIcons name="shield-outline" size={18} color="#666" />
-            )}
+              {item.supports_guardian && !item.is_guardian && (
+                <MaterialCommunityIcons name="shield-outline" size={18} color="#666" />
+              )}
 
-            {item.is_guardian && (
-              <MaterialCommunityIcons name="shield-check" size={18} color="#666" />
-            )}
+              {item.is_guardian && (
+                <MaterialCommunityIcons name="shield-check" size={18} color="#666" />
+              )}
 
-            <Text style={styles.msgCount}>({item.messages.length})</Text>
+              <Text style={styles.msgCount}>({item.messages.length})</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => copyToClipboard(item.id)}>
+              <MaterialCommunityIcons name="content-copy" size={16} color="#777" />
+            </TouchableOpacity>
           </View>
 
           {/* SECOND ROW */}
@@ -77,26 +97,69 @@ export function ChannelList({
             <Text numberOfLines={1} style={styles.didText}>
               {item.id}
             </Text>
-            <TouchableOpacity onPress={() => copyToClipboard(item.id)}>
-              <MaterialCommunityIcons name="content-copy" size={16} color="#777" />
-            </TouchableOpacity>
           </View>
         </View>
-      </TouchableOpacity>
+      </View>
     )
   }
-
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Contacts</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => setIsDialogOpen(true)}>
           <MaterialCommunityIcons name="plus" size={24} color="#000" />
         </TouchableOpacity>
       </View>
       {/* Channel List */}
       <FlatList data={channels} keyExtractor={item => item.id} renderItem={renderChannelItem} />
+      <Modal
+        visible={isDialogOpen}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setIsDialogOpen(false)}
+      >
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContainer}>
+              <Text style={styles.modalTitle}>Add New Contact</Text>
+
+              <TextInput
+                style={[styles.input, didError && { borderColor: '#FF3B30' }]}
+                placeholder="Contact DID"
+                value={newChannelId}
+                onChangeText={text => {
+                  setNewChannelId(text)
+                  setDidError(null)
+                }}
+                placeholderTextColor="#999"
+              />
+
+              {didError && <Text style={styles.errorText}>{didError}</Text>}
+
+              <View style={styles.modalButtonContainer}>
+                <TouchableOpacity
+                  style={[styles.button, styles.buttonOutline]}
+                  onPress={() => setIsDialogOpen(false)}
+                >
+                  <Text style={styles.buttonTextOutline}>Cancel</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.button, !newChannelId.trim() && styles.buttonDisabled]}
+                  onPress={handleAddChannel}
+                  disabled={!newChannelId.trim()}
+                >
+                  <Text style={styles.buttonText}>Add Contact</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
     </View>
   )
 }

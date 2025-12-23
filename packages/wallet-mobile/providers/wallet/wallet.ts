@@ -1,4 +1,3 @@
-// wallet-rn.ts
 import type { IIdentifier } from '@veramo/core'
 import type { IDIDCommMessage } from '@veramo/did-comm'
 import type { AbstractPrivateKeyStore, ManagedPrivateKey } from '@veramo/key-manager'
@@ -16,9 +15,9 @@ import type {
 import {
   CoralKMV01MessageTypes,
   DiscoverFeaturesV2MessageTypes,
-  UserProfileV1MessageTypes,
   MemoryGuardianStore,
   MemoryUserProfileStore,
+  UserProfileV1MessageTypes,
 } from '@coralkm/core'
 
 import { userProfiles } from '../../lib/user-profiles'
@@ -116,13 +115,11 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
   }
 
   // Current recovery process state
-  private _currentRecovery:
-    | {
-        id: string
-        namespace: INamespace
-        shares: string[]
-      }
-    | null = null
+  private _currentRecovery: {
+    id: string
+    namespace: INamespace
+    shares: string[]
+  } | null = null
 
   // Initialise agent protocol stores
   private _keyStore: AbstractPrivateKeyStore = new MemoryPrivateKeyStore()
@@ -160,7 +157,7 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
     this._cached_snapshot = {
       version: this._version,
       user: this._walletUser,
-      channels: this._channels,
+      channels: new Map(this._channels), // Create a new Map reference
       namespace: this._namespace,
       walletKey: this._walletKey?.encoded,
       backupData: this._backupData,
@@ -363,7 +360,10 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
     const response = await this._wsConnection.invoke(syncRequest)
     const remoteHash = response.decoded as { request: 'PUT'; hash: string }
     const localHash = await this._sha256Data(encryptedData)
-    console.log('[Wallet.syncWallet] Sync Finished! Hashes:', { remoteHash: remoteHash.hash, localHash })
+    console.log('[Wallet.syncWallet] Sync Finished! Hashes:', {
+      remoteHash: remoteHash.hash,
+      localHash,
+    })
 
     this._notify()
   }
@@ -455,7 +455,9 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
    * Update guardian shares after changes in guardianship
    */
   private async _updateGuardianShares() {
-    console.log('[Wallet._updateGuardianShares] Resplitting secrets and distributing to guardians...')
+    console.log(
+      '[Wallet._updateGuardianShares] Resplitting secrets and distributing to guardians...'
+    )
     const totalShares = Array.from(this._channels.values()).reduce((acc, channel) => {
       if (channel.is_guardian) return acc + 1
       return acc
@@ -468,7 +470,11 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
 
     const threshold = Math.max(2, Math.ceil(totalShares / 2))
     // splitDEK expects encoded key (string) in RN EncryptionManager
-    const dekShares = await EncryptionManager.splitDEK(this._walletKey!.encoded, totalShares, threshold)
+    const dekShares = await EncryptionManager.splitDEK(
+      this._walletKey!.encoded,
+      totalShares,
+      threshold
+    )
     console.log('[Wallet._updateGuardianShares] Generated DEK shares for guardians:', {
       totalShares,
       threshold,
@@ -492,7 +498,11 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
         share: dekShares.shift()!, // take one share per guardian
       })
       const shareResponse = await this._wsConnection.invoke(shareMessage)
-      console.log('[Wallet._updateGuardianShares] Sent share to guardian:', channel.id, shareResponse)
+      console.log(
+        '[Wallet._updateGuardianShares] Sent share to guardian:',
+        channel.id,
+        shareResponse
+      )
     }
   }
 
@@ -511,7 +521,12 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
       'recovery-requests'
 
     // Add new channel if incoming message from unknown DID
-    if (!isSent && channelId && channelId !== 'recovery-requests' && !this._channels.has(channelId)) {
+    if (
+      !isSent &&
+      channelId &&
+      channelId !== 'recovery-requests' &&
+      !this._channels.has(channelId)
+    ) {
       await this._addChannel(channelId)
       await this._setupChannel(channelId)
     } else if (!isSent && channelId === 'recovery-requests' && !this._channels.has(channelId)) {
@@ -542,7 +557,10 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
     // Handle special messages if needed
     if (!isSent) {
       if (message.type === UserProfileV1MessageTypes.PROFILE) {
-        console.debug(`[Wallet._onMessage] Received User Profile message from : ${message.from}`, decoded)
+        console.debug(
+          `[Wallet._onMessage] Received User Profile message from : ${message.from}`,
+          decoded
+        )
         this._channels.get(channelId)!.profile = decoded as IAgentUserProfile
       } else if (message.type === CoralKMV01MessageTypes.GUARDIAN_GRANT) {
         console.debug(`[Wallet._onMessage] Received Guardianship Grant from : ${message.from}`)
@@ -551,10 +569,14 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
         console.debug(`[Wallet._onMessage] Received Guardianship Deny from : ${message.from}`)
         this._channels.get(channelId)!.is_guardian = false
       } else if (message.type === CoralKMV01MessageTypes.GUARDIAN_REMOVE_CONFIRM) {
-        console.debug(`[Wallet._onMessage] Received Guardianship Remove Confirm from : ${message.from}`)
+        console.debug(
+          `[Wallet._onMessage] Received Guardianship Remove Confirm from : ${message.from}`
+        )
         this._channels.get(channelId)!.is_guardian = false
       } else if (message.type === CoralKMV01MessageTypes.GUARDIAN_SHARE_UPDATE) {
-        console.debug(`[Wallet._onMessage] Received Guardian Share Update Confirm from : ${message.from}`)
+        console.debug(
+          `[Wallet._onMessage] Received Guardian Share Update Confirm from : ${message.from}`
+        )
         // Sync wallet
         await this.syncWallet()
       } else if (message.type === CoralKMV01MessageTypes.GUARDIAN_REMOVE) {
@@ -622,7 +644,8 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
       from: this._walletUser?.routing_id || this._walletUser?.mediator_id,
     })
     const discoveryQueryResponse = await this._wsConnection.invoke(discoveryQueryRequest)
-    this._channels.get(id)!.features = discoveryQueryResponse.decoded as DiscoveryFeatureDisclosure[]
+    this._channels.get(id)!.features =
+      discoveryQueryResponse.decoded as DiscoveryFeatureDisclosure[]
 
     // Check if guardian support is indicated in features
     ;(discoveryQueryResponse.decoded as DiscoveryFeatureDisclosure[]).forEach(f => {
@@ -686,7 +709,9 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
       namespace,
     }
     this._notify()
-    console.log('[Wallet._restoreWallet] SUCCESS - Restored wallet from backup!!', { data: decryptedData })
+    console.log('[Wallet._restoreWallet] SUCCESS - Restored wallet from backup!!', {
+      data: decryptedData,
+    })
   }
 
   /**
@@ -696,11 +721,11 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
    * @returns     The SHA-256 hash as a hexadecimal string
    */
   private async _sha256Data(data: string): Promise<string> {
-    const hashHex = await (await import('expo-crypto')).digestStringAsync(
-      (await import('expo-crypto')).CryptoDigestAlgorithm.SHA256,
-      data,
-      { encoding: (await import('expo-crypto')).CryptoEncoding.HEX }
-    )
+    const hashHex = await (
+      await import('expo-crypto')
+    ).digestStringAsync((await import('expo-crypto')).CryptoDigestAlgorithm.SHA256, data, {
+      encoding: (await import('expo-crypto')).CryptoEncoding.HEX,
+    })
     return hashHex
   }
 }
