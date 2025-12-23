@@ -2,14 +2,15 @@ import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
   trigger: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
     paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingHorizontal: 8,
     borderRadius: 8,
   },
-  triggerName: { fontSize: 16, fontWeight: '600' },
+  triggerName: { fontSize: 14, fontWeight: '600' },
   modal: { flex: 1, backgroundColor: '#fff' },
   modalHeader: {
     padding: 16,

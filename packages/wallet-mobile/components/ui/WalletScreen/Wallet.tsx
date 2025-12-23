@@ -15,7 +15,7 @@ import {
 import { ChannelList } from './Components/ChannelList'
 import ChannelView from './Components/ChannelView'
 import { MessageComposer } from './Components/MessageComposer/MessageComposer'
-import { UserProfileSelector } from './Components/UserProfileSelector/UserProfileSelector'
+import { UserProfileSelector } from './Components/UserProfileSelector'
 import { IChannelMessage } from './wallet.interfaces'
 import { styles } from './wallet.style'
 
@@ -67,29 +67,21 @@ export default function Wallet() {
           {/* Header */}
           <View style={styles.header}>
             <View style={styles.headerLeft}>
-              {currentUser ? (
-                <UserProfileSelector
-                  currentProfile={currentUser}
-                  onProfileChange={async profile => {
-                    await wallet.updateUserProfile({
-                      displayName: profile.displayName,
-                      displayPicture: profile.displayPicture,
-                    })
-                    // if (currentUser?.routing_id) {
-                    //   setDidAddress(currentUser.routing_id)
-                    // } else if (currentUser?.mediator_id) {
-                    //   setDidAddress(currentUser.mediator_id)
-                    // } else {
-                    //   setDidAddress('null')
-                    // }
-                  }}
-                />
-              ) : null}
-              <Text style={styles.userDid} numberOfLines={1}>
-                ({didAddress})
-              </Text>
+              <UserProfileSelector
+                currentProfile={currentUser}
+                onProfileChange={async (profile: any) => {
+                  await wallet.updateUserProfile({
+                    displayName: profile.displayName,
+                    displayPicture: profile.displayPicture,
+                  })
+                }}
+              />
             </View>
+
             <View style={styles.headerRight}>
+              <Text style={styles.userDid} numberOfLines={1} ellipsizeMode="middle">
+                ({currentUser?.routing_id || currentUser?.mediator_id || 'No DID'})
+              </Text>
               <TouchableOpacity
                 onPress={handleRotateKeys}
                 style={styles.headerButton}
@@ -109,7 +101,7 @@ export default function Wallet() {
                 <Ionicons name="information-circle" size={20} color="#007AFF" />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => handleCopy(didAddress, 'did')}
+                onPress={() => handleCopy(currentUser?.mediator_id || 'No DID', 'did')}
                 style={styles.headerButton}
               >
                 <Ionicons
@@ -119,11 +111,6 @@ export default function Wallet() {
                 />
               </TouchableOpacity>
             </View>
-          </View>
-          <View>
-            <Text style={styles.userDid} numberOfLines={1}>
-              ({didAddress || 'No DID'})
-            </Text>
           </View>
           {/* Channel List */}
           <ChannelList
