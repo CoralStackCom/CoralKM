@@ -1,6 +1,6 @@
-import { Dimensions, StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from 'react-native'
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get('window')
 
 export const styles = StyleSheet.create({
   container: {
@@ -10,28 +10,27 @@ export const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingVertical: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   content: {
-    width: "90%",
+    width: '90%',
     maxWidth: 600,
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
   },
   bubbleContainer: {
     borderRadius: 12,
-    paddingVertical: 16,
-    marginBottom: 20,
   },
   stepContainer: {
-    position: "relative",
+    position: 'relative',
     minHeight: 300,
   },
   step: {
-    width: "100%",
+    width: '100%',
   },
-});
+})

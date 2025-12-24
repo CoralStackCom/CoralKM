@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
-import { Dimensions, ScrollView, View } from "react-native";
+import { useEffect, useState } from 'react'
+import { Dimensions, View } from 'react-native'
 import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
-} from "react-native-reanimated";
-import { StepperProps } from "./Stepper.interface";
-import { styles } from "./Stepper.style";
-import { BubbleList } from "./components/BubbleList";
+} from 'react-native-reanimated'
+import { StepperProps } from './Stepper.interface'
+import { styles } from './Stepper.style'
+import { BubbleList } from './components/BubbleList'
 
-const { height } = Dimensions.get("window");
+const { height } = Dimensions.get('window')
 
 /**
  * Stepper component for multi-step forms with animated transitions
@@ -23,60 +23,52 @@ export default function Stepper({
   onTransitionEnd,
 }: StepperProps) {
   // Component State
-  const [show, setShow] = useState(open);
-  const opacity = useSharedValue(open ? 1 : 0);
+  const [show, setShow] = useState(open)
+  const opacity = useSharedValue(open ? 1 : 0)
 
   /**
    * Handle open/close animations
    */
   useEffect(() => {
     if (open) {
-      setShow(true);
-      opacity.value = withTiming(1, { duration: 500 });
+      setShow(true)
+      opacity.value = withTiming(1, { duration: 500 })
     } else {
-      opacity.value = withTiming(0, { duration: 500 }, (finished) => {
+      opacity.value = withTiming(0, { duration: 500 }, finished => {
         if (finished) {
-          runOnJS(setShow)(false);
+          runOnJS(setShow)(false)
           if (onTransitionEnd) {
-            runOnJS(onTransitionEnd)();
+            runOnJS(onTransitionEnd)()
           }
         }
-      });
+      })
     }
-  }, [open, opacity, onTransitionEnd]);
+  }, [open, opacity, onTransitionEnd])
 
   /**
    * Animated container style
    */
   const containerStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
-  }));
+  }))
 
-  if (!show && !open) return null;
+  if (!show && !open) return null
 
   // Render
   return (
     <Animated.View style={[styles.container, containerStyle]}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
+      <View style={styles.scrollView}>
         <View style={styles.content}>
           {/* Horizontal Bubble List at Top */}
           <View style={styles.bubbleContainer}>
-            <BubbleList
-              labels={labels}
-              totalSteps={children.length}
-              activeStep={activeStep}
-            />
+            <BubbleList labels={labels} totalSteps={children.length} activeStep={activeStep} />
           </View>
 
           {/* Step Content */}
           <View style={styles.stepContainer}>
             {children.map((child, index) => {
-              const isActive = activeStep === index + 1;
-              const isPast = activeStep > index + 1;
+              const isActive = activeStep === index + 1
+              const isPast = activeStep > index + 1
 
               return (
                 <Animated.View
@@ -90,18 +82,18 @@ export default function Stepper({
                           translateY: isPast ? -height : 0,
                         },
                       ],
-                      position: isActive ? "relative" : "absolute",
-                      pointerEvents: isActive ? "auto" : "none",
+                      position: isActive ? 'relative' : 'absolute',
+                      pointerEvents: isActive ? 'auto' : 'none',
                     },
                   ]}
                 >
                   {child}
                 </Animated.View>
-              );
+              )
             })}
           </View>
         </View>
-      </ScrollView>
+      </View>
     </Animated.View>
-  );
+  )
 }
