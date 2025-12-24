@@ -1,4 +1,4 @@
-import { QRScannerComponent } from '@/components/ui/ScannerScreen'
+// import Scanner from '@/components/ui/WalletScreen/Components/Scanner'
 import { useState } from 'react'
 import {
   Alert,
@@ -151,7 +151,10 @@ export default function AddContactDialog({
                * QR Scanner Mode
                * Returns scanned DID via `onScan`
                */
-              <QRScannerComponent onScan={handleQRScanned} onCancel={() => setMode('input')} />
+              // <Scanner onScan={handleQRScanned} onCancel={() => setMode('input')} />
+              <View>
+                <Text>Scanner component is currently disabled.</Text>
+              </View>
             )}
           </View>
         </View>
