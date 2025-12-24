@@ -3,7 +3,7 @@ import { Dimensions, StyleSheet } from 'react-native'
 const { height: screenHeight } = Dimensions.get('window')
 
 export const styles = StyleSheet.create({
-  safeWrapper: { flex: 1, backgroundColor: '#fff', paddingTop: 40 },
+  safeWrapper: { flex: 1, backgroundColor: '#fff', paddingTop: 50 },
   container: { flex: 1, backgroundColor: '#fff' },
   chatContainer: { flex: 1, backgroundColor: '#fff' },
   header: {

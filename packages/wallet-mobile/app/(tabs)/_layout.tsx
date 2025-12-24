@@ -51,6 +51,7 @@ function TabsContent() {
   if (isLocked) {
     return <UnlockScreen />
   }
+
   return (
     <Tabs
       screenOptions={{
@@ -59,27 +60,27 @@ function TabsContent() {
       }}
     >
       <Tabs.Screen
-        name="Home/index"
+        name="Wallet/index"
         options={{
           tabBarButton: ({ onPress }) => (
             <TabButton
               onPress={onPress!}
-              isFocused={pathname === '/(tabs)/Home'}
-              label="Home"
-              iconName="house"
+              isFocused={pathname === '/(tabs)/wallet'}
+              label="Wallet"
+              iconName="person.text.rectangle"
             />
           ),
         }}
       />
       <Tabs.Screen
-        name="Scanner/index"
+        name="Info/index"
         options={{
           tabBarButton: ({ onPress }) => (
             <TabButton
               onPress={onPress!}
-              isFocused={pathname === '/(tabs)/Scanner'}
-              label="Scanner"
-              iconName="qrcode"
+              isFocused={pathname === '/(tabs)/Info'}
+              label="Info"
+              iconName="info.circle"
             />
           ),
         }}
@@ -93,19 +94,6 @@ function TabsContent() {
               isFocused={pathname === '/(tabs)/Settings'}
               label="Settings"
               iconName="gear"
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="Wallet/index"
-        options={{
-          tabBarButton: ({ onPress }) => (
-            <TabButton
-              onPress={onPress!}
-              isFocused={pathname === '/(tabs)/wallet'}
-              label="Wallet"
-              iconName="wallet-outline"
             />
           ),
         }}
@@ -128,11 +116,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     position: 'absolute',
-    bottom: 16,
+    bottom: 0,
     left: 16,
     right: 16,
-    height: 60,
-    borderRadius: 30,
+    height: 80,
+    paddingBottom: 40,
+    // borderRadius: 30,
     backgroundColor: '#1B5678',
     shadowColor: '#000',
     shadowOpacity: 0.15,

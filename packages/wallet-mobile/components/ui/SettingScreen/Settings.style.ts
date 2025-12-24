@@ -6,13 +6,13 @@ export const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   contentContainer: {
-    padding: 20,
+    padding: 30,
     paddingBottom: 100,
   },
   header: {
     alignItems: 'center',
     marginBottom: 30,
-    marginTop: 20,
+    marginTop: 40,
   },
   title: {
     fontSize: 28,

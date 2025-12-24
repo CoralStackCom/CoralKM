@@ -1,17 +1,10 @@
+import { DidQrGenerator } from '@/components/Shared/DidQrGenerator/DidQrGenerator'
 import { styleMessage } from '@/lib/style-messages'
 import { useWallet } from '@/providers/wallet'
 import { Ionicons } from '@expo/vector-icons'
 import * as Clipboard from 'expo-clipboard'
 import { useCallback, useState } from 'react'
-import {
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { ChannelList } from './Components/ChannelList'
 import ChannelView from './Components/ChannelView'
 import { MessageComposer } from './Components/MessageComposer/MessageComposer'
@@ -20,15 +13,13 @@ import { IChannelMessage } from './wallet.interfaces'
 import { styles } from './wallet.style'
 
 export default function Wallet() {
-  const { user: currentUser, wallet, namespace, walletKey, backupData, channels } = useWallet()
-  const [didAddress, setDidAddress] = useState<string>('null')
+  const { user: currentUser, wallet, channels } = useWallet()
   const [selectedChannelId, setSelectedChannelId] = useState<any>(null)
   const [isMessageDetailsOpen, setIsMessageDetailsOpen] = useState(false)
   const [selectedMessage, setSelectedMessage] = useState<IChannelMessage | null>(null)
-  const [isUserDrawerOpen, setIsUserDrawerOpen] = useState(false)
   const [copied, setCopied] = useState<'did' | 'namespace' | null>(null)
   const [isRotating, setIsRotating] = useState(false)
-  const [activeTab, setActiveTab] = useState<'wallet' | 'identifiers'>('wallet')
+  const [showShareModal, setShowShareModal] = useState(false)
 
   const selectedChannel = selectedChannelId ? channels.get(selectedChannelId) || null : null
   // --- Handlers ---
@@ -58,7 +49,15 @@ export default function Wallet() {
   const SafeWrapper = ({ children }: { children: React.ReactNode }) => (
     <View style={styles.safeWrapper}>{children}</View>
   )
-
+  if (!wallet && !currentUser) {
+    return (
+      <SafeWrapper>
+        <View style={styles.container}>
+          <Text>Loading wallet...</Text>
+        </View>
+      </SafeWrapper>
+    )
+  }
   // --- Main render ---
   if (!selectedChannel) {
     return (
@@ -71,8 +70,8 @@ export default function Wallet() {
                 currentProfile={currentUser}
                 onProfileChange={async (profile: any) => {
                   await wallet.updateUserProfile({
-                    displayName: profile.displayName,
-                    displayPicture: profile.displayPicture,
+                    displayName: profile?.displayName,
+                    displayPicture: profile?.displayPicture,
                   })
                 }}
               />
@@ -90,15 +89,12 @@ export default function Wallet() {
                 <Ionicons
                   name="refresh"
                   size={20}
-                  color="#007AFF"
+                  color="#1B5678"
                   style={isRotating ? styles.spinning : {}}
                 />
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setIsUserDrawerOpen(true)}
-                style={styles.headerButton}
-              >
-                <Ionicons name="information-circle" size={20} color="#007AFF" />
+              <TouchableOpacity onPress={() => setShowShareModal(true)} style={styles.headerButton}>
+                <Ionicons name="share" size={20} color="#1B5678" />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => handleCopy(currentUser?.mediator_id || 'No DID', 'did')}
@@ -107,7 +103,7 @@ export default function Wallet() {
                 <Ionicons
                   name={copied === 'did' ? 'checkmark' : 'copy'}
                   size={20}
-                  color={copied === 'did' ? '#10B981' : '#007AFF'}
+                  color={copied === 'did' ? '#1B5678' : '#1B5678'}
                 />
               </TouchableOpacity>
             </View>
@@ -121,93 +117,6 @@ export default function Wallet() {
               await wallet.addChannel?.(did)
             }}
           />
-
-          {/* User Info Drawer */}
-          <Modal
-            visible={isUserDrawerOpen}
-            transparent
-            animationType="slide"
-            onRequestClose={() => setIsUserDrawerOpen(false)}
-          >
-            <View style={styles.drawerOverlay}>
-              <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'position'}>
-                <View style={styles.drawerHeader}>
-                  <Text style={styles.drawerTitle}>User Info</Text>
-                  <TouchableOpacity onPress={() => setIsUserDrawerOpen(false)}>
-                    <Ionicons name="close" size={24} color="#333" />
-                  </TouchableOpacity>
-                </View>
-
-                {/* Tabs */}
-                <View style={styles.tabsList}>
-                  <TouchableOpacity
-                    style={[styles.tabTrigger, activeTab === 'wallet' && styles.tabTriggerActive]}
-                    onPress={() => setActiveTab('wallet')}
-                  >
-                    <Text style={[styles.tabText, activeTab === 'wallet' && styles.tabTextActive]}>
-                      Wallet
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[
-                      styles.tabTrigger,
-                      activeTab === 'identifiers' && styles.tabTriggerActive,
-                    ]}
-                    onPress={() => setActiveTab('identifiers')}
-                  >
-                    <Text
-                      style={[styles.tabText, activeTab === 'identifiers' && styles.tabTextActive]}
-                    >
-                      Identifiers
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-
-                <ScrollView style={styles.tabContentScroll}>
-                  {activeTab === 'wallet' && (
-                    <View style={styles.infoSection}>
-                      <View style={styles.infoHeader}>
-                        <Text style={styles.infoTitle}>Wallet Namespace</Text>
-                        <TouchableOpacity
-                          onPress={() =>
-                            handleCopy(JSON.stringify(namespace, null, 2), 'namespace')
-                          }
-                        >
-                          <Ionicons
-                            name={copied === 'namespace' ? 'checkmark' : 'copy'}
-                            size={18}
-                            color={copied === 'namespace' ? '#10B981' : '#007AFF'}
-                          />
-                        </TouchableOpacity>
-                      </View>
-                      <Text style={styles.dataTextLarge}>{JSON.stringify(namespace, null, 2)}</Text>
-                      <Text style={[styles.infoTitle, { marginTop: 16 }]}>
-                        Wallet Data Encryption Key
-                      </Text>
-                      <Text style={styles.dataTextLarge}>{walletKey}</Text>
-                      <Text style={[styles.infoTitle, { marginTop: 16 }]}>Wallet Data</Text>
-                      <Text style={styles.dataTextLarge}>
-                        {JSON.stringify(backupData, null, 2)}
-                      </Text>
-                    </View>
-                  )}
-
-                  {activeTab === 'identifiers' && (
-                    <View style={styles.infoSection}>
-                      <Text style={styles.infoTitle}>Routing DID</Text>
-                      <Text style={styles.dataTextLarge}>
-                        {JSON.stringify(currentUser?.routing_did, null, 2) || 'N/A'}
-                      </Text>
-                      <Text style={styles.infoTitle}>Mediator DID</Text>
-                      <Text style={styles.dataTextLarge}>
-                        {JSON.stringify(currentUser?.mediator_did, null, 2) || 'N/A'}
-                      </Text>
-                    </View>
-                  )}
-                </ScrollView>
-              </KeyboardAvoidingView>
-            </View>
-          </Modal>
 
           {/* Message Details */}
           <Modal
@@ -233,6 +142,13 @@ export default function Wallet() {
               </View>
             </View>
           </Modal>
+          <DidQrGenerator
+            did={currentUser?.mediator_id || 'No DID'}
+            onClose={() => setShowShareModal(false)}
+            visible={showShareModal}
+            key={currentUser?.mediator_id}
+            userName={currentUser?.displayName}
+          />
         </View>
       </SafeWrapper>
     )

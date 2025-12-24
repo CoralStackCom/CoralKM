@@ -1,17 +1,8 @@
+import AddContactDialog from '@/components/Shared/AddContactDialog'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import * as Clipboard from 'expo-clipboard'
 import { useState } from 'react'
-import {
-  Alert,
-  FlatList,
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { Alert, FlatList, Text, TouchableOpacity, View } from 'react-native'
 import ChatAvatar from '../ChatAvatar'
 import { styles } from './ChannelList.style'
 
@@ -113,53 +104,11 @@ export function ChannelList({ channels, selectedChannel, onSelectChannel, onAddC
       </View>
       {/* Channel List */}
       <FlatList data={channels} keyExtractor={item => item.id} renderItem={renderChannelItem} />
-      <Modal
-        visible={isDialogOpen}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setIsDialogOpen(false)}
-      >
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContainer}>
-              <Text style={styles.modalTitle}>Add New Contact</Text>
-
-              <TextInput
-                style={[styles.input, didError && { borderColor: '#FF3B30' }]}
-                placeholder="Contact DID"
-                value={newChannelId}
-                onChangeText={text => {
-                  setNewChannelId(text)
-                  setDidError(null)
-                }}
-                placeholderTextColor="#999"
-              />
-
-              {didError && <Text style={styles.errorText}>{didError}</Text>}
-
-              <View style={styles.modalButtonContainer}>
-                <TouchableOpacity
-                  style={[styles.button, styles.buttonOutline]}
-                  onPress={() => setIsDialogOpen(false)}
-                >
-                  <Text style={styles.buttonTextOutline}>Cancel</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[styles.button, !newChannelId.trim() && styles.buttonDisabled]}
-                  onPress={handleAddChannel}
-                  disabled={!newChannelId.trim()}
-                >
-                  <Text style={styles.buttonText}>Add Contact</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </KeyboardAvoidingView>
-      </Modal>
+      <AddContactDialog
+        isDialogOpen={isDialogOpen}
+        setIsDialogOpen={setIsDialogOpen}
+        onAddContact={onAddChannel}
+      />
     </View>
   )
 }

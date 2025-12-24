@@ -43,7 +43,7 @@ export const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   copyButton: {
-    backgroundColor: '#4A90E2',
+    backgroundColor: '#1B5678',
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 6,

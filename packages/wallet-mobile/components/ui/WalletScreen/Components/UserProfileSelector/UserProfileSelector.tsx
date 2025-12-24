@@ -22,13 +22,13 @@ export function UserProfileSelector({ currentProfile, onProfileChange }: UserPro
     <>
       <TouchableOpacity style={styles.trigger} onPress={() => setIsOpen(true)}>
         <ChatAvatar
-          name={currentProfile.displayName}
-          picture={currentProfile.displayPicture}
+          name={currentProfile?.displayName}
+          picture={currentProfile?.displayPicture}
           size={40}
         />
 
         <View style={{ flex: 1 }}>
-          <Text style={styles.triggerName}>{currentProfile.displayName}</Text>
+          <Text style={styles.triggerName}>{currentProfile?.displayName}</Text>
         </View>
 
         <MaterialCommunityIcons name="chevron-down" size={20} color="#666" />
@@ -49,7 +49,7 @@ export function UserProfileSelector({ currentProfile, onProfileChange }: UserPro
 
           <FlatList
             data={userProfiles}
-            keyExtractor={p => p.displayName}
+            keyExtractor={p => p?.displayName}
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={styles.item}
@@ -58,11 +58,11 @@ export function UserProfileSelector({ currentProfile, onProfileChange }: UserPro
                   setIsOpen(false)
                 }}
               >
-                <ChatAvatar name={item.displayName} picture={item.displayPicture} size={40} />
+                <ChatAvatar name={item?.displayName} picture={item?.displayPicture} size={40} />
 
-                <Text style={styles.itemName}>{item.displayName}</Text>
+                <Text style={styles.itemName}>{item?.displayName}</Text>
 
-                {currentProfile.displayName === item.displayName && (
+                {currentProfile?.displayName === item?.displayName && (
                   <MaterialCommunityIcons name="check" size={20} color="#007AFF" />
                 )}
               </TouchableOpacity>

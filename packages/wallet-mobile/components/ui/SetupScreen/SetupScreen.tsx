@@ -52,7 +52,7 @@ export default function SetupScreen() {
 
   const handleComplete = () => {
     setIsOpen(false)
-    router.replace('/(tabs)/Home')
+    router.replace('/(tabs)/Wallet')
   }
 
   return (
