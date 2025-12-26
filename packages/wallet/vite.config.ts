@@ -12,7 +12,7 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    // Ensure linked deps still get pre-bundled when necessary
-    include: ['@coralkm/core'],
+    // Exclude workspace packages from pre-bundling so alias to source works
+    exclude: ['@coralkm/core'],
   },
 })
