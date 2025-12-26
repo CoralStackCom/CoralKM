@@ -4,10 +4,9 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "composite": true,
-    "esModuleInterop": true,
-    "types": ["vitest/globals"]
+    "esModuleInterop": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"],
+  "exclude": ["node_modules", "dist", "src/__tests__", "**/*.test.ts", "**/*.spec.ts"],
   "references": []
 }
