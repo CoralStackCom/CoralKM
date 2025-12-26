@@ -76,23 +76,24 @@ export function getResolver(override?: DIDResolverOverride): Record<string, DIDR
       } catch (error) {
         err = `resolver_error: Error using local override function: ${error}`
       }
-    } else {
-      do {
-        try {
-          didDocument = await get(url)
-        } catch (error) {
-          err = `resolver_error: DID must resolve to a valid https URL containing a JSON document: ${error}`
-          break
-        }
-        // TODO: this excludes the use of query params
-        const docIdMatchesDid = didDocument?.id === did
-        if (!docIdMatchesDid) {
-          err = 'resolver_error: DID document id does not match requested did'
-          // break // uncomment this when adding more checks
-        }
-        // eslint-disable-next-line no-constant-condition
-      } while (false)
     }
+
+    // Fetch the DID document from the constructed URL
+    do {
+      try {
+        didDocument = await get(url)
+      } catch (error) {
+        err = `resolver_error: DID must resolve to a valid https URL containing a JSON document: ${error}`
+        break
+      }
+      // TODO: this excludes the use of query params
+      const docIdMatchesDid = didDocument?.id === did
+      if (!docIdMatchesDid) {
+        err = 'resolver_error: DID document id does not match requested did'
+        // break // uncomment this when adding more checks
+      }
+      // eslint-disable-next-line no-constant-condition
+    } while (false)
 
     if (err) {
       return {
