@@ -515,87 +515,43 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async _onMessage(message: IDIDCommMessage, isSent: boolean, decoded?: any) {
-    console.debug('[Wallet._onMessage] Wallet received message:', message, isSent, decoded)
-    const channelId =
-      (isSent ? (message.to?.[0] as string | undefined) : (message.from as string | undefined)) ??
-      'recovery-requests'
+    const channelId = (isSent ? message.to?.[0] : message.from) ?? 'recovery-requests'
 
-    // Add new channel if incoming message from unknown DID
-    if (
-      !isSent &&
-      channelId &&
-      channelId !== 'recovery-requests' &&
-      !this._channels.has(channelId)
-    ) {
+    if (!this._channels.has(channelId)) {
       await this._addChannel(channelId)
       await this._setupChannel(channelId)
-    } else if (!isSent && channelId === 'recovery-requests' && !this._channels.has(channelId)) {
-      // Add a special recovery requests channel for broadcast messages
-      const channel: IChannel = {
-        id: channelId,
-        did: {} as DIDDocument,
-        profile: { displayName: 'Recovery Requests' } as IAgentUserProfile,
-        supports_guardian: false,
-        is_guardian: false,
-        messages: [],
-      }
-      this._channels.set(channelId, channel)
-      this._notify()
     }
 
-    // Append message to channel
-    const ch = this._channels.get(channelId)
-    if (ch) {
-      ch.messages.push({
-        message,
-        timestamp: new Date().toISOString(),
-        is_sent: isSent,
-        decoded,
-      })
+    const oldChannel = this._channels.get(channelId)!
+
+    let updatedChannel: IChannel = {
+      ...oldChannel,
+      messages: [
+        ...oldChannel.messages,
+        {
+          message,
+          timestamp: new Date().toISOString(),
+          is_sent: isSent,
+          decoded,
+        },
+      ],
     }
 
-    // Handle special messages if needed
-    if (!isSent) {
-      if (message.type === UserProfileV1MessageTypes.PROFILE) {
-        console.debug(
-          `[Wallet._onMessage] Received User Profile message from : ${message.from}`,
-          decoded
-        )
-        this._channels.get(channelId)!.profile = decoded as IAgentUserProfile
-      } else if (message.type === CoralKMV01MessageTypes.GUARDIAN_GRANT) {
-        console.debug(`[Wallet._onMessage] Received Guardianship Grant from : ${message.from}`)
-        this._channels.get(channelId)!.is_guardian = true
-      } else if (message.type === CoralKMV01MessageTypes.GUARDIAN_DENY) {
-        console.debug(`[Wallet._onMessage] Received Guardianship Deny from : ${message.from}`)
-        this._channels.get(channelId)!.is_guardian = false
-      } else if (message.type === CoralKMV01MessageTypes.GUARDIAN_REMOVE_CONFIRM) {
-        console.debug(
-          `[Wallet._onMessage] Received Guardianship Remove Confirm from : ${message.from}`
-        )
-        this._channels.get(channelId)!.is_guardian = false
-      } else if (message.type === CoralKMV01MessageTypes.GUARDIAN_SHARE_UPDATE) {
-        console.debug(
-          `[Wallet._onMessage] Received Guardian Share Update Confirm from : ${message.from}`
-        )
-        // Sync wallet
-        await this.syncWallet()
-      } else if (message.type === CoralKMV01MessageTypes.GUARDIAN_REMOVE) {
-        console.debug(`[Wallet._onMessage] Received Guardian Remove from : ${message.from}`)
-        // Sync wallet
-        await this.syncWallet()
-      } else if (message.type === CoralKMV01MessageTypes.GUARDIAN_RELEASE_SHARE) {
-        console.debug(`[Wallet._onMessage] Received Recovery Share from : ${message.from}`, decoded)
-        // Handle recovery share
-        if (this._currentRecovery) {
-          this._currentRecovery.shares.push(decoded.share as string)
-          if (this._currentRecovery.shares.length >= decoded.threshold) {
-            await this._restoreWallet()
-            this._currentRecovery = null
-          }
-        }
+    if (!isSent && message.type === UserProfileV1MessageTypes.PROFILE) {
+      updatedChannel = {
+        ...updatedChannel,
+        profile: decoded,
       }
     }
 
+    if (!isSent && message.type === CoralKMV01MessageTypes.GUARDIAN_GRANT) {
+      updatedChannel = {
+        ...updatedChannel,
+        is_guardian: true,
+      }
+    }
+
+    this._channels.set(channelId, updatedChannel)
     this._notify()
   }
 
