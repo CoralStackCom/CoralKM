@@ -59,7 +59,7 @@ export default function Settings() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <View style={styles.backContainer}>
-        <TouchableOpacity onPress={() => router.push('/Profile')} style={styles.backButton}>
+        <TouchableOpacity onPress={() => router.push('/ProfileMenu')} style={styles.backButton}>
           <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
       </View>
