@@ -1,8 +1,9 @@
-import { StepPanel } from "@/components/Shared/Stepper/components";
-import { useState } from "react";
-import { Image, Text, TextInput, View } from "react-native";
-import { SetupUserStepProps } from "./SetupUserStep.interface";
-import { styles } from "./SetupUserStep.style";
+import { StepPanel } from '@/components/Shared/Stepper/components'
+import { useUserContext } from '@/providers/UserContext'
+import { useEffect, useState } from 'react'
+import { Image, Text, TextInput, View } from 'react-native'
+import { SetupUserStepProps } from './SetupUserStep.interface'
+import { styles } from './SetupUserStep.style'
 
 export default function SetupUserStep({
   nextStep,
@@ -10,32 +11,35 @@ export default function SetupUserStep({
   authenticatedUser,
   onNext,
 }: SetupUserStepProps) {
-  const [firstName, setFirstName] = useState(authenticatedUser.firstName || "");
-  const [lastName, setLastName] = useState(authenticatedUser.lastName || "");
-  const [avatar, setAvatar] = useState(
-    authenticatedUser.avatar || userAvatars[0]
-  );
-  const [errors, setErrors] = useState({ firstName: false, lastName: false });
+  const { user, setUser } = useUserContext()
+  const [firstName, setFirstName] = useState(authenticatedUser.firstName || '')
+  const [lastName, setLastName] = useState(authenticatedUser.lastName || '')
+  const [avatar, setAvatar] = useState(authenticatedUser.avatar || userAvatars[0])
+  const [errors, setErrors] = useState({ firstName: false, lastName: false })
 
-  const isFirstTimeUser =
-    !authenticatedUser.firstName && !authenticatedUser.lastName;
+  const isFirstTimeUser = !authenticatedUser.firstName && !authenticatedUser.lastName
 
   const validate = () => {
     const newErrors = {
-      firstName: firstName.trim() === "",
-      lastName: lastName.trim() === "",
-    };
-    setErrors(newErrors);
-    return !newErrors.firstName && !newErrors.lastName;
-  };
+      firstName: firstName.trim() === '',
+      lastName: lastName.trim() === '',
+    }
+    setErrors(newErrors)
+    return !newErrors.firstName && !newErrors.lastName
+  }
 
   const handleNext = () => {
     if (validate()) {
-      onNext(firstName, lastName, avatar);
+      onNext(firstName, lastName, avatar)
     }
-  };
+  }
 
-  const isReady = firstName.trim() !== "" && lastName.trim() !== "";
+  const isReady = firstName.trim() !== '' && lastName.trim() !== ''
+  useEffect(() => {
+    if (user?.id) {
+      setUser({ ...user, firstName, lastName, avatar })
+    }
+  }, [firstName, lastName, avatar])
 
   return (
     <StepPanel
@@ -47,7 +51,7 @@ export default function SetupUserStep({
       <Text style={styles.description}>
         {isFirstTimeUser
           ? "Welcome! As this is your first trip below the surface, we'll need your personal details before you enter:"
-          : "Welcome back! First, lets confirm your personal details below:"}
+          : 'Welcome back! First, lets confirm your personal details below:'}
       </Text>
 
       <View style={styles.avatarContainer}>
@@ -65,9 +69,7 @@ export default function SetupUserStep({
           value={firstName}
           onChangeText={setFirstName}
         />
-        {errors.firstName && (
-          <Text style={styles.errorText}>First Name is required</Text>
-        )}
+        {errors.firstName && <Text style={styles.errorText}>First Name is required</Text>}
       </View>
 
       <View style={styles.inputContainer}>
@@ -80,10 +82,8 @@ export default function SetupUserStep({
           value={lastName}
           onChangeText={setLastName}
         />
-        {errors.lastName && (
-          <Text style={styles.errorText}>Last Name is required</Text>
-        )}
+        {errors.lastName && <Text style={styles.errorText}>Last Name is required</Text>}
       </View>
     </StepPanel>
-  );
+  )
 }

@@ -86,14 +86,14 @@ function TabsContent() {
         }}
       />
       <Tabs.Screen
-        name="Settings/index"
+        name="Profile/index"
         options={{
           tabBarButton: ({ onPress }) => (
             <TabButton
               onPress={onPress!}
-              isFocused={pathname === '/(tabs)/Settings'}
-              label="Settings"
-              iconName="gear"
+              isFocused={pathname === '/(tabs)/Profile'}
+              label="Profile"
+              iconName="person.fill"
             />
           ),
         }}

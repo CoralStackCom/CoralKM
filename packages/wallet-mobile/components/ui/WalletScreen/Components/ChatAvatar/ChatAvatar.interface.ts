@@ -1,5 +1,5 @@
 export interface ChatAvatarProps {
-  name: string
+  name?: string
   picture?: string
   size?: number
 }

@@ -1,5 +1,7 @@
 import './shim'
 
+import { AuthProvider } from '@/providers/AuthContext'
+import { UserProvider } from '@/providers/UserContext'
 import { Slot } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
@@ -31,7 +33,11 @@ export default function RootLayout() {
 
   return (
     <View style={{ flex: 1 }}>
-      {isAuthenticated ? <Slot initialRouteName="tabs" /> : <Slot initialRouteName="index" />}
+      <AuthProvider>
+        <UserProvider>
+          {isAuthenticated ? <Slot initialRouteName="tabs" /> : <Slot initialRouteName="index" />}
+        </UserProvider>
+      </AuthProvider>
     </View>
   )
 }

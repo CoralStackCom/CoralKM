@@ -1,5 +1,6 @@
 import { IconSymbol } from '@/components/others/icon-symbol'
 import { useAuth } from '@/providers/AuthContext'
+import { useRouter } from 'expo-router'
 import { useState } from 'react'
 import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { styles } from './Settings.style'
@@ -9,6 +10,8 @@ import { styles } from './Settings.style'
  */
 export default function Settings() {
   // Component State
+  const router = useRouter()
+
   const { isAuthEnabled, enableAuth, disableAuth, biometricType, lockApp } = useAuth()
   const [passcode, setPasscode] = useState('')
   const [confirmPasscode, setConfirmPasscode] = useState('')
@@ -55,6 +58,11 @@ export default function Settings() {
   // Render
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+      <View style={styles.backContainer}>
+        <TouchableOpacity onPress={() => router.push('/Profile')} style={styles.backButton}>
+          <Text style={styles.backText}>← Back</Text>
+        </TouchableOpacity>
+      </View>
       <View style={styles.header}>
         <IconSymbol name="gear" size={40} color="#1B5678" />
         <Text style={styles.title}>Security Settings</Text>

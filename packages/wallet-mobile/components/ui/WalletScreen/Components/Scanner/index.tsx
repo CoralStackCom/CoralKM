@@ -1,5 +1,3 @@
-'use client'
-
 import { IconSymbol } from '@/components/others/icon-symbol'
 import { Camera, CameraView } from 'expo-camera'
 import { useEffect, useState } from 'react'

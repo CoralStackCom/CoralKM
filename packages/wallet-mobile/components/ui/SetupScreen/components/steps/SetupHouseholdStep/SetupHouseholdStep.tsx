@@ -1,8 +1,9 @@
-import { StepPanel } from "@/components/Shared/Stepper/components";
-import { useState } from "react";
-import { Image, Text, TextInput, View } from "react-native";
-import { SetupHouseholdStepProps } from "./SetupHouseholdStep.interface";
-import { styles } from "./SetupHouseholStep.style";
+import { StepPanel } from '@/components/Shared/Stepper/components'
+import { useUserContext } from '@/providers/UserContext'
+import { useEffect, useState } from 'react'
+import { Image, Text, TextInput, View } from 'react-native'
+import { SetupHouseholdStepProps } from './SetupHouseholdStep.interface'
+import { styles } from './SetupHouseholStep.style'
 
 export default function SetupHouseholdStep({
   nextStep,
@@ -10,17 +11,20 @@ export default function SetupHouseholdStep({
   suggestedName,
   onNext,
 }: SetupHouseholdStepProps) {
-  const [name, setName] = useState(suggestedName);
-  const [country, setCountry] = useState("USA");
-  const [currency, setCurrency] = useState("USD");
-  const [logo, setLogo] = useState(householdAvatars[0]);
+  const { updateHousehold } = useUserContext()
+  const [name, setName] = useState(suggestedName)
+  const [country, setCountry] = useState('USA')
+  const [currency, setCurrency] = useState('USD')
+  const [logo, setLogo] = useState(householdAvatars[0])
 
   const handleNext = () => {
-    onNext(name, country, currency, logo);
-  };
+    onNext(name, country, currency, logo)
+  }
 
-  const isReady =
-    name.trim() !== "" && country.trim() !== "" && currency.trim() !== "";
+  const isReady = name.trim() !== '' && country.trim() !== '' && currency.trim() !== ''
+  useEffect(() => {
+    updateHousehold({ name, country, currency, logo })
+  }, [name, country, currency, logo])
 
   return (
     <StepPanel
@@ -30,8 +34,8 @@ export default function SetupHouseholdStep({
       onNext={handleNext}
     >
       <Text style={styles.description}>
-        Create your household to manage finances together. This will be the main
-        container for all your financial data.
+        Create your household to manage finances together. This will be the main container for all
+        your financial data.
       </Text>
 
       <View style={styles.logoContainer}>
@@ -75,5 +79,5 @@ export default function SetupHouseholdStep({
         />
       </View>
     </StepPanel>
-  );
+  )
 }

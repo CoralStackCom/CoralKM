@@ -9,10 +9,21 @@ export const styles = StyleSheet.create({
     padding: 30,
     paddingBottom: 100,
   },
+  backContainer: {
+    alignItems: 'flex-start',
+    marginTop: 40,
+  },
   header: {
     alignItems: 'center',
     marginBottom: 30,
-    marginTop: 40,
+  },
+  backButton: {
+    marginRight: 12,
+    padding: 8,
+  },
+  backText: {
+    fontSize: 16,
+    color: '#1B5678',
   },
   title: {
     fontSize: 28,
