@@ -164,9 +164,7 @@ export class WebSocketsHub extends DurableObject {
           const requesterWs = this._getRequesterWebSocket(requester_did)
           if (requesterWs && requesterWs.readyState === WebSocket.OPEN) {
             console.log(
-              '[WS_WORKER] (${uniqueId}) Forwarding message to requester DID:',
-              requester_did,
-              msg
+              `[WS_WORKER] (${uniqueId}) Forwarding message to requester DID: ${requester_did}`
             )
             requesterWs.send(msg)
           } else {
