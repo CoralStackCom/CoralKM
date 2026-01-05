@@ -1,4 +1,4 @@
-import { IIdentifier, IKey, IService } from '@veramo/core-types'
+import { IIdentifier } from '@veramo/core-types'
 import { AbstractDIDStore } from '@veramo/did-manager'
 import Debug from 'debug'
 
@@ -119,7 +119,10 @@ export class D1DIDStore extends AbstractDIDStore {
       LIMIT 1
     `
 
-    const row = await this.d1DBConnection.prepare(sql).bind(...params).first<any>()
+    const row = await this.d1DBConnection
+      .prepare(sql)
+      .bind(...params)
+      .first<any>()
     if (!row) throw Error('Identifier not found')
 
     // Parse services
