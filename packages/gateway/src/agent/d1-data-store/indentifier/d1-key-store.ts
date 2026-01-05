@@ -22,6 +22,8 @@ const debug = Debug('veramo:d1db:key-store')
 export class D1KeyStore extends AbstractKeyStore {
   // Cloudflare D1 database connection
   private d1DBConnection: D1Database
+  // In-memory cache for keys (keyed by kid)
+  private keyCache: Map<string, IKey> = new Map()
 
   /**
    * Initialise the D1DIDStore with a D1 database connection.
@@ -34,18 +36,28 @@ export class D1KeyStore extends AbstractKeyStore {
   }
 
   async getKey({ kid }: { kid: string }): Promise<IKey> {
+    // Check cache first
+    const cached = this.keyCache.get(kid)
+    if (cached) {
+      return cached
+    }
+
     const key = await this.d1DBConnection
       .prepare('SELECT * FROM `keys` WHERE kid = ?')
       .bind(kid)
       .first<Key>()
     if (!key) throw Error('Key not found')
-    return {
+    const ikey = {
       kid: key.kid,
       type: key.type,
       publicKeyHex: key.publicKeyHex,
       meta: key.meta ? JSON.parse(key.meta) : undefined,
       kms: key.kms,
     } as IKey
+
+    // Cache the key
+    this.keyCache.set(kid, ikey)
+    return ikey
   }
 
   async deleteKey({ kid }: { kid: string }) {
@@ -56,6 +68,8 @@ export class D1KeyStore extends AbstractKeyStore {
     if (!key) throw Error('Key not found')
     debug('Deleting key', kid)
     await this.d1DBConnection.prepare('DELETE FROM `keys` WHERE kid = ?').bind(kid).run()
+    // Invalidate cache
+    this.keyCache.delete(kid)
     return true
   }
 
@@ -78,6 +92,8 @@ export class D1KeyStore extends AbstractKeyStore {
         key.meta ? JSON.stringify(key.meta) : null
       )
       .run()
+    // Invalidate cache so next getKey fetches fresh data
+    this.keyCache.delete(args.kid)
     return true
   }
 

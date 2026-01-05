@@ -21,6 +21,8 @@ const debug = Debug('veramo:d1db:identifier-store')
 export class D1DIDStore extends AbstractDIDStore {
   // Cloudflare D1 database connection
   private d1DBConnection: D1Database
+  // In-memory cache for identifiers (keyed by did)
+  private identifierCache: Map<string, IIdentifier> = new Map()
 
   /**
    * Initialise the D1DIDStore with a D1 database connection.
@@ -47,75 +49,110 @@ export class D1DIDStore extends AbstractDIDStore {
       throw new Error('Provide either did OR (alias + provider), not both.')
     }
 
-    // Run query to get identifier
+    // Check cache first (only for did-based lookups)
+    if (did) {
+      const cached = this.identifierCache.get(did)
+      if (cached) {
+        return cached
+      }
+    }
+
+    // Build WHERE clause
     let whereClause = ''
     let params: any[] = []
 
     if (did !== undefined && alias === undefined) {
-      whereClause = 'did = ?'
+      whereClause = 'i.did = ?'
       params = [did]
     } else if (did === undefined && alias !== undefined) {
       if (provider === undefined) {
-        whereClause = 'alias = ?'
+        whereClause = 'i.alias = ?'
         params = [alias]
       } else {
-        whereClause = 'alias = ? AND provider = ?'
+        whereClause = 'i.alias = ? AND i.provider = ?'
         params = [alias, provider]
       }
     } else {
       throw new Error('Must provide either did OR (alias + provider)')
     }
-    const identifier = await this.d1DBConnection
-      .prepare(`SELECT * FROM identifiers WHERE ${whereClause} LIMIT 1`)
-      .bind(...params)
-      .first<Identifier>()
-    if (!identifier) throw Error('Identifier not found')
 
-    // Get related keys
-    const keys = await this.d1DBConnection
-      .prepare('SELECT * FROM keys WHERE identifier_id = ?')
-      .bind(identifier.did)
-      .all<Key>()
+    // Single query to get identifier with keys and services
+    const sql = `
+      SELECT
+        i.did,
+        i.provider,
+        i.alias,
+        i.controllerKeyId,
+        COALESCE(s.services, json('[]')) AS services,
+        COALESCE(k.keys, json('[]')) AS keys
+      FROM identifiers i
+      LEFT JOIN (
+        SELECT
+          identifier_id,
+          json_group_array(
+            json_object(
+              'id', id,
+              'type', type,
+              'serviceEndpoint', serviceEndpoint,
+              'description', description
+            )
+          ) AS services
+        FROM services
+        GROUP BY identifier_id
+      ) s ON s.identifier_id = i.did
+      LEFT JOIN (
+        SELECT
+          identifier_id,
+          json_group_array(
+            json_object(
+              'kid', kid,
+              'type', type,
+              'publicKeyHex', publicKeyHex,
+              'kms', kms,
+              'meta', meta
+            )
+          ) AS keys
+        FROM keys
+        GROUP BY identifier_id
+      ) k ON k.identifier_id = i.did
+      WHERE ${whereClause}
+      LIMIT 1
+    `
 
-    // Get related services
-    const services = await this.d1DBConnection
-      .prepare('SELECT * FROM services WHERE identifier_id = ?')
-      .bind(identifier.did)
-      .all<Service>()
+    const row = await this.d1DBConnection.prepare(sql).bind(...params).first<any>()
+    if (!row) throw Error('Identifier not found')
+
+    // Parse services
+    const services = typeof row.services === 'string' ? JSON.parse(row.services) : []
+    for (const s of services) {
+      try {
+        s.serviceEndpoint = JSON.parse(s.serviceEndpoint)
+      } catch {}
+    }
+
+    // Parse keys
+    const keys = typeof row.keys === 'string' ? JSON.parse(row.keys) : []
+    for (const k of keys) {
+      if (k.meta) {
+        try {
+          k.meta = JSON.parse(k.meta)
+        } catch {}
+      }
+    }
 
     const result: IIdentifier = {
-      did: identifier.did,
-      controllerKeyId: identifier.controllerKeyId!!,
-      provider: identifier.provider as string,
-      services: services.results.map(service => {
-        let endpoint: IService['serviceEndpoint'] = service.serviceEndpoint.toString()
-        try {
-          endpoint = JSON.parse(service.serviceEndpoint)
-        } catch {}
-        const s = {
-          id: service.id,
-          type: service.type,
-          serviceEndpoint: endpoint,
-        } as IService
-        if (service.description) {
-          s.description = service.description
-        }
-        return s
-      }),
-      keys: keys.results.map(
-        k =>
-          ({
-            kid: k.kid,
-            type: k.type,
-            kms: k.kms,
-            publicKeyHex: k.publicKeyHex,
-            meta: k.meta ? JSON.parse(k.meta) : undefined,
-          }) as IKey
-      ),
+      did: row.did,
+      controllerKeyId: row.controllerKeyId,
+      provider: row.provider as string,
+      services,
+      keys,
     }
-    if (identifier.alias) {
-      result.alias = identifier.alias as string
+    if (row.alias) {
+      result.alias = row.alias as string
     }
+
+    // Cache the result
+    this.identifierCache.set(result.did, result)
     return result
   }
 
@@ -129,7 +166,8 @@ export class D1DIDStore extends AbstractDIDStore {
     }
     debug('Deleting', did)
     await this.d1DBConnection.prepare('DELETE FROM identifiers WHERE did = ?').bind(did).run()
-
+    // Invalidate cache
+    this.identifierCache.delete(did)
     return true
   }
 
@@ -205,6 +243,8 @@ export class D1DIDStore extends AbstractDIDStore {
     }
 
     debug('Saving', args.did)
+    // Invalidate cache so next getDID fetches fresh data
+    this.identifierCache.delete(args.did)
     return true
   }
 
