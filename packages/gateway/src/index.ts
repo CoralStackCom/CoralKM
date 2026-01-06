@@ -27,9 +27,23 @@ app.use('*', cors())
 
 // Endpoint to retrieve the gateway's DID Document
 app.get(DID_DOC_PATH, async c => {
+  const cache = await caches.open('dids')
+  // Will return undefined if not found, but emit 504 error in logs
+  const didDoc = await cache.match(c.req.url)
+  if (didDoc) {
+    return c.json(await didDoc.json())
+  }
+
   // Create or get a DID for the gateway with the service endpoint
   const serverIdentifier = await createDefaultDid(c)
   const gatewayDID = didDocForIdentifier(serverIdentifier)
+  // Cache the DID Document for future requests
+  await cache.put(
+    c.req.url,
+    new Response(JSON.stringify(gatewayDID), {
+      headers: { 'Content-Type': 'application/json' },
+    })
+  )
   return c.json(gatewayDID)
 })
 

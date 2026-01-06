@@ -25,6 +25,8 @@ export class D1PrivateKeyStore extends AbstractPrivateKeyStore {
   private d1DBConnection: D1Database
   // Optional secret box for encrypting keys at rest
   private secretBox?: AbstractSecretBox | undefined
+  // In-memory cache for decrypted keys (keyed by alias)
+  private keyCache: Map<string, ManagedPrivateKey> = new Map()
 
   /**
    * Initialise the D1DIDStore with a D1 database connection.
@@ -41,6 +43,12 @@ export class D1PrivateKeyStore extends AbstractPrivateKeyStore {
   }
 
   async getKey({ alias }: { alias: string }): Promise<ManagedPrivateKey> {
+    // Check cache first
+    const cached = this.keyCache.get(alias)
+    if (cached) {
+      return cached
+    }
+
     const key = await this.d1DBConnection
       .prepare('SELECT * FROM `private-keys` WHERE alias = ?')
       .bind(alias)
@@ -50,6 +58,9 @@ export class D1PrivateKeyStore extends AbstractPrivateKeyStore {
     if (this.secretBox && key.privateKeyHex) {
       key.privateKeyHex = await this.secretBox.decrypt(key.privateKeyHex)
     }
+
+    // Cache the decrypted key
+    this.keyCache.set(alias, key as ManagedPrivateKey)
     return key as ManagedPrivateKey
   }
 
@@ -64,6 +75,8 @@ export class D1PrivateKeyStore extends AbstractPrivateKeyStore {
       .prepare('DELETE FROM `private-keys` WHERE alias = ?')
       .bind(alias)
       .run()
+    // Invalidate cache
+    this.keyCache.delete(alias)
     return true
   }
 
@@ -95,6 +108,8 @@ export class D1PrivateKeyStore extends AbstractPrivateKeyStore {
       )
       .bind(key.alias, key.privateKeyHex, key.type)
       .run()
+    // Invalidate cache so next getKey fetches fresh data
+    this.keyCache.delete(key.alias)
     return key
   }
 

@@ -41,13 +41,13 @@ export class DIDCommProtocolMessageHandler extends AbstractMessageHandler {
    * @returns A promise that resolves to a response message.
    */
   public override async handle(message: Message, context: IContext): Promise<Message> {
-    console.debug('DIDCommProtocolMessageHandler received message:', message)
+    console.debug('DIDCommProtocolMessageHandler received message:', { request: message.raw })
     try {
       const protocol = await context.agent.getDIDCommProtocol(message.type)
       const messageType = getMessageType(message.type)
       const response = await protocol.handle(messageType, message, context)
       if (response) {
-        console.debug('Protocol handler returned response message:', response)
+        console.debug(`Protocol handler ${protocol.name} returned response message:`, { response })
         message.addMetaData({
           type: DIDCOMM_PROTOCOL_RETURN_ROUTE_METADATA_TYPE,
           value: JSON.stringify({
