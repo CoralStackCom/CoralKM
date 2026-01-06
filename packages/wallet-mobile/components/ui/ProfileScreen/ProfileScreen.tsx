@@ -1,16 +1,9 @@
+import AvatarUpload from '@/components/others/avatar-uploading'
 import { IconSymbol } from '@/components/others/icon-symbol'
 import { useUserContext } from '@/providers/UserContext'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
-import {
-  Image,
-  SafeAreaView,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { styles } from './PorfileScreen.styles'
 import { ProfileScreenProps } from './profileScreen.interfaces'
 
@@ -67,10 +60,7 @@ export default function ProfileScreen({ onNavigateSettings, onLogout }: ProfileS
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Avatar Section */}
         <View style={styles.avatarSection}>
-          <Image
-            source={{ uri: user?.avatar || 'https://i.pravatar.cc/150?img=1' }}
-            style={styles.avatar}
-          />
+          <AvatarUpload uri={user?.avatar} style={styles.avatar} />
           <Text style={styles.displayName}>
             {user?.firstName} {user?.lastName}
           </Text>
@@ -168,7 +158,14 @@ export default function ProfileScreen({ onNavigateSettings, onLogout }: ProfileS
 
             <View style={styles.card}>
               <View style={styles.householdHeader}>
-                <Image source={{ uri: household.logo }} style={styles.householdLogo} />
+                <AvatarUpload
+                  uri={household.logo}
+                  size={80}
+                  editable={isEditing}
+                  onImageChange={newUri => {
+                    // Handle logo change if needed
+                  }}
+                />
               </View>
 
               <View style={styles.infoRow}>

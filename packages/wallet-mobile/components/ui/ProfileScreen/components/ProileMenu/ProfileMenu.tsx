@@ -17,33 +17,33 @@ export default function MenuScreen() {
     {
       icon: 'gear',
       label: 'Settings',
-      onPress: () => router.push('/Settings'),
+      onPress: () => router.push('/ProfileMenu/Settings'),
     },
     {
       icon: 'lock',
       label: 'Privacy & Security',
-      onPress: () => console.log('Privacy & Security'),
+      onPress: () => router.push('/ProfileMenu/Privacy'),
     },
-    // {
-    //   icon: 'notifications.fill',
-    //   label: 'Notifications',
-    //   onPress: () => console.log('Notifications'),
-    // },
+    {
+      icon: 'notifications.fill',
+      label: 'Notifications',
+      onPress: () => router.push('/ProfileMenu/Notifications'),
+    },
     {
       icon: 'moon',
       label: 'Appearance',
-      onPress: () => console.log('Appearance'),
+      onPress: () => router.push('/ProfileMenu/Appearance'),
     },
     {
       icon: 'smartphone',
       label: 'Devices',
-      onPress: () => console.log('Devices'),
+      onPress: () => router.push('/ProfileMenu/Devices'),
     },
-    // {
-    //   icon: 'help.fill',
-    //   label: 'Help & Support',
-    //   onPress: () => console.log('Help & Support'),
-    // },
+    {
+      icon: 'help.fill',
+      label: 'Help & Support',
+      onPress: () => router.push('/ProfileMenu/Help'),
+    },
   ]
 
   return (

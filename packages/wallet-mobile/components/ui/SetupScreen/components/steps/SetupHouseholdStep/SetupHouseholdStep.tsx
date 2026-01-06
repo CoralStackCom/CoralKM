@@ -1,7 +1,8 @@
+import AvatarUpload from '@/components/others/avatar-uploading'
 import { StepPanel } from '@/components/Shared/Stepper/components'
 import { useUserContext } from '@/providers/UserContext'
 import { useEffect, useState } from 'react'
-import { Image, Text, TextInput, View } from 'react-native'
+import { Text, TextInput, View } from 'react-native'
 import { SetupHouseholdStepProps } from './SetupHouseholdStep.interface'
 import { styles } from './SetupHouseholStep.style'
 
@@ -15,7 +16,7 @@ export default function SetupHouseholdStep({
   const [name, setName] = useState(suggestedName)
   const [country, setCountry] = useState('USA')
   const [currency, setCurrency] = useState('USD')
-  const [logo, setLogo] = useState(householdAvatars[0])
+  const [logo, setLogo] = useState('')
 
   const handleNext = () => {
     onNext(name, country, currency, logo)
@@ -39,7 +40,7 @@ export default function SetupHouseholdStep({
       </Text>
 
       <View style={styles.logoContainer}>
-        <Image source={{ uri: logo }} style={styles.logo} />
+        <AvatarUpload uri={logo} onImageChange={setLogo} />
         <Text style={styles.label}>Household Logo</Text>
       </View>
 

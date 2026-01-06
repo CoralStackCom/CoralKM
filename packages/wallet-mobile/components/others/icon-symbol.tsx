@@ -25,6 +25,29 @@ type IconSymbolName =
   | 'gear'
   | 'lock.shield.fill'
   | 'info.circle.fill'
+  | 'warning.fill'
+  | 'inbox.fill'
+  | 'location.fill'
+  | 'key.fill'
+  | 'touch.fill'
+  | 'announcement.fill'
+  | 'mail.fill'
+  | 'calendar.fill'
+  | 'chart.fill'
+  | 'card.fill'
+  | 'moon.fill'
+  | 'sun.fill'
+  | 'phone.fill'
+  | 'tablet.fill'
+  | 'desktop.fill'
+  | 'bug.fill'
+  | 'video.fill'
+  | 'book.fill'
+  | 'call.fill'
+  | 'chat.fill'
+  | 'download.alt.fill'
+  | 'biometric.fill'
+  | 'search'
 type IconMapping = Record<IconSymbolName, ComponentProps<typeof MaterialIcons>['name']>
 
 /**
@@ -33,25 +56,32 @@ type IconMapping = Record<IconSymbolName, ComponentProps<typeof MaterialIcons>['
  * - see SF Symbols in the [SF Symbols](https://developer.apple.com/sf-symbols/) app.
  */
 const MAPPING: IconMapping = {
-  'house.fill': 'home', // Household
-  'paperplane.fill': 'send',
-  'chevron.left.forwardslash.chevron.right': 'code',
-  'chevron.right': 'chevron-right',
-  'info.circle': 'info-outline', // Personal Information
-  'wallet.pass': 'account-balance-wallet',
-  'person.text.rectangle': 'fingerprint',
-  'person.fill': 'person', // Profile
-  'lock.fill': 'lock',
-  'arrow.right.square': 'exit-to-app', // logout icon
+  'warning.fill': 'warning',
+  'inbox.fill': 'inbox',
+  'location.fill': 'location-on',
+  'key.fill': 'vpn-key',
   'notifications.fill': 'notifications',
-  moon: 'brightness-2',
-  smartphone: 'smartphone',
-  'help.fill': 'help-outline',
-  'arrow.left': 'arrow-back',
-  camera: 'photo-camera',
+  'touch.fill': 'touch-app',
+  'lock.fill': 'lock',
+  'announcement.fill': 'campaign',
+  'mail.fill': 'mail-outline',
+  'calendar.fill': 'calendar-today',
+  'chart.fill': 'bar-chart',
+  'card.fill': 'credit-card',
   gear: 'settings',
-  'lock.shield.fill': 'security',
-  'info.circle.fill': 'info',
+  'moon.fill': 'brightness-2',
+  'sun.fill': 'wb-sunny',
+  'phone.fill': 'smartphone',
+  'tablet.fill': 'tablet',
+  'desktop.fill': 'computer',
+  'bug.fill': 'bug-report',
+  'video.fill': 'ondemand-video',
+  'book.fill': 'menu-book',
+  'call.fill': 'call',
+  'chat.fill': 'chat-bubble-outline',
+  'download.alt.fill': 'file-download',
+  'biometric.fill': 'fingerprint',
+  search: 'search',
 }
 
 /**
@@ -62,12 +92,12 @@ const MAPPING: IconMapping = {
 export function IconSymbol({
   name,
   size = 24,
-  color,
+  color = '#1B5678',
   style,
 }: {
   name: IconSymbolName
   size?: number
-  color: string | OpaqueColorValue
+  color?: string | OpaqueColorValue
   style?: StyleProp<TextStyle>
   weight?: SymbolWeight
 }) {

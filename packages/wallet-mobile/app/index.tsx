@@ -10,7 +10,7 @@ import React from 'react'
  * Home screen component with authentication interface
  */
 
-export default function HomeScreen() {
+export const HomeScreen: React.FC = () => {
   // Render
   return (
     <ThemedView style={{ flex: 1 }}>
@@ -36,3 +36,4 @@ export default function HomeScreen() {
     </ThemedView>
   )
 }
+export default HomeScreen

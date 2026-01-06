@@ -1,7 +1,8 @@
+import AvatarUpload from '@/components/others/avatar-uploading'
 import { StepPanel } from '@/components/Shared/Stepper/components'
 import { useUserContext } from '@/providers/UserContext'
 import { useEffect, useState } from 'react'
-import { Image, Text, TextInput, View } from 'react-native'
+import { Text, TextInput, View } from 'react-native'
 import { SetupUserStepProps } from './SetupUserStep.interface'
 import { styles } from './SetupUserStep.style'
 
@@ -14,7 +15,7 @@ export default function SetupUserStep({
   const { user, setUser } = useUserContext()
   const [firstName, setFirstName] = useState(authenticatedUser.firstName || '')
   const [lastName, setLastName] = useState(authenticatedUser.lastName || '')
-  const [avatar, setAvatar] = useState(authenticatedUser.avatar || userAvatars[0])
+  const [avatar, setAvatar] = useState(authenticatedUser.avatar)
   const [errors, setErrors] = useState({ firstName: false, lastName: false })
 
   const isFirstTimeUser = !authenticatedUser.firstName && !authenticatedUser.lastName
@@ -55,7 +56,7 @@ export default function SetupUserStep({
       </Text>
 
       <View style={styles.avatarContainer}>
-        <Image source={{ uri: avatar }} style={styles.avatar} />
+        <AvatarUpload uri={avatar} onImageChange={setAvatar} />
         <Text style={styles.label}>User Avatar</Text>
       </View>
 

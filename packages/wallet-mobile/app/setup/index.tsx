@@ -6,7 +6,7 @@ import React from 'react'
 /**
  * Home screen component with setup interface and background
  */
-export default function HomeScreen() {
+export const Setup: React.FC = () => {
   // Render
   return (
     <ThemedView style={{ flex: 1 }}>
@@ -15,3 +15,4 @@ export default function HomeScreen() {
     </ThemedView>
   )
 }
+export default Setup

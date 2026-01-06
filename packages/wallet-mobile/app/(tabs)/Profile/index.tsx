@@ -1,6 +1,13 @@
 import ProfileScreen from '@/components/ui/ProfileScreen/ProfileScreen'
 import React from 'react'
-
-export default function index() {
+/**
+ *
+ * Profile screen for managing user profile settings
+ * @returns
+ *
+ *  */
+const Profile: React.FC = () => {
+  // Render
   return <ProfileScreen />
 }
+export default Profile
