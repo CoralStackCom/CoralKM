@@ -1,5 +1,6 @@
 import './shim'
 
+import { Background } from '@/components/Shared/Background'
 import { AuthProvider } from '@/providers/AuthContext'
 import { UserProvider } from '@/providers/UserContext'
 import { Slot } from 'expo-router'
@@ -33,6 +34,7 @@ export default function RootLayout() {
 
   return (
     <View style={{ flex: 1 }}>
+      <Background view="underwater" />
       <AuthProvider>
         <UserProvider>
           {isAuthenticated ? <Slot initialRouteName="tabs" /> : <Slot initialRouteName="index" />}

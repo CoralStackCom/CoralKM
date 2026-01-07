@@ -1,49 +1,40 @@
-import { Dimensions, StyleSheet } from "react-native";
-
-const { width, height } = Dimensions.get("window");
+import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    width,
-    height,
-    zIndex: 1,
-  },
-  sky: {
-    zIndex: -1,
   },
   stars: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    top: 0,
-    left: 0,
+    ...StyleSheet.absoluteFillObject,
+    width: '100%',
+    height: '100%',
   },
   sun: {
-    position: "absolute",
+    position: 'absolute',
     width: 120,
     height: 120,
-    top: 40,
-    left: width / 2 - 60,
+    top: 50,
+    right: 50,
   },
-  land: {
-    zIndex: -1,
+  waterArea: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: '30%',
   },
   mountainsLeft: {
-    position: "absolute",
-    width: 180,
-    height: 120,
-    bottom: 60,
+    position: 'absolute',
+    bottom: 0,
     left: 0,
+    width: '50%',
+    height: '40%',
   },
   mountainsRight: {
-    position: "absolute",
-    width: 180,
-    height: 120,
-    bottom: 60,
+    position: 'absolute',
+    bottom: 0,
     right: 0,
+    width: '50%',
+    height: '40%',
   },
-  underwater: {
-    zIndex: -1,
-  },
-});
+})

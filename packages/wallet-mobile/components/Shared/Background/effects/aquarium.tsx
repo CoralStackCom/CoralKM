@@ -1,173 +1,163 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Dimensions, StyleSheet, View } from "react-native";
-import Svg, { G, Path } from "react-native-svg";
+import { useEffect, useMemo } from 'react'
+import { Dimensions, StyleSheet, View } from 'react-native'
+import Animated, {
+  cancelAnimation,
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated'
+import Svg, { Path } from 'react-native-svg'
+import type { FishData } from '../Background.interface'
+import { hslToHex, randomNumber } from '../Background.utils'
 
-/**
- * Fish type definition
- */
-type FishType = {
-  id: number;
-  x: number;
-  y: number;
-  size: number;
-  color: string;
-  direction: "left" | "right";
-  speed: number;
-  targetX: number;
-  targetY: number;
-  progress: number;
-  delay: number;
-};
+const FISH_PATH =
+  'M43.7-3.8l-65.3-45.4c-0.8-0.5-1.6-0.8-2.4-0.8c-2.5-0.1-4.8,1.8-4.8,4.6v40.8l-14.5-10.1c-0.9-0.6-2.2,0-2.2,1.1V0v13.7c0,1.1,1.3,1.8,2.2,1.1l14.5-10.1v40.6c0,2.8,2.4,4.7,4.8,4.6c0.8,0,1.7-0.3,2.4-0.8L43.7,3.8c1.3-0.9,2-2.4,2-3.8C45.6-1.4,45-2.9,43.7-3.8z'
 
-/**
- * Component Properties
- */
-type AquariumProps = {
-  /**
-   * Number of fish to display in the aquarium
-   */
-  fishCount?: number;
-  /**
-   * Base speed multiplier for fish movement
-   */
-  speed?: number;
-  /**
-   * Array of fish colors
-   */
-  colors?: string[];
-};
+interface AquariumProps {
+  fishGroupCount?: number
+  fishGroupMax?: number
+  fishSize?: [number, number]
+  fishHue?: [number, number]
+  fishSat?: [number, number]
+  fishLightness?: [number, number]
+}
 
-/**
- * Animated aquarium component with swimming fish
- */
-export const Aquarium: React.FC<AquariumProps> = ({
-  fishCount = 10,
-  speed = 0.5,
-  colors = ["#1B5678"],
-}) => {
-  // Component State
-  const [fishes, setFishes] = useState<FishType[]>([]);
-  const { width, height } = Dimensions.get("window");
-  const animationRef = useRef<ReturnType<typeof setInterval> | null>(null);
+function Fish({ fish }: { fish: FishData }) {
+  const translateX = useSharedValue(fish.startX)
+  const translateY = useSharedValue(fish.startY)
 
-  /**
-   * Fish SVG path data
-   */
-  const fishPath =
-    "M43.7-3.8l-65.3-45.4c-0.8-0.5-1.6-0.8-2.4-0.8c-2.5-0.1-4.8,1.8-4.8,4.6v40.8l-14.5-10.1c-0.9-0.6-2.2,0-2.2,1.1V0v13.7c0,1.1,1.3,1.8,2.2,1.1l14.5-10.1v40.6c0,2.8,2.4,4.7,4.8,4.6c0.8,0,1.7-0.3,2.4-0.8L43.7,3.8c1.3-0.9,2-2.4,2-3.8C45.6-1.4,45-2.9,43.7-3.8z";
-
-  /**
-   * Create a new fish with random properties
-   */
-  const createFish = (id: number): FishType => ({
-    id,
-    x: Math.random() * width,
-    y: Math.random() * height,
-    size: 30 + Math.random() * 40,
-    color: colors[Math.floor(Math.random() * colors.length)],
-    direction: Math.random() > 0.5 ? "left" : "right",
-    speed: 0.5 + Math.random() * speed,
-    targetX: Math.random() * width,
-    targetY: 0,
-    progress: 0,
-    delay: Math.random() * 100,
-  });
-
-  /**
-   * Update fish positions and animations
-   */
-  const updateFishes = () => {
-    setFishes((prevFishes) =>
-      prevFishes.map((fish) => {
-        if (fish.delay > 0) {
-          return { ...fish, delay: fish.delay - 1 };
-        }
-
-        let progress = fish.progress + 0.01;
-        let newX = fish.x;
-        let newDirection = fish.direction;
-
-        if (progress >= 1) {
-          newDirection = Math.random() > 0.5 ? "left" : "right";
-          progress = 0;
-
-          return {
-            ...fish,
-            targetX: Math.random() * width,
-            targetY: 0,
-            direction: newDirection,
-            progress,
-            x: newX,
-          };
-        }
-
-        // Horizontal movement only
-        if (fish.direction === "right") {
-          newX = fish.x + fish.speed;
-          if (newX > width) {
-            newDirection = "left";
-            newX = width - 1;
-          }
-        } else {
-          newX = fish.x - fish.speed;
-          if (newX < 0) {
-            newDirection = "right";
-            newX = 1;
-          }
-        }
-
-        return {
-          ...fish,
-          x: newX,
-          progress,
-          direction: newDirection,
-        };
-      })
-    );
-  };
-
-  /**
-   * Initialize fishes and start animation
-   */
   useEffect(() => {
-    const initialFishes = Array.from({ length: fishCount }, (_, i) =>
-      createFish(i)
-    );
-    setFishes(initialFishes);
+    const duration = Math.max(fish.duration, 10000)
 
-    animationRef.current = setInterval(updateFishes, 16);
+    translateX.value = withDelay(
+      fish.delay,
+      withRepeat(
+        withSequence(
+          withTiming(fish.endX, {
+            duration,
+            easing: Easing.inOut(Easing.ease),
+          }),
+          withTiming(fish.startX, {
+            duration,
+            easing: Easing.inOut(Easing.ease),
+          })
+        ),
+        -1,
+        false
+      )
+    )
+
+    translateY.value = withDelay(
+      fish.delay,
+      withRepeat(
+        withSequence(
+          withTiming(fish.endY, {
+            duration: duration * 0.7,
+            easing: Easing.inOut(Easing.ease),
+          }),
+          withTiming(fish.startY, {
+            duration: duration * 0.7,
+            easing: Easing.inOut(Easing.ease),
+          })
+        ),
+        -1,
+        false
+      )
+    )
 
     return () => {
-      if (animationRef.current) {
-        clearInterval(animationRef.current);
-      }
-    };
-  }, [fishCount, speed, colors]);
+      cancelAnimation(translateX)
+      cancelAnimation(translateY)
+    }
+  }, [fish, translateX, translateY])
 
-  // Render
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: translateX.value },
+      { translateY: translateY.value },
+      { scaleX: fish.direction === 'left' ? 1 : -1 },
+      { scale: fish.size / 100 },
+    ],
+  }))
+
+  const fishWidth = 100
+  const fishHeight = 120
+
   return (
-    <View style={styles.container}>
-      <Svg width={width} height={height}>
-        {fishes.map((fish) => (
-          <G
-            key={fish.id}
-            x={fish.x}
-            y={fish.y}
-            scale={fish.size / 100}
-            rotation={fish.direction === "right" ? 0 : 180}
-          >
-            <Path d={fishPath} fill={fish.color} />
-          </G>
-        ))}
+    <Animated.View style={[styles.fish, animatedStyle]}>
+      <Svg width={fishWidth} height={fishHeight} viewBox="-50 -60 100 120">
+        <Path d={FISH_PATH} fill={fish.color} />
       </Svg>
+    </Animated.View>
+  )
+}
+
+export function Aquarium({
+  fishGroupCount = 1, // Reduced from 2 to 1 group
+  fishGroupMax = 2,
+  fishSize = [60, 90], // Slightly larger for fewer fish
+  fishHue = [201, 203],
+  fishSat = [63, 63],
+  fishLightness = [30, 60],
+}: AquariumProps) {
+  const { width, height } = useMemo(() => Dimensions.get('window'), [])
+
+  const fishes = useMemo<FishData[]>(() => {
+    const allFish: FishData[] = []
+    let id = 0
+
+    for (let g = 0; g < fishGroupCount; g++) {
+      const groupSize = randomNumber(1, fishGroupMax, true)
+      const direction = Math.random() > 0.5 ? 'left' : 'right'
+      const baseX = randomNumber(0, width)
+      const baseY = randomNumber(height * 0.2, height * 0.8)
+
+      for (let f = 0; f < groupSize; f++) {
+        const color = hslToHex(
+          randomNumber(fishHue[0], fishHue[1]),
+          randomNumber(fishSat[0], fishSat[1]),
+          randomNumber(fishLightness[0], fishLightness[1])
+        )
+
+        allFish.push({
+          id: id++,
+          size: randomNumber(fishSize[0], fishSize[1]),
+          color,
+          startX: baseX + randomNumber(-50, 50),
+          startY: baseY + randomNumber(-30, 30),
+          endX: baseX + randomNumber(200, 400) * (direction === 'left' ? 1 : -1),
+          endY: baseY + randomNumber(-50, 50),
+          duration: randomNumber(10000, 18000), // Slower animations
+          delay: randomNumber(0, 4000),
+          direction,
+        })
+      }
+    }
+
+    return allFish
+  }, [fishGroupCount, fishGroupMax, fishSize, fishHue, fishSat, fishLightness, width, height])
+
+  return (
+    <View style={styles.container} pointerEvents="none">
+      {fishes.map(fish => (
+        <Fish key={fish.id} fish={fish} />
+      ))}
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    ...StyleSheet.absoluteFillObject,
+    overflow: 'hidden',
   },
-});
-
-export default Aquarium;
+  fish: {
+    position: 'absolute',
+    width: 100,
+    height: 120,
+  },
+})

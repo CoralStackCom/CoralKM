@@ -1,6 +1,7 @@
 import * as ImagePicker from 'expo-image-picker'
 import { useState } from 'react'
 import { Alert, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { IconSymbol } from './icon-symbol'
 
 interface AvatarUploadProps {
   uri: string
@@ -67,10 +68,14 @@ export default function AvatarUpload({
 
   return (
     <View style={[styles.container, { width: size, height: size }]}>
-      <Image
-        source={{ uri: imageUri }}
-        style={[styles.avatar, { width: size, height: size, borderRadius: size / 2 }]}
-      />
+      {imageUri ? (
+        <Image
+          source={{ uri: imageUri }}
+          style={[styles.avatar, { width: size, height: size, borderRadius: size / 2 }]}
+        />
+      ) : (
+        <IconSymbol name="person.fill" size={80} color="#1B5678" style={{ margin: 'auto' }} />
+      )}
       {editable && (
         <TouchableOpacity
           style={[

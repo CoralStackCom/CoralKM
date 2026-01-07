@@ -49,8 +49,8 @@ export default function ProfileScreen({ onNavigateSettings, onLogout }: ProfileS
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <IconSymbol name="person.fill" size={40} color="#1B5678" /> */}
       <View style={styles.header}>
+        <IconSymbol name="person.fill" size={40} color="#1B5678" />
         <Text style={styles.headerTitle}>Profile</Text>
         <TouchableOpacity style={styles.menuButton} onPress={() => router.push('/ProfileMenu')}>
           <Text style={styles.menuIcon}>☰</Text>

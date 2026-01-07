@@ -1,5 +1,4 @@
 import { ThemedView } from '@/components/others/themed-view'
-import { Background } from '@/components/Shared/Background'
 import { SetupScreen } from '@/components/ui/SetupScreen'
 import React from 'react'
 
@@ -9,8 +8,7 @@ import React from 'react'
 export const Setup: React.FC = () => {
   // Render
   return (
-    <ThemedView style={{ flex: 1 }}>
-      <Background view="sky" />
+    <ThemedView style={{ flex: 1, backgroundColor: 'transparent' }}>
       <SetupScreen />
     </ThemedView>
   )

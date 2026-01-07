@@ -1,7 +1,6 @@
 import './shim'
 
 import { ThemedView } from '@/components/others/themed-view'
-import { Background } from '@/components/Shared/Background'
 import AuthScreen from '@/components/ui/AuthScreen/AuthScreen'
 import { router } from 'expo-router'
 import React from 'react'
@@ -13,8 +12,7 @@ import React from 'react'
 export const HomeScreen: React.FC = () => {
   // Render
   return (
-    <ThemedView style={{ flex: 1 }}>
-      <Background view="sky" />
+    <ThemedView style={{ flex: 1, backgroundColor: 'transparent' }}>
       <AuthScreen
         isAuthenticated={false}
         onGetOOBCode={async (email: string) => {
