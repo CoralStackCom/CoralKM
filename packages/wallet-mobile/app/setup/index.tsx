@@ -1,5 +1,5 @@
-import { ThemedView } from '@/components/others/themed-view'
-import { SetupScreen } from '@/components/ui/SetupScreen'
+import { ThemedView } from '@/components/Ui/ThemedView/themed-view'
+import { SetupScreen } from '@/Views/SetupScreen'
 import React from 'react'
 
 /**

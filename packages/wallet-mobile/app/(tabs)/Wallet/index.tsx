@@ -1,6 +1,6 @@
 import '../../shim'
 
-import Wallet from '@/components/ui/WalletScreen/Wallet'
+import Wallet from '@/Views/WalletScreen/Wallet'
 
 /**
  * Wallet screen for communicating with the other wallets

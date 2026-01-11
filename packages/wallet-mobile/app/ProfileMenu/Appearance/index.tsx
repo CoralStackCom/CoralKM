@@ -1,4 +1,4 @@
-import AppearanceScreen from '@/components/ui/AppearanceScreen'
+import AppearanceScreen from '@/Views/ProfileScreen/Views/ProileMenu/Views/Appearance'
 import React from 'react'
 /**
  * Appearance screen for managing app appearance settings

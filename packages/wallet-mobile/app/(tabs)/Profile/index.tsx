@@ -1,4 +1,4 @@
-import ProfileScreen from '@/components/ui/ProfileScreen/ProfileScreen'
+import ProfileScreen from '@/Views/ProfileScreen'
 import React from 'react'
 /**
  *

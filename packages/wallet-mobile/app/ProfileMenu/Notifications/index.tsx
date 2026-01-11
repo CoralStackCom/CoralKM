@@ -1,4 +1,4 @@
-import NotificationsScreen from '@/components/ui/NotificationsScreen'
+import NotificationsScreen from '@/Views/ProfileScreen/Views/ProileMenu/Views/Notifications'
 
 /**
  * Notification screen for managing app notifications

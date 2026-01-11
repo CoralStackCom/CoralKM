@@ -1,6 +1,6 @@
 import './shim'
 
-import { Background } from '@/components/Shared/Background'
+import { Background } from '@/components/Background'
 import { AuthProvider } from '@/providers/AuthContext'
 import { UserProvider } from '@/providers/UserContext'
 import { Slot } from 'expo-router'

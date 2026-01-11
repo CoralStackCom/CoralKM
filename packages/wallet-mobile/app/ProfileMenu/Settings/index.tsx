@@ -1,4 +1,4 @@
-import Settings from '@/components/ui/SettingScreen'
+import Settings from '@/Views/ProfileScreen/Views/ProileMenu/Views/Setting'
 
 /**
  * Settings screen for managing app security and authentication

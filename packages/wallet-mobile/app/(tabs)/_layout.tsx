@@ -1,9 +1,9 @@
 import '../shim'
 
-import { IconSymbol } from '@/components/others/icon-symbol'
-import UnlockScreen from '@/components/ui/UnlockScreen/UnlockScreen'
+import { IconSymbol } from '@/components/Ui/icon-symbol'
 import { AuthProvider, useAuth } from '@/providers/AuthContext'
 import { WalletProvider } from '@/providers/wallet'
+import UnlockScreen from '@/Views/Unlock'
 import { Tabs, usePathname } from 'expo-router'
 import React from 'react'
 import { Animated, StyleSheet, Text, TouchableOpacity } from 'react-native'

@@ -1,4 +1,4 @@
-import PrivacySecurityScreen from '@/components/ui/PrivacyScreen'
+import PrivacySecurityScreen from '@/Views/ProfileScreen/Views/ProileMenu/Views/Privacy&Securty'
 
 /**
  * Privacy and security screen for managing app privacy settings

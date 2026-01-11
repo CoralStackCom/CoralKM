@@ -1,7 +1,7 @@
 import './shim'
 
-import { ThemedView } from '@/components/others/themed-view'
-import AuthScreen from '@/components/ui/AuthScreen/AuthScreen'
+import { ThemedView } from '@/components/Ui/ThemedView/themed-view'
+import AuthScreen from '@/Views/ProfileScreen/Views/ProileMenu/Views/AuthScreen/AuthScreen'
 import { router } from 'expo-router'
 import React from 'react'
 
