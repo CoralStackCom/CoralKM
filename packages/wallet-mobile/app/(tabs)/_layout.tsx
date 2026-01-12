@@ -103,11 +103,10 @@ function TabsContent() {
 }
 export default function TabLayout() {
   return (
-    <WalletProvider gatewayDID="did:web:coralkm-wallet-gateway.developers-6d6.workers.dev">
       <AuthProvider>
         <TabsContent />
       </AuthProvider>
-    </WalletProvider>
+   
   )
 }
 

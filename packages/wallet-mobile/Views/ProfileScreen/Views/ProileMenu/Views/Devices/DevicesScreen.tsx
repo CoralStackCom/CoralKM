@@ -1,5 +1,15 @@
+import { ListCard } from '@/components/contianers/ListCard'
+import { Badge } from '@/components/contianers/ListCard/components/Badge/Badge'
+import { ListItem } from '@/components/contianers/ListCard/components/ListItem/ListItem'
+import { ListItemMeta } from '@/components/contianers/ListCard/components/ListItemMeta/ListItemMeta'
+import Section from '@/components/contianers/Section'
+import SectionTitle from '@/components/contianers/Section/components/SectionTitle'
+import { ActionButton } from '@/components/Ui/Buttons/ActionButton'
+import Header from '@/components/Ui/Header'
 import { IconSymbol } from '@/components/Ui/icon-symbol'
+import InfoBanner from '@/components/Ui/InfoBanner'
 import { useRouter } from 'expo-router'
+import React from 'react'
 import { Alert, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { devices } from './Devices.utils'
 import { Device } from './DevicesScreen.interfaces'
@@ -51,75 +61,60 @@ export default function Devices() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Text style={styles.backIcon}>←</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Devices</Text>
-        <View style={styles.placeholder} />
-      </View>
-
+      <Header title="Devices" />
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Info Banner */}
-        <View style={styles.infoBanner}>
-          <IconSymbol name="info.circle" size={20} style={styles.infoIcon} />
-          <Text style={styles.infoText}>
+        <Section>
+          <InfoBanner icon={<IconSymbol name="info.circle.fill" size={20} color="#1B5678" />}>
             These are devices that have logged into your account. Remove any you dont recognize.
-          </Text>
-        </View>
-
+          </InfoBanner>
+        </Section>
         {/* Devices List */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Logged In Devices</Text>
-          <View style={styles.card}>
+        <Section>
+          <SectionTitle value="Logged In Devices" />
+          <ListCard>
             {devices.map((device, index) => (
-              <View key={device.id}>
-                <View style={styles.deviceRow}>
-                  <View style={styles.deviceLeft}>
+              <ListItem
+                key={index}
+                left={
+                  <>
                     <IconSymbol
                       name={getDeviceIcon(device.type)}
                       size={24}
                       style={styles.deviceIcon}
                     />
-                    <View style={styles.deviceInfo}>
-                      <View style={styles.deviceNameRow}>
-                        <Text style={styles.deviceName}>{device.name}</Text>
-                        {device.isCurrent && (
-                          <View style={styles.currentBadge}>
-                            <Text style={styles.currentBadgeText}>This device</Text>
-                          </View>
-                        )}
-                      </View>
-                      <Text style={styles.deviceLocation}>{device.location}</Text>
-                      <Text style={styles.deviceLastActive}>Active: {device.lastActive}</Text>
-                    </View>
-                  </View>
-                  {!device.isCurrent && (
+
+                    <ListItemMeta
+                      title={device.name}
+                      subtitle={device.location}
+                      caption={`Active: ${device.lastActive}`}
+                      badge={device.isCurrent ? <Badge label="This device" /> : null}
+                    />
+                  </>
+                }
+                right={
+                  !device.isCurrent && (
                     <TouchableOpacity
-                      style={styles.removeButton}
                       onPress={() => handleRemoveDevice(device)}
                       activeOpacity={0.7}
                     >
                       <Text style={styles.removeButtonText}>Remove</Text>
                     </TouchableOpacity>
-                  )}
-                </View>
-                {index < devices.length - 1 && <View style={styles.divider} />}
-              </View>
+                  )
+                }
+              />
             ))}
-          </View>
-        </View>
+          </ListCard>
+        </Section>
 
         {/* Logout All Button */}
-        <View style={styles.section}>
-          <TouchableOpacity
-            style={styles.logoutAllButton}
+        <Section>
+          <ActionButton
+            // style={styles.logoutAllButton}
+            label="Log Out of All Other Devices"
             onPress={handleLogoutAll}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.logoutAllText}>Log Out of All Other Devices</Text>
-          </TouchableOpacity>
-        </View>
+          />
+        </Section>
 
         <View style={{ height: 40 }} />
       </ScrollView>

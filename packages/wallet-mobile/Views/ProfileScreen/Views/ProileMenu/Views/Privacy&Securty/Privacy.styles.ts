@@ -3,7 +3,6 @@ import { StyleSheet } from 'react-native'
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fafafa',
   },
   header: {
     flexDirection: 'row',
@@ -42,7 +41,7 @@ export const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#666',
+    color: '#7eadc9ff',
     marginBottom: 12,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
@@ -85,7 +84,7 @@ export const styles = StyleSheet.create({
   },
   settingDescription: {
     fontSize: 13,
-    color: '#666',
+    color: '#7eadc9ff',
   },
   chevron: {
     fontSize: 22,

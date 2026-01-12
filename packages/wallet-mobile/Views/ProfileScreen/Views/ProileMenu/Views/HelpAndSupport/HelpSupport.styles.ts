@@ -3,7 +3,6 @@ import { StyleSheet } from 'react-native'
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fafafa',
   },
   header: {
     flexDirection: 'row',
@@ -68,7 +67,7 @@ export const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#666',
+    color: '#7eadc9ff',
     marginBottom: 12,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
@@ -108,7 +107,6 @@ export const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#fff',
-    borderRadius: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
@@ -140,7 +138,7 @@ export const styles = StyleSheet.create({
   },
   faqAnswerText: {
     fontSize: 14,
-    color: '#666',
+    color: '#7eadc9ff',
     lineHeight: 20,
   },
   divider: {
@@ -175,7 +173,7 @@ export const styles = StyleSheet.create({
   },
   resourceDescription: {
     fontSize: 13,
-    color: '#666',
+    color: '#7eadc9ff',
   },
   chevron: {
     fontSize: 22,

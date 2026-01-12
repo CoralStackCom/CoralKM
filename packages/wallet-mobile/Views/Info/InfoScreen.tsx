@@ -1,3 +1,5 @@
+import { Background } from '@/components/Background'
+import Header from '@/components/Ui/Header'
 import { IconSymbol } from '@/components/Ui/icon-symbol'
 import { useWallet } from '@/providers/wallet'
 import React, { useState } from 'react'
@@ -18,10 +20,12 @@ export default function UserInfoScreen() {
 
   return (
     <View style={styles.screen}>
+      <Background view="underwater" />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
+        <Header title="User Information" />
         {/* Header */}
         <View style={styles.header}>
           <IconSymbol name="info.circle" size={40} color="#1B5678" />

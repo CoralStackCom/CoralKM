@@ -3,8 +3,7 @@ import { Platform, StyleSheet } from 'react-native'
 export const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
-    paddingTop: 30,
+    paddingTop: 60,
   },
   header: {
     alignItems: 'center',
@@ -23,7 +22,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 16,
-    backgroundColor: '#FFFFFF',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#E5E7EB',
   },
@@ -37,9 +35,6 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 12,
     paddingVertical: 8,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#E5E7EB',
   },
 
   tabTrigger: {
@@ -53,6 +48,7 @@ export const styles = StyleSheet.create({
 
   tabTriggerActive: {
     backgroundColor: '#EEF4FF',
+    opacity: 0.85,
   },
 
   tabText: {
@@ -75,6 +71,7 @@ export const styles = StyleSheet.create({
 
   infoSection: {
     backgroundColor: '#FFFFFF',
+    opacity: 0.85,
     borderRadius: 14,
     padding: 16,
     marginBottom: 16,

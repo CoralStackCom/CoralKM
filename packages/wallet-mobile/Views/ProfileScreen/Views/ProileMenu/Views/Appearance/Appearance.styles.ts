@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native'
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fafafa',
+    // backgroundColor: '#fafafa',
   },
   header: {
     flexDirection: 'row',
@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
   },
@@ -39,14 +39,7 @@ export const styles = StyleSheet.create({
     marginTop: 24,
     paddingHorizontal: 16,
   },
-  sectionTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#666',
-    marginBottom: 12,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
+
   card: {
     backgroundColor: '#fff',
     borderRadius: 12,
@@ -153,7 +146,7 @@ export const styles = StyleSheet.create({
   },
   previewSubtitle: {
     fontSize: 14,
-    color: '#666',
+    color: '#7eadc9ff',
   },
   previewButton: {
     paddingVertical: 12,
@@ -201,7 +194,7 @@ export const styles = StyleSheet.create({
   },
   iconDescription: {
     fontSize: 13,
-    color: '#666',
+    color: '#7eadc9ff',
   },
   chevron: {
     fontSize: 22,

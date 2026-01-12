@@ -1,7 +1,10 @@
-import { IconSymbol } from '@/components/Ui/icon-symbol'
+import Section from '@/components/contianers/Section'
+import { SectionTitle } from '@/components/contianers/Section/components/SectionTitle/SectionTitle'
+import ActionRow from '@/components/Ui/ActionRow'
+import Header from '@/components/Ui/Header'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
-import { Alert, SafeAreaView, ScrollView, Switch, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, SafeAreaView, ScrollView, Switch, View } from 'react-native'
 import { styles } from './Privacy.styles'
 
 export default function PrivacySecurityScreen() {
@@ -64,129 +67,61 @@ export default function PrivacySecurityScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Text style={styles.backIcon}>←</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Privacy & Security</Text>
-        <View style={styles.placeholder} />
-      </View>
-
+      <Header title="Privacy & Security" />
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Security Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Security</Text>
-          <View style={styles.card}>
-            <View style={styles.settingRow}>
-              <View style={styles.settingLeft}>
-                <IconSymbol name="lock" size={24} style={styles.settingIcon} />
-                <View style={styles.settingText}>
-                  <Text style={styles.settingLabel}>Two-Factor Authentication</Text>
-                  <Text style={styles.settingDescription}>Add extra security to your account</Text>
-                </View>
-              </View>
-              <Switch value={twoFactorEnabled} onValueChange={setTwoFactorEnabled} />
-            </View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.settingRow}>
-              <View style={styles.settingLeft}>
-                <IconSymbol name="touch.fill" size={24} style={styles.settingIcon} />
-                <View style={styles.settingText}>
-                  <Text style={styles.settingLabel}>Biometric Login</Text>
-                  <Text style={styles.settingDescription}>Use Face ID or fingerprint</Text>
-                </View>
-              </View>
-              <Switch value={biometricsEnabled} onValueChange={setBiometricsEnabled} />
-            </View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.settingRow}>
-              <View style={styles.settingLeft}>
-                <IconSymbol name="bell" size={24} style={styles.settingIcon} />
-                <View style={styles.settingText}>
-                  <Text style={styles.settingLabel}>Login Alerts</Text>
-                  <Text style={styles.settingDescription}>Get notified of new logins</Text>
-                </View>
-              </View>
-              <Switch value={loginAlerts} onValueChange={setLoginAlerts} />
-            </View>
-
-            <View style={styles.divider} />
-
-            <TouchableOpacity
-              style={styles.settingRow}
-              onPress={handleChangePassword}
-              activeOpacity={0.7}
-            >
-              <View style={styles.settingLeft}>
-                <IconSymbol name="key" size={24} style={styles.settingIcon} />
-                <View style={styles.settingText}>
-                  <Text style={styles.settingLabel}>Change Password</Text>
-                  <Text style={styles.settingDescription}>Update your password</Text>
-                </View>
-              </View>
-              <Text style={styles.chevron}>›</Text>
-            </TouchableOpacity>
-
-            <View style={styles.divider} />
-
-            <TouchableOpacity
-              style={styles.settingRow}
-              onPress={handleViewLoginActivity}
-              activeOpacity={0.7}
-            >
-              <View style={styles.settingLeft}>
-                <IconSymbol name="location" size={24} style={styles.settingIcon} />
-                <View style={styles.settingText}>
-                  <Text style={styles.settingLabel}>Login Activity</Text>
-                  <Text style={styles.settingDescription}>View recent login sessions</Text>
-                </View>
-              </View>
-              <Text style={styles.chevron}>›</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <Section style={styles.section}>
+          <SectionTitle value="Security" />
+          <ActionRow
+            title="Two-Factor Authentication"
+            description="Add extra security to your account"
+            leftIcon="lock"
+            rightIcon={<Switch value={twoFactorEnabled} onValueChange={setTwoFactorEnabled} />}
+          />
+          <ActionRow
+            title="Biometric Login"
+            description="Use Face ID or fingerprint to log in"
+            leftIcon="touch.fill"
+            rightIcon={<Switch value={biometricsEnabled} onValueChange={setBiometricsEnabled} />}
+          />
+          <ActionRow
+            title="Login Alerts"
+            description="Get notified of new logins"
+            leftIcon="bell"
+            rightIcon={<Switch value={loginAlerts} onValueChange={setLoginAlerts} />}
+          />
+          <ActionRow
+            title="Change Password"
+            description="Update your password regularly"
+            leftIcon="key"
+            onPress={handleChangePassword}
+          />
+          <ActionRow
+            title="Login Activity"
+            description="View recent login sessions"
+            leftIcon="location"
+            onPress={handleViewLoginActivity}
+          />
+        </Section>
 
         {/* Data Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Your Data</Text>
+        <Section>
+          <SectionTitle value="Data Management" />
           <View style={styles.card}>
-            <TouchableOpacity
-              style={styles.settingRow}
+            <ActionRow
+              title="Download Your Data"
+              description="Get a copy of all your information"
+              leftIcon="download.alt.fill"
               onPress={handleDownloadData}
-              activeOpacity={0.7}
-            >
-              <View style={styles.settingLeft}>
-                <IconSymbol name="download.alt.fill" size={24} style={styles.settingIcon} />
-                <View style={styles.settingText}>
-                  <Text style={styles.settingLabel}>Download Your Data</Text>
-                  <Text style={styles.settingDescription}>Get a copy of all your information</Text>
-                </View>
-              </View>
-              <Text style={styles.chevron}>›</Text>
-            </TouchableOpacity>
-
-            <View style={styles.divider} />
-
-            <TouchableOpacity
-              style={styles.settingRow}
+            />
+            <ActionRow
+              title="Delete Account"
+              description="Permanently delete your account"
+              leftIcon="trash.fill"
               onPress={handleDeleteAccount}
-              activeOpacity={0.7}
-            >
-              <View style={styles.settingLeft}>
-                <IconSymbol name="warning.fill" size={24} style={styles.settingIcon} />
-                <View style={styles.settingText}>
-                  <Text style={[styles.settingLabel, styles.dangerText]}>Delete Account</Text>
-                  <Text style={styles.settingDescription}>Permanently delete your account</Text>
-                </View>
-              </View>
-              <Text style={styles.chevron}>›</Text>
-            </TouchableOpacity>
+            />
           </View>
-        </View>
+        </Section>
 
         <View style={{ height: 40 }} />
       </ScrollView>

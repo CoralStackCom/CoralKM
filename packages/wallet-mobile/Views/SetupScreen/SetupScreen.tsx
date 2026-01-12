@@ -1,5 +1,6 @@
 import { Stepper } from '@/components/Stepper'
 import { StepPanel } from '@/components/Stepper/components'
+import { useWallet } from '@/providers/wallet'
 import type { User } from '@/types'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
@@ -23,6 +24,8 @@ const householdAvatars = [
 ]
 
 export default function SetupScreen() {
+  const { user: currentUser, wallet, channels } = useWallet()
+
   const router = useRouter()
 
   const [activeStep, setActiveStep] = useState(1)

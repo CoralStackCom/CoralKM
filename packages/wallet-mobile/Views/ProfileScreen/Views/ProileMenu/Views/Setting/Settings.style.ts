@@ -11,11 +11,12 @@ export const styles = StyleSheet.create({
   },
   backContainer: {
     alignItems: 'flex-start',
-    marginTop: 40,
+    marginTop: 30,
   },
   header: {
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 40,
+    marginTop: 20,
   },
   backButton: {
     marginRight: 12,
@@ -23,12 +24,12 @@ export const styles = StyleSheet.create({
   },
   backText: {
     fontSize: 16,
-    color: '#1B5678',
+    color: '#7eadc9ff',
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#1B5678',
+    color: '#7eadc9ff',
     marginTop: 12,
   },
   section: {
@@ -43,10 +44,10 @@ export const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1B5678',
+    color: '#7eadc9ff',
   },
   card: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: 'transparent',
     borderRadius: 16,
     padding: 16,
     shadowColor: '#000',
@@ -67,12 +68,12 @@ export const styles = StyleSheet.create({
   settingLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1B5678',
+    color: '#7eadc9ff',
     marginBottom: 4,
   },
   settingDescription: {
     fontSize: 13,
-    color: '#666',
+    color: 'white',
   },
   toggleButton: {
     paddingVertical: 8,
@@ -81,7 +82,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#e0e0e0',
   },
   toggleButtonActive: {
-    backgroundColor: '#1B5678',
+    backgroundColor: '#7eadc9ff',
   },
   toggleText: {
     fontSize: 14,
@@ -92,7 +93,7 @@ export const styles = StyleSheet.create({
     color: '#fff',
   },
   setupCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    backgroundColor: 'transparent',
     borderRadius: 16,
     padding: 20,
     marginTop: 16,
@@ -105,7 +106,7 @@ export const styles = StyleSheet.create({
   setupTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1B5678',
+    color: '#7eadc9ff',
     marginBottom: 8,
   },
   setupDescription: {
@@ -119,7 +120,7 @@ export const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1B5678',
+    color: '#7eadc9ff',
     marginBottom: 8,
   },
   input: {
@@ -150,7 +151,7 @@ export const styles = StyleSheet.create({
     color: '#666',
   },
   saveButton: {
-    backgroundColor: '#1B5678',
+    backgroundColor: '#7eadc9ff',
   },
   saveButtonText: {
     fontSize: 16,
@@ -168,14 +169,14 @@ export const styles = StyleSheet.create({
   infoText: {
     flex: 1,
     fontSize: 13,
-    color: '#1B5678',
+    color: '#7eadc9ff',
     lineHeight: 18,
   },
   lockButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#1B5678',
+    backgroundColor: '#7eadc9ff',
     borderRadius: 16,
     padding: 16,
     marginTop: 16,

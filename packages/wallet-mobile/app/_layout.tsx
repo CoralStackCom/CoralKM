@@ -3,6 +3,7 @@ import './shim'
 import { Background } from '@/components/Background'
 import { AuthProvider } from '@/providers/AuthContext'
 import { UserProvider } from '@/providers/UserContext'
+import { WalletProvider } from '@/providers/wallet'
 import { Slot } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
@@ -37,7 +38,9 @@ export default function RootLayout() {
       <Background view="underwater" />
       <AuthProvider>
         <UserProvider>
-          {isAuthenticated ? <Slot initialRouteName="tabs" /> : <Slot initialRouteName="index" />}
+          <WalletProvider gatewayDID="did:web:coralkm-wallet-gateway.developers-6d6.workers.dev">
+            {isAuthenticated ? <Slot initialRouteName="tabs" /> : <Slot initialRouteName="index" />}
+          </WalletProvider>
         </UserProvider>
       </AuthProvider>
     </View>

@@ -3,31 +3,6 @@ import { StyleSheet } from 'react-native'
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fafafa',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-  },
-  backButton: {
-    padding: 8,
-    width: 40,
-  },
-  backIcon: {
-    fontSize: 24,
-    color: '#000',
-    fontWeight: '600',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#000',
   },
   placeholder: {
     width: 40,
@@ -38,7 +13,7 @@ export const styles = StyleSheet.create({
   infoBanner: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    backgroundColor: '#e8f4fd',
+    // opacity: 0.4,
     marginHorizontal: 16,
     marginTop: 16,
     padding: 14,
@@ -51,7 +26,7 @@ export const styles = StyleSheet.create({
   infoText: {
     flex: 1,
     fontSize: 14,
-    color: '#333',
+    color: '#7eadc9ff',
     lineHeight: 20,
   },
   section: {
@@ -61,7 +36,7 @@ export const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#666',
+    color: '#7eadc9ff',
     marginBottom: 12,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
@@ -69,6 +44,7 @@ export const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
     borderRadius: 12,
+    opacity: 0.96,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
@@ -119,7 +95,7 @@ export const styles = StyleSheet.create({
   },
   deviceLocation: {
     fontSize: 14,
-    color: '#666',
+    color: '#7eadc9ff',
     marginTop: 2,
   },
   deviceLastActive: {
@@ -146,6 +122,7 @@ export const styles = StyleSheet.create({
   },
   logoutAllButton: {
     backgroundColor: '#ff3b30',
+    opacity: 0.8,
     paddingVertical: 14,
     borderRadius: 10,
     alignItems: 'center',

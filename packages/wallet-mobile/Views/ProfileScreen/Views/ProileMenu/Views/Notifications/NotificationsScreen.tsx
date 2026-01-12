@@ -1,7 +1,10 @@
-import { IconSymbol } from '@/components/Ui/icon-symbol'
+import Section from '@/components/contianers/Section'
+import SectionTitle from '@/components/contianers/Section/components/SectionTitle'
+import ActionRow from '@/components/Ui/ActionRow'
+import Header from '@/components/Ui/Header'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
-import { SafeAreaView, ScrollView, Switch, Text, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView, ScrollView, Switch, View } from 'react-native'
 import { styles } from './Notifications.styles'
 
 export default function NotificationsScreen() {
@@ -18,167 +21,125 @@ export default function NotificationsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Text style={styles.backIcon}>←</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Notifications</Text>
-        <View style={styles.placeholder} />
-      </View>
-
+      <Header title="Notifications" />
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Push Notifications Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Push Notifications</Text>
+        <Section>
+          <SectionTitle value="Push Notifications" />
           <View style={styles.card}>
-            <View style={styles.settingRow}>
-              <View style={styles.settingLeft}>
-                <IconSymbol name="bell" size={24} style={styles.settingIcon} />
-                <View style={styles.settingText}>
-                  <Text style={styles.settingLabel}>Push Notifications</Text>
-                  <Text style={styles.settingDescription}>Enable all push notifications</Text>
-                </View>
-              </View>
-              <Switch value={pushEnabled} onValueChange={setPushEnabled} />
-            </View>
+            <ActionRow
+              title="Push Notifications"
+              description="Enable all push notifications"
+              leftIcon="bell"
+              rightIcon={<Switch value={pushEnabled} onValueChange={setPushEnabled} />}
+            />
           </View>
-        </View>
+        </Section>
 
         {/* Activity Alerts Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Activity Alerts</Text>
+        <Section>
+          <SectionTitle value="Activity Alerts" />
           <View style={styles.card}>
-            <View style={styles.settingRow}>
-              <View style={styles.settingLeft}>
-                <IconSymbol name="card" size={24} style={styles.settingIcon} />
-                <View style={styles.settingText}>
-                  <Text style={styles.settingLabel}>Transaction Alerts</Text>
-                  <Text style={styles.settingDescription}>Get notified of new transactions</Text>
-                </View>
-              </View>
-              <Switch
-                value={transactionAlerts}
-                onValueChange={setTransactionAlerts}
-                disabled={!pushEnabled}
-              />
-            </View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.settingRow}>
-              <View style={styles.settingLeft}>
-                <IconSymbol name="chart.fill" size={24} style={styles.settingIcon} />
-                <View style={styles.settingText}>
-                  <Text style={styles.settingLabel}>Budget Alerts</Text>
-                  <Text style={styles.settingDescription}>Warnings when nearing budget limits</Text>
-                </View>
-              </View>
-              <Switch
-                value={budgetAlerts}
-                onValueChange={setBudgetAlerts}
-                disabled={!pushEnabled}
-              />
-            </View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.settingRow}>
-              <View style={styles.settingLeft}>
-                <IconSymbol name="house" size={24} style={styles.settingIcon} />
-                <View style={styles.settingText}>
-                  <Text style={styles.settingLabel}>Household Updates</Text>
-                  <Text style={styles.settingDescription}>Activity from household members</Text>
-                </View>
-              </View>
-              <Switch
-                value={householdUpdates}
-                onValueChange={setHouseholdUpdates}
-                disabled={!pushEnabled}
-              />
-            </View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.settingRow}>
-              <View style={styles.settingLeft}>
-                <IconSymbol name="lock" size={24} style={styles.settingIcon} />
-                <View style={styles.settingText}>
-                  <Text style={styles.settingLabel}>Security Alerts</Text>
-                  <Text style={styles.settingDescription}>Important security notifications</Text>
-                </View>
-              </View>
-              <Switch
-                value={securityAlerts}
-                onValueChange={setSecurityAlerts}
-                disabled={!pushEnabled}
-              />
-            </View>
+            <ActionRow
+              title="Activity Alerts"
+              description="Get notified about important activity"
+              leftIcon="notifications"
+              rightIcon={<Switch value={pushEnabled} onValueChange={setPushEnabled} />}
+            />
+            <ActionRow
+              title="budget Alerts"
+              description="Warnings when nearing budget limits"
+              leftIcon="chart.fill"
+              rightIcon={
+                <Switch
+                  value={budgetAlerts}
+                  onValueChange={setBudgetAlerts}
+                  disabled={!pushEnabled}
+                />
+              }
+            />
+            <ActionRow
+              title="HouseHold Updates"
+              description="Activity from household members"
+              leftIcon="house"
+              rightIcon={
+                <Switch
+                  value={householdUpdates}
+                  onValueChange={setHouseholdUpdates}
+                  disabled={!pushEnabled}
+                />
+              }
+            />
+            <ActionRow
+              title="Security Alerts"
+              description="Important security notifications"
+              leftIcon="lock"
+              rightIcon={
+                <Switch
+                  value={securityAlerts}
+                  onValueChange={setSecurityAlerts}
+                  disabled={!pushEnabled}
+                />
+              }
+            />
           </View>
-        </View>
+        </Section>
 
         {/* Reports Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Reports</Text>
+        <Section>
+          <SectionTitle value="Reports" />
           <View style={styles.card}>
-            <View style={styles.settingRow}>
-              <View style={styles.settingLeft}>
-                <IconSymbol name="calendar" size={24} style={styles.settingIcon} />
-                <View style={styles.settingText}>
-                  <Text style={styles.settingLabel}>Weekly Reports</Text>
-                  <Text style={styles.settingDescription}>Summary every Sunday</Text>
-                </View>
-              </View>
-              <Switch value={weeklyReports} onValueChange={setWeeklyReports} />
-            </View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.settingRow}>
-              <View style={styles.settingLeft}>
-                <IconSymbol name="calendar.fill" size={24} style={styles.settingIcon} />
-                <View style={styles.settingText}>
-                  <Text style={styles.settingLabel}>Monthly Reports</Text>
-                  <Text style={styles.settingDescription}>Detailed monthly summary</Text>
-                </View>
-              </View>
-              <Switch value={monthlyReports} onValueChange={setMonthlyReports} />
-            </View>
+            <ActionRow
+              title="Weekly Reports"
+              description="Summary of your account activity"
+              leftIcon="calendar"
+              rightIcon={
+                <Switch
+                  value={weeklyReports}
+                  onValueChange={setWeeklyReports}
+                  disabled={!pushEnabled}
+                />
+              }
+            />
+            <ActionRow
+              title="Monthly Reports"
+              description="Detailed monthly summary"
+              leftIcon="calendar.fill"
+              rightIcon={
+                <Switch
+                  value={monthlyReports}
+                  onValueChange={setMonthlyReports}
+                  disabled={!pushEnabled}
+                />
+              }
+            />
           </View>
-        </View>
+        </Section>
 
         {/* Email Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Email</Text>
+        <Section>
+          <SectionTitle value="Email Notifications" />
           <View style={styles.card}>
-            <View style={styles.settingRow}>
-              <View style={styles.settingLeft}>
-                <IconSymbol name="mail" size={24} style={styles.settingIcon} />
-                <View style={styles.settingText}>
-                  <Text style={styles.settingLabel}>Email Notifications</Text>
-                  <Text style={styles.settingDescription}>Receive important emails</Text>
-                </View>
-              </View>
-              <Switch value={emailEnabled} onValueChange={setEmailEnabled} />
-            </View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.settingRow}>
-              <View style={styles.settingLeft}>
-                <IconSymbol name="megaphone" size={24} style={styles.settingIcon} />
-                <View style={styles.settingText}>
-                  <Text style={styles.settingLabel}>Marketing Emails</Text>
-                  <Text style={styles.settingDescription}>Tips, offers, and updates</Text>
-                </View>
-              </View>
-              <Switch
-                value={marketingEmails}
-                onValueChange={setMarketingEmails}
-                disabled={!emailEnabled}
-              />
-            </View>
+            <ActionRow
+              title="Email Notifications"
+              description="Manage your email notification "
+              leftIcon="mail"
+              rightIcon={<Switch value={emailEnabled} onValueChange={setEmailEnabled} />}
+            />
+            <ActionRow
+              title="Marketing Emails"
+              description="Tips, offers, and updates"
+              leftIcon="megaphone"
+              rightIcon={
+                <Switch
+                  value={marketingEmails}
+                  onValueChange={setMarketingEmails}
+                  disabled={!emailEnabled}
+                />
+              }
+            />
           </View>
-        </View>
+        </Section>
         <View style={{ height: 40 }} />
       </ScrollView>
     </SafeAreaView>

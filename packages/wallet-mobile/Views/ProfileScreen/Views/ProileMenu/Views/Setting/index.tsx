@@ -1,3 +1,4 @@
+import Header from '@/components/Ui/Header'
 import { IconSymbol } from '@/components/Ui/icon-symbol'
 import { useAuth } from '@/providers/AuthContext'
 import { useRouter } from 'expo-router'
@@ -59,12 +60,13 @@ export default function Settings() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <View style={styles.backContainer}>
-        <TouchableOpacity onPress={() => router.push('/ProfileMenu')} style={styles.backButton}>
+        <Header title="Settings" />
+        {/* <TouchableOpacity onPress={() => router.push('/ProfileMenu')} style={styles.backButton}>
           <Text style={styles.backText}>← Back</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <View style={styles.header}>
-        <IconSymbol name="gear" size={40} color="#1B5678" />
+        <IconSymbol name="gear" size={40} color="#7eadc9ff" />
         <Text style={styles.title}>Security Settings</Text>
       </View>
 
