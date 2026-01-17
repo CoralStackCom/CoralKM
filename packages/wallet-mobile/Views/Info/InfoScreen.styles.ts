@@ -31,36 +31,7 @@ export const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#111827',
   },
-  tabsList: {
-    flexDirection: 'row',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-
-  tabTrigger: {
-    flex: 1,
-    paddingVertical: 10,
-    marginHorizontal: 4,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  tabTriggerActive: {
-    backgroundColor: '#EEF4FF',
-    opacity: 0.85,
-  },
-
-  tabText: {
-    fontSize: 14,
-    color: '#6B7280',
-    fontWeight: '500',
-  },
-
-  tabTextActive: {
-    color: '#1B5678',
-    fontWeight: '700',
-  },
+ 
 
   /* ===== Content ===== */
   tabContentScroll: {

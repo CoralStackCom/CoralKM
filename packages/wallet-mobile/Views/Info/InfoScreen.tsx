@@ -1,21 +1,16 @@
 import { Background } from '@/components/Background'
+import { SectionHeader } from '@/components/contianers/Section/components/SectionHeader/SectionHeader'
 import Header from '@/components/Ui/Header'
-import { IconSymbol } from '@/components/Ui/icon-symbol'
 import { useWallet } from '@/providers/wallet'
 import React, { useState } from 'react'
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-native'
+import { InfoTabs } from './components/Tabs'
 import { styles } from './InfoScreen.styles'
 
-export default function UserInfoScreen() {
+export const UserInfoScreen: React.FC = () => {
+  // Wallet Context
   const { user: currentUser, namespace, walletKey, backupData } = useWallet()
-
+  // Component State
   const [activeTab, setActiveTab] = useState<'wallet' | 'identifiers'>('wallet')
 
   return (
@@ -25,34 +20,16 @@ export default function UserInfoScreen() {
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <Header title="User Information" />
+        <Header title="User Information" showBackButton={false} />
         {/* Header */}
-        <View style={styles.header}>
-          <IconSymbol name="info.circle" size={40} color="#1B5678" />
-          <Text style={styles.title}>User Info</Text>
-        </View>
+        <SectionHeader iconName="info.circle" title="User Info" iconSize={40} />
 
         {/* Tabs */}
-        <View style={styles.tabsList}>
-          <TouchableOpacity
-            style={[styles.tabTrigger, activeTab === 'wallet' && styles.tabTriggerActive]}
-            onPress={() => setActiveTab('wallet')}
-          >
-            <Text style={[styles.tabText, activeTab === 'wallet' && styles.tabTextActive]}>
-              Wallet
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.tabTrigger, activeTab === 'identifiers' && styles.tabTriggerActive]}
-            onPress={() => setActiveTab('identifiers')}
-          >
-            <Text style={[styles.tabText, activeTab === 'identifiers' && styles.tabTextActive]}>
-              Identifiers
-            </Text>
-          </TouchableOpacity>
-        </View>
-
+        <InfoTabs
+          Tabs={['wallet', 'identifiers']}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
         {/* Content */}
         <ScrollView style={styles.tabContentScroll}>
           {activeTab === 'wallet' && (

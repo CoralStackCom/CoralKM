@@ -1,4 +1,4 @@
-import NotificationsScreen from '@/Views/ProfileScreen/Views/ProileMenu/Views/Notifications'
+import { NotificationsScreen } from '@/Views'
 
 /**
  * Notification screen for managing app notifications

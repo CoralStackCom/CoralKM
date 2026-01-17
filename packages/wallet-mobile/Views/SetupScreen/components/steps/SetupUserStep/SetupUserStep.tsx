@@ -6,12 +6,7 @@ import { Text, TextInput, View } from 'react-native'
 import { SetupUserStepProps } from './SetupUserStep.interface'
 import { styles } from './SetupUserStep.style'
 
-export default function SetupUserStep({
-  nextStep,
-  userAvatars,
-  authenticatedUser,
-  onNext,
-}: SetupUserStepProps) {
+export default function SetupUserStep({ nextStep, authenticatedUser, onNext }: SetupUserStepProps) {
   const { user, setUser } = useUserContext()
   const [firstName, setFirstName] = useState(authenticatedUser.firstName || '')
   const [lastName, setLastName] = useState(authenticatedUser.lastName || '')

@@ -1,3 +1,5 @@
+import '@/app/shim'
+
 import * as LocalAuthentication from 'expo-local-authentication'
 import * as SecureStore from 'expo-secure-store'
 import type React from 'react'

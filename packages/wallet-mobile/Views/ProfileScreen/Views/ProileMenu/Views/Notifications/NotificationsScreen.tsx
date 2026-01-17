@@ -2,22 +2,26 @@ import Section from '@/components/contianers/Section'
 import SectionTitle from '@/components/contianers/Section/components/SectionTitle'
 import ActionRow from '@/components/Ui/ActionRow'
 import Header from '@/components/Ui/Header'
-import { useRouter } from 'expo-router'
 import { useState } from 'react'
 import { SafeAreaView, ScrollView, Switch, View } from 'react-native'
 import { styles } from './Notifications.styles'
 
-export default function NotificationsScreen() {
-  const router = useRouter()
+/*
+ * NotificationsScreen component to manage notification settings
+ */
+
+export const NotificationsScreen: React.FC = () => {
+  // Component State
   const [pushEnabled, setPushEnabled] = useState(true)
   const [emailEnabled, setEmailEnabled] = useState(true)
-  const [transactionAlerts, setTransactionAlerts] = useState(true)
   const [budgetAlerts, setBudgetAlerts] = useState(true)
   const [weeklyReports, setWeeklyReports] = useState(false)
   const [monthlyReports, setMonthlyReports] = useState(true)
   const [householdUpdates, setHouseholdUpdates] = useState(true)
   const [securityAlerts, setSecurityAlerts] = useState(true)
   const [marketingEmails, setMarketingEmails] = useState(false)
+  // To Do: create arrays and map through them to reduce repetition
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -43,7 +47,7 @@ export default function NotificationsScreen() {
             <ActionRow
               title="Activity Alerts"
               description="Get notified about important activity"
-              leftIcon="notifications"
+              leftIcon="help.support.fill"
               rightIcon={<Switch value={pushEnabled} onValueChange={setPushEnabled} />}
             />
             <ActionRow

@@ -1,1 +1,1 @@
-export { default } from './DevicesScreen'
+export { Devices } from './DevicesScreen'

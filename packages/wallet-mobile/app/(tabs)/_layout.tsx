@@ -2,7 +2,6 @@ import '../shim'
 
 import { IconSymbol } from '@/components/Ui/icon-symbol'
 import { AuthProvider, useAuth } from '@/providers/AuthContext'
-import { WalletProvider } from '@/providers/wallet'
 import UnlockScreen from '@/Views/Unlock'
 import { Tabs, usePathname } from 'expo-router'
 import React from 'react'
@@ -103,10 +102,9 @@ function TabsContent() {
 }
 export default function TabLayout() {
   return (
-      <AuthProvider>
-        <TabsContent />
-      </AuthProvider>
-   
+    <AuthProvider>
+      <TabsContent />
+    </AuthProvider>
   )
 }
 

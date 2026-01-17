@@ -4,6 +4,7 @@ export const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFF',
     overflow: 'hidden',
+    borderRadius: 12,
   },
   resourceIcon: {
     fontSize: 24,

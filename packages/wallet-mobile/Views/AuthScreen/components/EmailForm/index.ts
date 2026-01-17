@@ -1,1 +1,1 @@
-export { default } from "./EmailForm";
+export { ResetPasswordForm as default } from './EmailForm'

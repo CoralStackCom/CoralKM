@@ -7,12 +7,12 @@ import { styles } from './EmailForm.style'
 /**
  * Reset password form component for email verification
  */
-export default function ResetPasswordForm({
+export const ResetPasswordForm: React.FC<EmailFormProps> = ({
   email: defaultEmail,
   focused = false,
   onGetOOBCode,
   onNext,
-}: EmailFormProps) {
+}) => {
   // Component State
   const [email, setEmail] = useState(defaultEmail || '')
   const [isLoading, setIsLoading] = useState(false)

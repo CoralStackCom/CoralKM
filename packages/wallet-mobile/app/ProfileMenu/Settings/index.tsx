@@ -1,4 +1,4 @@
-import Settings from '@/Views/ProfileScreen/Views/ProileMenu/Views/Setting'
+import { Settings } from '@/Views'
 
 /**
  * Settings screen for managing app security and authentication

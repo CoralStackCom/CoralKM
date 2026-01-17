@@ -1,23 +1,26 @@
-import AvatarUpload from '@/components/Ui/AvatarUploading/AvatarUploading'
+import { Background } from '@/components/Background'
+import AvatarUpload from '@/components/Ui/AvatarUploading'
+import Header from '@/components/Ui/Header'
 import { IconSymbol } from '@/components/Ui/icon-symbol'
 import { useUserContext } from '@/providers/UserContext'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
 import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { styles } from './PorfileScreen.styles'
-import { ProfileScreenProps } from './profileScreen.interfaces'
+import type { ProfileScreenProps } from './profileScreen.interfaces'
 
-export default function ProfileScreen({ onNavigateSettings, onLogout }: ProfileScreenProps) {
+export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigateSettings, onLogout }) => {
   const router = useRouter()
   const { user, household, updateUser, updateHousehold } = useUserContext()
   const [isEditing, setIsEditing] = useState(false)
+
   // Local state for editing
-  const [editFirstName, setEditFirstName] = useState('')
-  const [editLastName, setEditLastName] = useState('')
-  const [editEmail, setEditEmail] = useState('')
-  const [editHouseholdName, setEditHouseholdName] = useState('')
-  const [editCountry, setEditCountry] = useState('')
-  const [editCurrency, setEditCurrency] = useState('')
+  const [editFirstName, setEditFirstName] = useState(user?.firstName || '')
+  const [editLastName, setEditLastName] = useState(user?.lastName || '')
+  const [editEmail, setEditEmail] = useState(user?.email || '')
+  const [editHouseholdName, setEditHouseholdName] = useState(household?.name || '')
+  const [editCountry, setEditCountry] = useState(household?.country || '')
+  const [editCurrency, setEditCurrency] = useState(household?.currency || '')
 
   const handleSave = () => {
     if (user) {
@@ -49,188 +52,205 @@ export default function ProfileScreen({ onNavigateSettings, onLogout }: ProfileS
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <IconSymbol name="person.fill" size={40} color="#1B5678" />
-        <Text style={styles.headerTitle}>Profile</Text>
-        <TouchableOpacity style={styles.menuButton} onPress={() => router.push('/ProfileMenu')}>
-          <Text style={styles.menuIcon}>☰</Text>
-        </TouchableOpacity>
-      </View>
-
+      <Background view="underwater" />
+      {/* Header */}
+      <Header
+        title="Profile"
+        rightComponent={
+          <TouchableOpacity style={styles.menuButton} onPress={() => router.push('/ProfileMenu')}>
+            <IconSymbol name="line.3.horizontal" size={40} color="#7eadc9ff" />
+          </TouchableOpacity>
+        }
+        showBackButton={false}
+      />
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Avatar Section */}
-        <View style={styles.avatarSection}>
-          <AvatarUpload uri={user?.avatar} style={styles.avatar} />
-          <Text style={styles.displayName}>
+        {/* Profile Header Card */}
+        <View style={styles.profileHeaderCard}>
+          <View style={styles.avatarWrapper}>
+            <AvatarUpload uri={user?.avatar} style={styles.avatar} />
+          </View>
+
+          <Text style={styles.userName}>
             {user?.firstName} {user?.lastName}
           </Text>
-          <Text style={styles.email}>{user?.email}</Text>
-        </View>
+          <Text style={styles.userEmail}>{user?.email}</Text>
 
-        {/* Edit/Save Button */}
-        <View style={styles.actionButtonContainer}>
+          {/* Edit/Save Buttons */}
           {!isEditing ? (
             <TouchableOpacity style={styles.editButton} onPress={() => setIsEditing(true)}>
+              <IconSymbol name="pencil" size={16} color="#fff" />
               <Text style={styles.editButtonText}>Edit Profile</Text>
             </TouchableOpacity>
           ) : (
             <View style={styles.editActions}>
-              <TouchableOpacity
-                style={[styles.actionButton, styles.cancelButton]}
-                onPress={handleCancel}
-              >
+              <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
                 <Text style={styles.cancelButtonText}>Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.actionButton, styles.saveButton]}
-                onPress={handleSave}
-              >
-                <Text style={styles.saveButtonText}>Save</Text>
+              <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+                <IconSymbol name="checkmark" size={16} color="#fff" />
+                <Text style={styles.saveButtonText}>Save Changes</Text>
               </TouchableOpacity>
             </View>
           )}
         </View>
 
-        {/* Personal Information Section */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <IconSymbol name="info.circle" size={40} color="#1B5678" />
-            <Text style={styles.sectionTitle}>Personal Information</Text>
-          </View>
+        {/* Content Cards Container */}
+        <View style={styles.cardsContainer}>
+          {/* Personal Information Card */}
           <View style={styles.card}>
-            <View style={styles.infoRow}>
-              <Text style={styles.label}>First Name</Text>
-              {isEditing ? (
-                <TextInput
-                  style={styles.input}
-                  value={editFirstName}
-                  onChangeText={setEditFirstName}
-                  placeholder="First Name"
-                />
-              ) : (
-                <Text style={styles.value}>{user?.firstName}</Text>
-              )}
+            <View style={styles.cardHeader}>
+              <View style={styles.cardIconWrapper}>
+                <IconSymbol name="person.fill" size={20} color="#1B5678" />
+              </View>
+              <Text style={styles.cardTitle}>Personal Information</Text>
             </View>
 
-            <View style={styles.divider} />
+            <View style={styles.cardContent}>
+              <View style={styles.infoRow}>
+                <Text style={styles.label}>First Name</Text>
+                {isEditing ? (
+                  <TextInput
+                    style={styles.input}
+                    value={editFirstName}
+                    onChangeText={setEditFirstName}
+                    placeholder="First Name"
+                    placeholderTextColor="#A0A0A0"
+                  />
+                ) : (
+                  <Text style={styles.value}>{user?.firstName}</Text>
+                )}
+              </View>
 
-            <View style={styles.infoRow}>
-              <Text style={styles.label}>Last Name</Text>
-              {isEditing ? (
-                <TextInput
-                  style={styles.input}
-                  value={editLastName}
-                  onChangeText={setEditLastName}
-                  placeholder="Last Name"
-                />
-              ) : (
-                <Text style={styles.value}>{user?.lastName}</Text>
-              )}
-            </View>
+              <View style={styles.divider} />
 
-            <View style={styles.divider} />
+              <View style={styles.infoRow}>
+                <Text style={styles.label}>Last Name</Text>
+                {isEditing ? (
+                  <TextInput
+                    style={styles.input}
+                    value={editLastName}
+                    onChangeText={setEditLastName}
+                    placeholder="Last Name"
+                    placeholderTextColor="#A0A0A0"
+                  />
+                ) : (
+                  <Text style={styles.value}>{user?.lastName}</Text>
+                )}
+              </View>
 
-            <View style={styles.infoRow}>
-              <Text style={styles.label}>Email</Text>
-              {isEditing ? (
-                <TextInput
-                  style={styles.input}
-                  value={editEmail}
-                  onChangeText={setEditEmail}
-                  placeholder="Email"
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                />
-              ) : (
-                <Text style={styles.value}>{user?.email}</Text>
-              )}
+              <View style={styles.divider} />
+
+              <View style={styles.infoRow}>
+                <Text style={styles.label}>Email Address</Text>
+                {isEditing ? (
+                  <TextInput
+                    style={styles.input}
+                    value={editEmail}
+                    onChangeText={setEditEmail}
+                    placeholder="Email"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    placeholderTextColor="#A0A0A0"
+                  />
+                ) : (
+                  <Text style={styles.value}>{user?.email}</Text>
+                )}
+              </View>
             </View>
           </View>
-        </View>
 
-        {/* Household Information Section */}
-        {household && (
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <IconSymbol name="house.fill" size={40} color="#1B5678" />
-              <Text style={styles.sectionTitle}> Household Information</Text>
-            </View>
-
+          {/* Household Information Card */}
+          {household && (
             <View style={styles.card}>
-              <View style={styles.householdHeader}>
-                <AvatarUpload
-                  uri={household.logo}
-                  size={80}
-                  editable={isEditing}
-                  onImageChange={newUri => {
-                    // Handle logo change if needed
-                  }}
-                />
+              <View style={styles.cardHeader}>
+                <View style={styles.cardIconWrapper}>
+                  <IconSymbol name="house.fill" size={20} color="#1B5678" />
+                </View>
+                <Text style={styles.cardTitle}>Household Information</Text>
               </View>
 
-              <View style={styles.infoRow}>
-                <Text style={styles.label}>Household Name</Text>
-                {isEditing ? (
-                  <TextInput
-                    style={styles.input}
-                    value={editHouseholdName}
-                    onChangeText={setEditHouseholdName}
-                    placeholder="Household Name"
+              <View style={styles.cardContent}>
+                <View style={styles.householdLogoWrapper}>
+                  <AvatarUpload
+                    uri={household.logo}
+                    size={70}
+                    editable={isEditing}
+                    onImageChange={newUri => {
+                      // Handle logo change if needed
+                    }}
                   />
-                ) : (
-                  <Text style={styles.value}>{household.name}</Text>
-                )}
-              </View>
+                </View>
 
-              <View style={styles.divider} />
+                <View style={styles.infoRow}>
+                  <Text style={styles.label}>Household Name</Text>
+                  {isEditing ? (
+                    <TextInput
+                      style={styles.input}
+                      value={editHouseholdName}
+                      onChangeText={setEditHouseholdName}
+                      placeholder="Household Name"
+                      placeholderTextColor="#A0A0A0"
+                    />
+                  ) : (
+                    <Text style={styles.value}>{household.name}</Text>
+                  )}
+                </View>
+                <View style={styles.divider} />
+                <View style={styles.infoRow}>
+                  <Text style={styles.label}>Country</Text>
+                  {isEditing ? (
+                    <TextInput
+                      style={styles.input}
+                      value={editCountry}
+                      onChangeText={setEditCountry}
+                      placeholder="Country"
+                      placeholderTextColor="#A0A0A0"
+                    />
+                  ) : (
+                    <Text style={styles.value}>{household.country}</Text>
+                  )}
+                </View>
 
-              <View style={styles.infoRow}>
-                <Text style={styles.label}>Country</Text>
-                {isEditing ? (
-                  <TextInput
-                    style={styles.input}
-                    value={editCountry}
-                    onChangeText={setEditCountry}
-                    placeholder="Country"
-                  />
-                ) : (
-                  <Text style={styles.value}>{household.country}</Text>
-                )}
-              </View>
+                <View style={styles.divider} />
 
-              <View style={styles.divider} />
-
-              <View style={styles.infoRow}>
-                <Text style={styles.label}>Currency</Text>
-                {isEditing ? (
-                  <TextInput
-                    style={styles.input}
-                    value={editCurrency}
-                    onChangeText={setEditCurrency}
-                    placeholder="Currency"
-                  />
-                ) : (
-                  <Text style={styles.value}>{household.currency}</Text>
-                )}
+                <View style={styles.infoRow}>
+                  <Text style={styles.label}>Currency</Text>
+                  {isEditing ? (
+                    <TextInput
+                      style={styles.input}
+                      value={editCurrency}
+                      onChangeText={setEditCurrency}
+                      placeholder="Currency"
+                      placeholderTextColor="#A0A0A0"
+                    />
+                  ) : (
+                    <Text style={styles.value}>{household.currency}</Text>
+                  )}
+                </View>
               </View>
             </View>
-          </View>
-        )}
-
-        {/* Security Section */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <IconSymbol name="lock.fill" size={40} color="#1B5678" />
-            <Text style={styles.sectionTitle}> Security</Text>
-          </View>
+          )}
+          {/* Security Card */}
           <View style={styles.card}>
-            <View style={styles.infoRow}>
-              <Text style={styles.label}>Encryption Seed</Text>
-              <Text style={styles.value}>••••••••</Text>
+            <View style={styles.cardHeader}>
+              <View style={styles.cardIconWrapper}>
+                <IconSymbol name="lock.fill" size={20} color="#1B5678" />
+              </View>
+              <Text style={styles.cardTitle}>Security</Text>
+            </View>
+            <View style={styles.cardContent}>
+              <View style={styles.infoRow}>
+                <Text style={styles.label}>Encryption Seed</Text>
+                <Text style={styles.value}>••••••••</Text>
+              </View>
             </View>
           </View>
         </View>
+
+        {/* Bottom Spacing */}
+        <View style={styles.bottomSpacer} />
       </ScrollView>
     </SafeAreaView>
   )
 }
+export default ProfileScreen

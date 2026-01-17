@@ -9,4 +9,6 @@ export interface ActionRowProps {
   leftIcon?: React.ReactNode
   /** Optional right icon component */
   rightIcon?: React.ReactNode
+  /** Optional color for the icons */
+  iconColor?: string
 }

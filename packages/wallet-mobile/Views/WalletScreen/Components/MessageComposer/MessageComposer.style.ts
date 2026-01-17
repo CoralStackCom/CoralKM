@@ -4,7 +4,6 @@ export const styles = StyleSheet.create({
   container: {
     borderTopWidth: 1,
     borderTopColor: '#e0e0e0',
-    backgroundColor: '#fff',
   },
   userDidSection: {
     paddingHorizontal: 16,

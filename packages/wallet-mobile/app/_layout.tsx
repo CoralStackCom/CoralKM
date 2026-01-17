@@ -37,11 +37,11 @@ export default function RootLayout() {
     <View style={{ flex: 1 }}>
       <Background view="underwater" />
       <AuthProvider>
-        <UserProvider>
-          <WalletProvider gatewayDID="did:web:coralkm-wallet-gateway.developers-6d6.workers.dev">
+        <WalletProvider gatewayDID="did:web:coralkm-wallet-gateway.developers-6d6.workers.dev">
+          <UserProvider>
             {isAuthenticated ? <Slot initialRouteName="tabs" /> : <Slot initialRouteName="index" />}
-          </WalletProvider>
-        </UserProvider>
+          </UserProvider>
+        </WalletProvider>
       </AuthProvider>
     </View>
   )

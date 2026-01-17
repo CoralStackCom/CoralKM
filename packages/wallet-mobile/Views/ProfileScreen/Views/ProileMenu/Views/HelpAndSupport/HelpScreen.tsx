@@ -6,53 +6,25 @@ import { QuickActionButton } from '@/components/Ui/Buttons/QuickActionButton'
 import Header from '@/components/Ui/Header'
 import { SearchInput } from '@/components/Ui/SearchInput'
 import { useState } from 'react'
-import { Alert, Linking, SafeAreaView, ScrollView, Text, View } from 'react-native'
+import { SafeAreaView, ScrollView, Text, View } from 'react-native'
 import { styles } from './HelpSupport.styles'
-import { faqItems } from './HelpSupport.utils'
+import {
+  faqItems,
+  handleCallSupport,
+  handleContactSupport,
+  handleLiveChat,
+  handleReportBug,
+} from './HelpSupport.utils'
 
-export default function HelpSupportScreen() {
+/**
+ *  Help & Support Screen Component
+ *
+ */
+
+export const HelpSupportScreen: React.FC = () => {
+  // Component State
   const [searchQuery, setSearchQuery] = useState('')
-
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null)
-
-  const handleContactSupport = () => {
-    Linking.openURL('mailto:support@example.com?subject=Support%20Request')
-  }
-
-  const handleCallSupport = () => {
-    Alert.alert('Call Support', 'Would you like to call our support team?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Call', onPress: () => Linking.openURL('tel:+1800555000') },
-    ])
-  }
-
-  const handleLiveChat = () => {
-    Alert.alert(
-      'Live Chat',
-      'Live chat is available Monday-Friday, 9 AM - 5 PM PST. Would you like to start a chat?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Start Chat',
-          onPress: () => Alert.alert('Chat Started', 'A support agent will be with you shortly.'),
-        },
-      ]
-    )
-  }
-
-  const handleReportBug = () => {
-    Alert.alert(
-      'Report a Bug',
-      'Thank you for helping us improve! Please describe the issue you encountered.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Continue',
-          onPress: () => Linking.openURL('mailto:bugs@example.com?subject=Bug%20Report'),
-        },
-      ]
-    )
-  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -104,6 +76,7 @@ export default function HelpSupportScreen() {
                 content={item.answer}
                 expanded={expandedFaq === index}
                 onToggle={() => setExpandedFaq(expandedFaq === index ? null : index)}
+                showDivider={index < faqItems.length - 1}
               />
             ))}
           </View>
@@ -112,18 +85,20 @@ export default function HelpSupportScreen() {
         {/* Resources Section */}
         <Section>
           <SectionTitle value="Resources" />
-          <ActionRow title="User Guide" description="Learn how to use the app" leftIcon="book" />
-          <ActionRow
-            title="Video Tutorials"
-            description="Watch step-by-step guides"
-            leftIcon="video"
-          />
-          <ActionRow
-            title="Report a Bug"
-            description="Help us improve the app"
-            leftIcon="bug"
-            onPress={handleReportBug}
-          />
+          <View style={styles.card}>
+            <ActionRow title="User Guide" description="Learn how to use the app" leftIcon="book" />
+            <ActionRow
+              title="Video Tutorials"
+              description="Watch step-by-step guides"
+              leftIcon="video"
+            />
+            <ActionRow
+              title="Report a Bug"
+              description="Help us improve the app"
+              leftIcon="bug"
+              onPress={handleReportBug}
+            />
+          </View>
         </Section>
 
         {/* App Info */}
@@ -138,3 +113,4 @@ export default function HelpSupportScreen() {
     </SafeAreaView>
   )
 }
+export default HelpSupportScreen

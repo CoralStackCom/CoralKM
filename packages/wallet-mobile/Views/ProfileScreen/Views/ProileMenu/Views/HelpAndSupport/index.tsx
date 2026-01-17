@@ -1,1 +1,1 @@
-export { default } from './HelpScreen'
+export { HelpSupportScreen } from './HelpScreen'

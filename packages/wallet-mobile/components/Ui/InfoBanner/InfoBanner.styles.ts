@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native'
 export const styles = StyleSheet.create({
   infoCard: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(27, 86, 120, 0.1)',
+    backgroundColor: 'rgba(175, 197, 209, 0.1)',
     borderRadius: 12,
     padding: 16,
     gap: 12,

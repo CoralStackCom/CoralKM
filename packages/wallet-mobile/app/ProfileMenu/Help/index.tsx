@@ -1,4 +1,4 @@
-import HelpSupportScreen from '@/Views/ProfileScreen/Views/ProileMenu/Views/HelpAndSupport'
+import { HelpSupportScreen } from '@/Views'
 import React from 'react'
 /**
  * Help and Support screen for sharing Help settings

@@ -1,6 +1,5 @@
 import { Stepper } from '@/components/Stepper'
 import { StepPanel } from '@/components/Stepper/components'
-import { useWallet } from '@/providers/wallet'
 import type { User } from '@/types'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
@@ -10,22 +9,7 @@ import { SetupHouseholdStep, SetupUserStep } from './components/steps'
 import { SetupEntropyStep } from './components/steps/SetupEntropyStep'
 import { styles } from './SetupScreen.style'
 
-// Mock data
-const userAvatars = [
-  'https://i.pravatar.cc/150?img=1',
-  'https://i.pravatar.cc/150?img=2',
-  'https://i.pravatar.cc/150?img=3',
-]
-
-const householdAvatars = [
-  'https://i.pravatar.cc/150?img=10',
-  'https://i.pravatar.cc/150?img=11',
-  'https://i.pravatar.cc/150?img=12',
-]
-
-export default function SetupScreen() {
-  const { user: currentUser, wallet, channels } = useWallet()
-
+export const SetupScreen: React.FC = () => {
   const router = useRouter()
 
   const [activeStep, setActiveStep] = useState(1)
@@ -71,12 +55,10 @@ export default function SetupScreen() {
             nextStep="Next - Create Your Household"
             onNext={handleUpdateUser}
             authenticatedUser={authenticatedUser}
-            userAvatars={userAvatars}
           />
           <SetupHouseholdStep
             nextStep="Next - Setup Encryption Keys"
             onNext={handleCreateHousehold}
-            householdAvatars={householdAvatars}
             suggestedName={`The ${authenticatedUser.lastName || 'Smith'} Household`}
           />
           <SetupEntropyStep nextStep="Continue" onNext={handleEntropySeed} />

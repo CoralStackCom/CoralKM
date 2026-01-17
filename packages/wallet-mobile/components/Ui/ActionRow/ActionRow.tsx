@@ -15,6 +15,7 @@ export const ActionRow: React.FC<ActionRowProps> = ({
   onPress,
   leftIcon,
   rightIcon,
+  iconColor,
 }) => {
   // Render
   return (
@@ -26,9 +27,11 @@ export const ActionRow: React.FC<ActionRowProps> = ({
         disabled={!onPress}
       >
         <View style={styles.left}>
-          {leftIcon && <IconSymbol name={leftIcon} size={24} style={styles.resourceIcon} />}
+          {leftIcon && (
+            <IconSymbol name={leftIcon} size={24} style={styles.resourceIcon} color={iconColor} />
+          )}
           <View style={styles.text}>
-            <Text style={styles.title}>{title}</Text>
+            <Text style={{ color: iconColor, ...styles.text }}>{title}</Text>
             {description && <Text style={styles.description}>{description}</Text>}
           </View>
         </View>

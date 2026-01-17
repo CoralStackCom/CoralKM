@@ -33,6 +33,7 @@ export const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    opacity: 0.85,
   },
   section: {
     marginTop: 24,

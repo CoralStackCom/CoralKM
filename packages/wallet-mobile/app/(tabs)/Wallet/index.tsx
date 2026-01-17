@@ -1,6 +1,5 @@
+import { Wallet } from '@/Views'
 import '../../shim'
-
-import Wallet from '@/Views/WalletScreen/Wallet'
 
 /**
  * Wallet screen for communicating with the other wallets

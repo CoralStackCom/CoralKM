@@ -5,18 +5,12 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'transparent',
   },
-  contentContainer: {
-    padding: 30,
-    paddingBottom: 100,
-  },
+  contentContainer: {},
   backContainer: {
     alignItems: 'flex-start',
-    marginTop: 30,
   },
   header: {
     alignItems: 'center',
-    marginBottom: 40,
-    marginTop: 20,
   },
   backButton: {
     marginRight: 12,

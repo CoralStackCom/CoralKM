@@ -48,6 +48,16 @@ type IconSymbolName =
   | 'download.alt.fill'
   | 'biometric.fill'
   | 'search'
+  | 'privacy.security.fill'
+  | 'biometric.fill'
+  | 'download.data.fill'
+  | 'activity.alerts.fill'
+  | 'budget.alerts.fill'
+  | 'monthly.reports.fill'
+  | 'report.bug.fill'
+  | 'help.support.fill'
+  | 'notifications.page.fill'
+
 type IconMapping = Record<IconSymbolName, ComponentProps<typeof MaterialIcons>['name']>
 
 /**
@@ -82,6 +92,14 @@ const MAPPING: IconMapping = {
   'download.alt.fill': 'file-download',
   'biometric.fill': 'fingerprint',
   search: 'search',
+  'privacy.security.fill': 'security',
+  'download.data.fill': 'cloud-download',
+  'activity.alerts.fill': 'notifications-active',
+  'budget.alerts.fill': 'attach-money',
+  'monthly.reports.fill': 'insert-chart',
+  'report.bug.fill': 'bug-report',
+  'help.support.fill': 'support-agent',
+  'notifications.page.fill': 'notifications',
 }
 
 /**

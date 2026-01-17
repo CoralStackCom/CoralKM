@@ -12,7 +12,7 @@ import { UserProfileSelector } from './Components/UserProfileSelector'
 import { IChannelMessage } from './wallet.interfaces'
 import { styles } from './wallet.style'
 
-export default function Wallet() {
+export const Wallet: React.FC = () => {
   const { user: currentUser, wallet, channels } = useWallet()
   const [selectedChannelId, setSelectedChannelId] = useState<any>(null)
   const [isMessageDetailsOpen, setIsMessageDetailsOpen] = useState(false)

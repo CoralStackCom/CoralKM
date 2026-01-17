@@ -1,8 +1,10 @@
-import { User } from "@/types";
+import { User } from '@/types'
 
 export interface SetupUserStepProps {
-  nextStep: string;
-  userAvatars: string[];
-  authenticatedUser: Partial<User>;
-  onNext: (firstName: string, lastName: string, avatar?: string) => void;
+  // Next Step Label
+  nextStep: string
+  // Currently authenticated user
+  authenticatedUser: Partial<User>
+  // Callback when user details are submitted
+  onNext: (firstName: string, lastName: string, avatar?: string) => void
 }

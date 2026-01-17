@@ -1,4 +1,4 @@
-import Devices from '@/Views/ProfileScreen/Views/ProileMenu/Views/Devices'
+import { Devices } from '@/Views'
 import React from 'react'
 /**
  * Devices screen for managing app devices settings

@@ -112,6 +112,7 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 1,
+    borderRadius: 12,
   },
   faqItem: {
     flexDirection: 'row',
