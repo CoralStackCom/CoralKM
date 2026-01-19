@@ -1,4 +1,4 @@
-import { ProfileMenu } from '@/Views'
+import { ProfileMenu } from '@/views'
 import React from 'react'
 
 export default function ProfileMenuScreen() {

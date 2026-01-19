@@ -1,11 +1,11 @@
 import { Background } from '@/components/Background'
 import { SectionHeader } from '@/components/contianers/Section/components/SectionHeader/SectionHeader'
-import Header from '@/components/Ui/Header'
+import Header from '@/components/ui/Header'
 import { useWallet } from '@/providers/wallet'
 import React, { useState } from 'react'
 import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-native'
 import { InfoTabs } from './components/Tabs'
-import { styles } from './InfoScreen.styles'
+import { styles } from './Info.styles'
 
 export const UserInfoScreen: React.FC = () => {
   // Wallet Context

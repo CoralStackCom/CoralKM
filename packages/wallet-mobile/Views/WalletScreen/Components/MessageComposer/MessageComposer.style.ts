@@ -3,53 +3,38 @@ import { StyleSheet } from 'react-native'
 export const styles = StyleSheet.create({
   container: {
     borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
-  },
-  userDidSection: {
+    borderTopColor: '#e5e7eb',
+    backgroundColor: '#ffffff',
     paddingHorizontal: 16,
-    paddingVertical: 6,
-  },
-  userDidText: {
-    fontSize: 12,
-    color: '#444',
-  },
-  actionsRow: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingBottom: 78,
+    paddingTop: 16,
     flexDirection: 'row',
     gap: 8,
+    flexWrap: 'wrap',
   },
   button: {
-    flex: 1,
-    borderRadius: 8,
-    paddingVertical: 12,
-    alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 8,
-  },
-  pingButton: {
-    backgroundColor: '#007AFF',
-  },
-  guardianButton: {
-    backgroundColor: '#34C759',
-  },
-  revokeButton: {
-    backgroundColor: '#FF3B30',
+    alignItems: 'center',
+    backgroundColor: '#3b82f6',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 6,
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: '#ffffff',
     fontSize: 14,
+    fontWeight: '500',
   },
-  guardianText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 12,
+  icon: {
+    marginRight: 6,
   },
-  revokeText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 12,
+  guardianButton: {
+    backgroundColor: '#22c55e',
+  },
+  guardianButtonText: {
+    color: '#000000',
+  },
+  revokeButton: {
+    backgroundColor: '#ef4444',
   },
 })

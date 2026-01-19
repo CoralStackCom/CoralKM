@@ -1,5 +1,5 @@
 import { Background } from '@/components/Background'
-import { IconSymbol } from '@/components/Ui/icon-symbol'
+import { IconSymbol } from '@/components/ui/icon-symbol'
 import { useAuth } from '@/providers/AuthContext'
 import type React from 'react'
 import { useState } from 'react'

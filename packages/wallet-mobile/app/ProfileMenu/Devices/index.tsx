@@ -1,4 +1,4 @@
-import { Devices } from '@/Views'
+import { Devices } from '@/views'
 import React from 'react'
 /**
  * Devices screen for managing app devices settings

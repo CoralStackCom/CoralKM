@@ -1,4 +1,4 @@
-import { AppearanceScreen } from '@/Views'
+import { AppearanceScreen } from '@/views'
 import React from 'react'
 /**
  * Appearance screen for managing app appearance settings

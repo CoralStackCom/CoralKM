@@ -1,5 +1,5 @@
 // imports
-import { IconSymbol } from '@/components/Ui/icon-symbol'
+import { IconSymbol } from '@/components/ui/icon-symbol'
 import React from 'react'
 import { Text, View } from 'react-native'
 import { SectionHeaderProps } from './SectionHeader.interfaces'

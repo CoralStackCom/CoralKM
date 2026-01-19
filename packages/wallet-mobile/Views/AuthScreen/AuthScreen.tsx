@@ -5,8 +5,8 @@ import { Animated, View } from 'react-native'
 
 import { AuthScreenProps } from './AuthScreen.interface'
 import { styles } from './AuthScreen.style'
-import AuthForm from './components/AuthForm/'
-import EmailForm from './components/EmailForm/'
+import AuthForm from './components/AuthForm'
+import EmailForm from './components/EmailForm'
 
 /**
  * Authentication screen component with animated background transitions

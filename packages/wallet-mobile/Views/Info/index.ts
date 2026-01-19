@@ -1,1 +1,1 @@
-export { UserInfoScreen } from './InfoScreen'
+export { UserInfoScreen } from './Info'

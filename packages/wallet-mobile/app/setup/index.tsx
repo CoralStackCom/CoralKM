@@ -1,7 +1,7 @@
 import '../shim'
 
-import { ThemedView } from '@/components/Ui/ThemedView/themed-view'
-import { SetupScreen } from '@/Views'
+import { ThemedView } from '@/components/ui/ThemedView/themed-view'
+import { SetupScreen } from '@/views'
 import React from 'react'
 
 /**

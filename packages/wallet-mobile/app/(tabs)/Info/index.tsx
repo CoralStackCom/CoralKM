@@ -1,4 +1,4 @@
-import { UserInfoScreen } from '@/Views'
+import { UserInfoScreen } from '@/views'
 import '../../shim'
 
 import React from 'react'

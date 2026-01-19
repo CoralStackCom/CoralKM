@@ -1,4 +1,4 @@
-import { ProfileScreen } from '@/Views'
+import { ProfileScreen } from '@/views'
 import React from 'react'
 /**
  *

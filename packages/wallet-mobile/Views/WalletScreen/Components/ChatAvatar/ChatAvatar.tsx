@@ -22,7 +22,7 @@ import { styles } from './ChatAvatar.style'
  * <ChatAvatar name="Bob" size={64} picture={base64String} />
  */
 
-export default function ChatAvatar({ name, picture, size = 48 }: ChatAvatarProps) {
+export const ChatAvatar: React.FC<ChatAvatarProps> = ({ name, picture, size = 48 }) => {
   const initials = name?.charAt(0)?.toUpperCase()
 
   const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8']
@@ -38,3 +38,4 @@ export default function ChatAvatar({ name, picture, size = 48 }: ChatAvatarProps
     </View>
   )
 }
+export default ChatAvatar

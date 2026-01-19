@@ -1,4 +1,4 @@
-import { Wallet } from '@/Views'
+import { Wallet } from '@/views'
 import '../../shim'
 
 /**

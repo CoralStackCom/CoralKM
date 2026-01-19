@@ -1,17 +1,22 @@
 import { StepPanel } from '@/components/Stepper/components'
-import AvatarUpload from '@/components/Ui/AvatarUploading/AvatarUploading'
+import AvatarUpload from '@/components/ui/AvatarUploading'
 import { useUserContext } from '@/providers/UserContext'
 import { useEffect, useState } from 'react'
 import { Text, TextInput, View } from 'react-native'
-import { SetupHouseholdStepProps } from './SetupHouseholdStep.interface'
 import { styles } from './SetupHouseholStep.style'
+import { SetupHouseholdStepProps } from './SetupHouseholdStep.interface'
 
-export default function SetupHouseholdStep({
+/**
+ * Setup Household Step
+ * A step in the setup wizard that collects and updates
+ * the household's  details.
+ */
+
+export const SetupHouseholdStep: React.FC<SetupHouseholdStepProps> = ({
   nextStep,
-  householdAvatars,
   suggestedName,
   onNext,
-}: SetupHouseholdStepProps) {
+}) => {
   const { updateHousehold } = useUserContext()
   const [name, setName] = useState(suggestedName)
   const [country, setCountry] = useState('USA')
@@ -82,3 +87,5 @@ export default function SetupHouseholdStep({
     </StepPanel>
   )
 }
+
+export default SetupHouseholdStep

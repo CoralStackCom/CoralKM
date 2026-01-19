@@ -16,7 +16,7 @@ import { styles } from './RecoverSuccessModal.styles'
  * @param {RecoverSuccessModalProps} props
  */
 
-export function RecoverSuccessModal({ recoveredWallet }: RecoverSuccessModalProps) {
+export const RecoverSuccessModal: React.FC<RecoverSuccessModalProps> = ({ recoveredWallet }) => {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
 
   React.useEffect(() => {
@@ -61,3 +61,4 @@ export function RecoverSuccessModal({ recoveredWallet }: RecoverSuccessModalProp
     </Modal>
   )
 }
+export default RecoverSuccessModal

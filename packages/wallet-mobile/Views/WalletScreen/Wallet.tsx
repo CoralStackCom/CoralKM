@@ -11,6 +11,11 @@ import { MessageComposer } from './Components/MessageComposer/MessageComposer'
 import { UserProfileSelector } from './Components/UserProfileSelector'
 import { IChannelMessage } from './wallet.interfaces'
 import { styles } from './wallet.style'
+/**
+ * Wallet Screen
+ * The main screen for the wallet application, displaying user info,
+ * channel list, and chat interface.
+ */
 
 export const Wallet: React.FC = () => {
   const { user: currentUser, wallet, channels } = useWallet()

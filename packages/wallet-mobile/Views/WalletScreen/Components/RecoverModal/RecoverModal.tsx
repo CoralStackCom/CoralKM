@@ -16,7 +16,7 @@ import { styles } from './RecoverModal.styles'
  * @param {RecoverModalProps} props
  */
 
-export function RecoverModal({ wallet }: RecoverModalProps) {
+export const RecoverModal: React.FC<RecoverModalProps> = ({ wallet }) => {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
   const [namespaceJSON, setNamespaceJSON] = React.useState('')
   const [fieldError, setFieldError] = React.useState<string | null>(null)
@@ -110,3 +110,4 @@ export function RecoverModal({ wallet }: RecoverModalProps) {
     </>
   )
 }
+export default RecoverModal

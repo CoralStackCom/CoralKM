@@ -1,4 +1,4 @@
-import { NotificationsScreen } from '@/Views'
+import { NotificationsScreen } from '@/views'
 
 /**
  * Notification screen for managing app notifications

@@ -1,12 +1,23 @@
 import { StepPanel } from '@/components/Stepper/components'
-import AvatarUpload from '@/components/Ui/AvatarUploading/AvatarUploading'
+import AvatarUpload from '@/components/ui/AvatarUploading'
 import { useUserContext } from '@/providers/UserContext'
 import { useEffect, useState } from 'react'
 import { Text, TextInput, View } from 'react-native'
 import { SetupUserStepProps } from './SetupUserStep.interface'
 import { styles } from './SetupUserStep.style'
 
-export default function SetupUserStep({ nextStep, authenticatedUser, onNext }: SetupUserStepProps) {
+/**
+ * Setup User Step
+ * A step in the setup wizard that collects and updates
+ * the user's personal details.
+ */
+
+export const SetupUserStep: React.FC<SetupUserStepProps> = ({
+  nextStep,
+  authenticatedUser,
+  onNext,
+}) => {
+  // component States
   const { user, setUser } = useUserContext()
   const [firstName, setFirstName] = useState(authenticatedUser.firstName || '')
   const [lastName, setLastName] = useState(authenticatedUser.lastName || '')
@@ -83,3 +94,4 @@ export default function SetupUserStep({ nextStep, authenticatedUser, onNext }: S
     </StepPanel>
   )
 }
+export default SetupUserStep

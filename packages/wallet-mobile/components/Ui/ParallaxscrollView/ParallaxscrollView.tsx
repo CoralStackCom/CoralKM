@@ -5,7 +5,7 @@ import Animated, {
   useScrollOffset,
 } from 'react-native-reanimated'
 
-import { ThemedView } from '@/components/Ui/ThemedView/themed-view'
+import { ThemedView } from '@/components/ui/ThemedView/themed-view'
 import { useColorScheme } from '@/hooks/use-color-scheme'
 import { useThemeColor } from '@/hooks/use-theme-color'
 import { ParallaxScrollViewProps } from './ParallaxscrollView.interfaces'

@@ -10,13 +10,15 @@ import { useCallback, useRef, useState } from 'react'
 import { Alert, PanResponder, Pressable, Text, TouchableOpacity, View } from 'react-native'
 import Canvas from 'react-native-canvas'
 import { styles } from './SetupEntropyStep.style'
+import { SetupEntropyStepProps } from './SetupentroupyStep.interfaces'
 
-interface SetupEntropyStepProps {
-  onNext: (seed: string) => void
-  nextStep: string
-}
-
-export default function SetupEntropyStep({ onNext, nextStep }: SetupEntropyStepProps) {
+/**
+ * Setup Entropy Step
+ *
+ * A step in the setup wizard that allows users to generate
+ * an encryption seed by drawing patterns on a canvas.
+ */
+export const SetupEntropyStep: React.FC<SetupEntropyStepProps> = ({ onNext, nextStep }) => {
   // Component State
   const [seed, setSeed] = useState('')
   const canvasRef = useRef<any>(null)
@@ -195,3 +197,4 @@ export default function SetupEntropyStep({ onNext, nextStep }: SetupEntropyStepP
     </StepPanel>
   )
 }
+export default SetupEntropyStep

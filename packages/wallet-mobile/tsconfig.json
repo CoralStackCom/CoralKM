@@ -15,5 +15,5 @@
     "**/*.jsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-, "components/Ui/WalletScreen/Components/aa"  ]
+, "components/ui/WalletScreen/Components/aa"  ]
 }

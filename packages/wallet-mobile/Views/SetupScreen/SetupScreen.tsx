@@ -9,9 +9,14 @@ import { SetupHouseholdStep, SetupUserStep } from './components/steps'
 import { SetupEntropyStep } from './components/steps/SetupEntropyStep'
 import { styles } from './SetupScreen.style'
 
-export const SetupScreen: React.FC = () => {
-  const router = useRouter()
+/*
+ * Setup Screen
+ * A multi-step setup wizard to onboard new users.
+ */
 
+export const SetupScreen: React.FC = () => {
+  // Router and State Management
+  const router = useRouter()
   const [activeStep, setActiveStep] = useState(1)
   const [isOpen, setIsOpen] = useState(true)
   const [encryptionSeed, setEncryptionSeed] = useState<string>('')
@@ -19,7 +24,7 @@ export const SetupScreen: React.FC = () => {
     id: '1',
     email: 'user@example.com',
   })
-
+  /* Handlers */
   const handleUpdateUser = (firstName: string, lastName: string, avatar?: string) => {
     setAuthenticatedUser({ ...authenticatedUser, firstName, lastName, avatar })
     setActiveStep(2)
@@ -41,7 +46,7 @@ export const SetupScreen: React.FC = () => {
     setIsOpen(false)
     router.replace('/(tabs)/Wallet')
   }
-
+  /* Render */
   return (
     <GestureHandlerRootView style={styles.container}>
       <View style={styles.background}>
@@ -79,3 +84,4 @@ export const SetupScreen: React.FC = () => {
     </GestureHandlerRootView>
   )
 }
+export default SetupScreen

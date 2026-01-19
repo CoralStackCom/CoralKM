@@ -1,5 +1,5 @@
-import ActionRow from '@/components/Ui/ActionRow'
-import Header from '@/components/Ui/Header'
+import ActionRow from '@/components/ui/ActionRow'
+import Header from '@/components/ui/Header'
 import { useUserContext } from '@/providers/UserContext'
 import { useRouter } from 'expo-router'
 import { SafeAreaView, ScrollView, View } from 'react-native'

@@ -18,7 +18,12 @@ import { styles } from './ChatMessage.styles'
  * @param {ChatMessageProps} props
  */
 
-export function ChatMessage({ message, channel, onViewMessage, styleMessage }: ChatMessageProps) {
+export const ChatMessage: React.FC<ChatMessageProps> = ({
+  message,
+  channel,
+  onViewMessage,
+  styleMessage,
+}) => {
   const content: MessageContent = styleMessage
     ? styleMessage(message)
     : {
@@ -74,3 +79,4 @@ export function ChatMessage({ message, channel, onViewMessage, styleMessage }: C
     </View>
   )
 }
+export default ChatMessage

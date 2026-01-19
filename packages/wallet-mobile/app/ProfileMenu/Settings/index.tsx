@@ -1,4 +1,4 @@
-import { Settings } from '@/Views'
+import { Settings } from '@/views'
 
 /**
  * Settings screen for managing app security and authentication

@@ -1,7 +1,7 @@
 import Section from '@/components/contianers/Section'
 import SectionTitle from '@/components/contianers/Section/components/SectionTitle'
-import ActionRow from '@/components/Ui/ActionRow'
-import Header from '@/components/Ui/Header'
+import ActionRow from '@/components/ui/ActionRow'
+import Header from '@/components/ui/Header'
 import { useState } from 'react'
 import { SafeAreaView, ScrollView, Switch, View } from 'react-native'
 import { styles } from './Notifications.styles'
@@ -21,7 +21,6 @@ export const NotificationsScreen: React.FC = () => {
   const [securityAlerts, setSecurityAlerts] = useState(true)
   const [marketingEmails, setMarketingEmails] = useState(false)
   // To Do: create arrays and map through them to reduce repetition
-
 
   return (
     <SafeAreaView style={styles.container}>

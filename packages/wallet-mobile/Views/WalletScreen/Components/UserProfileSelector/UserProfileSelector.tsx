@@ -16,7 +16,10 @@ import { styles } from './UserProfileSelector.styles'
  * @param {UserProfileSelectorProps} props
  */
 
-export function UserProfileSelector({ currentProfile, onProfileChange }: UserProfileSelectorProps) {
+export const UserProfileSelector: React.FC<UserProfileSelectorProps> = ({
+  currentProfile,
+  onProfileChange,
+}) => {
   const { user } = useUserContext()
   const [isOpen, setIsOpen] = useState(false)
   const currentUser = {

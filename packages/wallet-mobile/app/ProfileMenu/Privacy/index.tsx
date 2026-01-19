@@ -1,4 +1,4 @@
-import { PrivacySecurityScreen } from '@/Views'
+import { PrivacySecurityScreen } from '@/views'
 
 /**
  * Privacy and security screen for managing app privacy settings

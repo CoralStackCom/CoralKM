@@ -1,9 +1,9 @@
 import { PropsWithChildren, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 
-import { IconSymbol } from '@/components/Ui/icon-symbol'
-import { ThemedText } from '@/components/Ui/ThemedText/themed-text'
-import { ThemedView } from '@/components/Ui/ThemedView/themed-view'
+import { IconSymbol } from '@/components/ui/icon-symbol'
+import { ThemedText } from '@/components/ui/ThemedText/themed-text'
+import { ThemedView } from '@/components/ui/ThemedView/themed-view'
 import { Colors } from '@/constants/theme'
 import { useColorScheme } from '@/hooks/use-color-scheme'
 import { CollapsibleProps } from './collapsible.interfaces'
