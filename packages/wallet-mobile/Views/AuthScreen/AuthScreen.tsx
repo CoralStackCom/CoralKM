@@ -1,5 +1,3 @@
-import '@/app/shim'
-
 import React, { useEffect, useRef, useState } from 'react'
 import { Animated, View } from 'react-native'
 

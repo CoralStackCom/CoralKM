@@ -1,5 +1,3 @@
-import './shim'
-
 import { Background } from '@/components/Background'
 import { AuthProvider } from '@/providers/AuthContext'
 import { UserProvider } from '@/providers/UserContext'
@@ -36,13 +34,13 @@ export default function RootLayout() {
   return (
     <View style={{ flex: 1 }}>
       <Background view="underwater" />
-      <AuthProvider>
-        <WalletProvider gatewayDID="did:web:coralkm-wallet-gateway.developers-6d6.workers.dev">
+      <WalletProvider gatewayDID="did:web:coralkm-wallet-gateway.developers-6d6.workers.dev">
+        <AuthProvider>
           <UserProvider>
             {isAuthenticated ? <Slot initialRouteName="tabs" /> : <Slot initialRouteName="index" />}
           </UserProvider>
-        </WalletProvider>
-      </AuthProvider>
+        </AuthProvider>
+      </WalletProvider>
     </View>
   )
 }

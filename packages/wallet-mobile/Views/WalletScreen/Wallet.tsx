@@ -1,3 +1,5 @@
+import '@/app/shim'
+
 import { DidQrGenerator } from '@/components/DidQrGenerator/DidQrGenerator'
 import { styleMessage } from '@/lib/style-messages'
 import { useWallet } from '@/providers/wallet'

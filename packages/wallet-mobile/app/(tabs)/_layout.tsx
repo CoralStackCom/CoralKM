@@ -1,5 +1,3 @@
-import '../shim'
-
 import { IconSymbol } from '@/components/ui/icon-symbol'
 import { AuthProvider, useAuth } from '@/providers/AuthContext'
 import UnlockScreen from '@/views/Unlock'

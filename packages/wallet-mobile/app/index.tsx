@@ -1,4 +1,3 @@
-import './shim'
 
 import { ThemedView } from '@/components/ui/ThemedView/themed-view'
 import AuthScreen from '@/views/AuthScreen'

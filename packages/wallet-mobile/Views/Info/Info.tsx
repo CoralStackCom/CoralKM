@@ -1,3 +1,5 @@
+import '@/app/shim'
+
 import { Background } from '@/components/Background'
 import { SectionHeader } from '@/components/contianers/Section/components/SectionHeader/SectionHeader'
 import Header from '@/components/ui/Header'
