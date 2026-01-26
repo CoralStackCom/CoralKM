@@ -28,7 +28,10 @@ export const UserInfoScreen: React.FC = () => {
 
         {/* Tabs */}
         <InfoTabs
-          Tabs={['wallet', 'identifiers']}
+          tabs={[
+            { key: 'wallet', label: 'Wallet' },
+            { key: 'identifiers', label: 'Identifiers' },
+          ]}
           activeTab={activeTab}
           onTabChange={setActiveTab}
         />

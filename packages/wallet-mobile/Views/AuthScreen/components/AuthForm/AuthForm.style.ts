@@ -1,43 +1,67 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
   },
   formBox: {
-    width: "100%",
-    maxWidth: 400,
-    backgroundColor: "rgba(255,255,255,0.9)",
-    borderRadius: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 16,
     padding: 24,
+    width: '100%',
+    maxWidth: 400,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
   },
-  logoBox: { alignItems: "center", marginBottom: 16 },
+  logoContainer: {
+    height: 50,
+    width: '100%',
+    marginBottom: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative', // Important for measuring
+  },
+  logo: {
+    height: 50,
+    width: 150,
+    resizeMode: 'contain',
+  },
   title: {
-    fontSize: 20,
-    fontWeight: "600",
-    textAlign: "center",
-    marginBottom: 16,
-  },
-  error: { color: "red", textAlign: "center", marginBottom: 12 },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 12,
     fontSize: 18,
-    marginBottom: 16,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: 20,
+    textAlign: 'center',
   },
-  disabled: { opacity: 0.7 },
-  formBottom: { marginTop: 20, alignItems: "center" },
-  bottomText: { fontSize: 14, marginBottom: 8 },
+  error: {
+    fontSize: 14,
+    color: '#dc2626',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  formBottom: {
+    marginTop: 24,
+    alignItems: 'center',
+  },
+  bottomText: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 12,
+  },
   button: {
-    backgroundColor: "#1B5678",
-    padding: 14,
-    borderRadius: 48,
-    alignItems: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
-  btnText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
-});
+  btnText: {
+    fontSize: 14,
+    color: '#0066cc',
+    fontWeight: '500',
+  },
+})
