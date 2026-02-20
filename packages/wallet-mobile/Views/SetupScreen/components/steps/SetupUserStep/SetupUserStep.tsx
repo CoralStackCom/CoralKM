@@ -1,12 +1,18 @@
 import { StepPanel } from '@/components/Stepper/components'
 import AvatarUpload from '@/components/ui/AvatarUploading'
 import { Input } from '@/components/ui/Input'
+import { useFormValidation, validators } from '@/hooks'
 import { useUserContext } from '@/providers/UserContext'
 import React, { useEffect, useState } from 'react'
 import { Text, View } from 'react-native'
 
 import { SetupUserStepProps } from './SetupUserStep.interfaces'
 import { styles } from './SetupUserStep.styles'
+
+const schema = {
+  firstName: [validators.required('First Name is required')],
+  lastName: [validators.required('Last Name is required')],
+}
 
 /**
  * Setup User Step
@@ -24,21 +30,12 @@ export const SetupUserStep: React.FC<SetupUserStepProps> = ({
   const [firstName, setFirstName] = useState(authenticatedUser.firstName || '')
   const [lastName, setLastName] = useState(authenticatedUser.lastName || '')
   const [avatar, setAvatar] = useState(authenticatedUser.avatar ?? '')
-  const [errors, setErrors] = useState({ firstName: false, lastName: false })
+  const { errors, validateAll, clearFieldError } = useFormValidation(schema)
 
   const isFirstTimeUser = !authenticatedUser.firstName && !authenticatedUser.lastName
 
-  const validate = () => {
-    const newErrors = {
-      firstName: firstName.trim() === '',
-      lastName: lastName.trim() === '',
-    }
-    setErrors(newErrors)
-    return !newErrors.firstName && !newErrors.lastName
-  }
-
   const handleNext = () => {
-    if (validate()) {
+    if (validateAll({ firstName, lastName })) {
       onNext(firstName, lastName, avatar)
     }
   }
@@ -73,12 +70,15 @@ export const SetupUserStep: React.FC<SetupUserStepProps> = ({
           First Name <Text style={styles.required}>*</Text>
         </Text>
         <Input
-          style={[styles.input, errors.firstName && styles.inputError]}
+          style={styles.input}
           placeholder="Enter your First Name"
           value={firstName}
-          onChangeText={setFirstName}
+          onChangeText={(text) => {
+            setFirstName(text)
+            clearFieldError('firstName')
+          }}
+          error={errors.firstName}
         />
-        {errors.firstName && <Text style={styles.errorText}>First Name is required</Text>}
       </View>
 
       <View style={styles.inputContainer}>
@@ -86,12 +86,15 @@ export const SetupUserStep: React.FC<SetupUserStepProps> = ({
           Last Name <Text style={styles.required}>*</Text>
         </Text>
         <Input
-          style={[styles.input, errors.lastName && styles.inputError]}
+          style={styles.input}
           placeholder="Enter your Last Name"
           value={lastName}
-          onChangeText={setLastName}
+          onChangeText={(text) => {
+            setLastName(text)
+            clearFieldError('lastName')
+          }}
+          error={errors.lastName}
         />
-        {errors.lastName && <Text style={styles.errorText}>Last Name is required</Text>}
       </View>
     </StepPanel>
   )

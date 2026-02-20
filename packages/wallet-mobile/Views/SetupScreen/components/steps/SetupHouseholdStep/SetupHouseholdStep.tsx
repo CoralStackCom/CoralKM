@@ -1,12 +1,19 @@
 import { StepPanel } from '@/components/Stepper/components'
 import AvatarUpload from '@/components/ui/AvatarUploading'
 import { Input } from '@/components/ui/Input'
+import { useFormValidation, validators } from '@/hooks'
 import { useUserContext } from '@/providers/UserContext'
 import React, { useEffect, useState } from 'react'
 import { Text, View } from 'react-native'
 
 import { SetupHouseholdStepProps } from './SetupHouseholdStep.interfaces'
 import { styles } from './SetupHouseholdStep.styles'
+
+const schema = {
+  name: [validators.required('Household Name is required')],
+  country: [validators.required('Country is required')],
+  currency: [validators.required('Currency is required')],
+}
 
 /**
  * Setup Household Step
@@ -24,9 +31,12 @@ export const SetupHouseholdStep: React.FC<SetupHouseholdStepProps> = ({
   const [country, setCountry] = useState('USA')
   const [currency, setCurrency] = useState('USD')
   const [logo, setLogo] = useState('')
+  const { errors, validateAll, clearFieldError } = useFormValidation(schema)
 
   const handleNext = () => {
-    onNext(name, country, currency, logo)
+    if (validateAll({ name, country, currency })) {
+      onNext(name, country, currency, logo)
+    }
   }
 
   const isReady = name.trim() !== '' && country.trim() !== '' && currency.trim() !== ''
@@ -59,7 +69,11 @@ export const SetupHouseholdStep: React.FC<SetupHouseholdStepProps> = ({
           style={styles.input}
           placeholder="Enter household name"
           value={name}
-          onChangeText={setName}
+          onChangeText={(text) => {
+            setName(text)
+            clearFieldError('name')
+          }}
+          error={errors.name}
         />
       </View>
 
@@ -71,7 +85,11 @@ export const SetupHouseholdStep: React.FC<SetupHouseholdStepProps> = ({
           style={styles.input}
           placeholder="Enter country"
           value={country}
-          onChangeText={setCountry}
+          onChangeText={(text) => {
+            setCountry(text)
+            clearFieldError('country')
+          }}
+          error={errors.country}
         />
       </View>
 
@@ -83,7 +101,11 @@ export const SetupHouseholdStep: React.FC<SetupHouseholdStepProps> = ({
           style={styles.input}
           placeholder="Enter currency code (e.g., USD)"
           value={currency}
-          onChangeText={setCurrency}
+          onChangeText={(text) => {
+            setCurrency(text)
+            clearFieldError('currency')
+          }}
+          error={errors.currency}
         />
       </View>
     </StepPanel>

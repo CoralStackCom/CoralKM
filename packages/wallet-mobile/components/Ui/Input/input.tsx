@@ -1,5 +1,5 @@
 import type React from 'react'
-import { TextInput } from 'react-native'
+import { Text, TextInput, View } from 'react-native'
 import { InputProps } from './Input.interfaces'
 import { styles } from './input.styles'
 
@@ -7,9 +7,21 @@ import { styles } from './input.styles'
  * Input component.
  *
  * A styled wrapper around React Native `TextInput`
- * that provides consistent default styling.
+ * that provides consistent default styling with
+ * optional inline validation error display.
  */
 
-export const Input: React.FC<InputProps> = ({ style, ...props }) => {
-  return <TextInput style={[styles.input, style]} placeholderTextColor="#9CA3AF" {...props} />
+export const Input: React.FC<InputProps> = ({ style, error, ...props }) => {
+  const hasError = typeof error === 'string' && error.length > 0
+
+  return (
+    <View>
+      <TextInput
+        style={[styles.input, style, hasError && styles.inputError]}
+        placeholderTextColor="#9CA3AF"
+        {...props}
+      />
+      {hasError && <Text style={styles.errorText}>{error}</Text>}
+    </View>
+  )
 }

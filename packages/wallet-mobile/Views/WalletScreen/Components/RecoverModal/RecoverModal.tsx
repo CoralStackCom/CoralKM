@@ -1,10 +1,18 @@
 import { Textarea } from '@/components/ui/TextArea'
+import { useFormValidation, validators } from '@/hooks'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import React from 'react'
 import { Modal, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
 
 import { RecoverModalProps } from './RecoverModal.interfaces'
 import { styles } from './RecoverModal.styles'
+
+const schema = {
+  namespaceJSON: [
+    validators.required('Namespace JSON is required'),
+    validators.jsonWithKeys(['id', 'gateway_did']),
+  ],
+}
 
 /**
  * RecoverModal Component
@@ -21,36 +29,10 @@ import { styles } from './RecoverModal.styles'
 export const RecoverModal: React.FC<RecoverModalProps> = ({ wallet }) => {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
   const [namespaceJSON, setNamespaceJSON] = React.useState('')
-  const [fieldError, setFieldError] = React.useState<string | null>(null)
-
-  const validateField = (value: string) => {
-    if (!value.trim()) {
-      setFieldError(null)
-      return false
-    }
-
-    try {
-      const parsed = JSON.parse(value)
-
-      if (!('id' in parsed)) {
-        setFieldError('Missing required field: id')
-        return false
-      }
-      if (!('gateway_did' in parsed)) {
-        setFieldError('Missing required field: gateway_did')
-        return false
-      }
-
-      setFieldError(null)
-      return true
-    } catch {
-      setFieldError('Invalid JSON')
-      return false
-    }
-  }
+  const { errors, validateField, clearErrors } = useFormValidation(schema)
 
   const submitRecovery = () => {
-    if (!validateField(namespaceJSON)) return
+    if (!validateField('namespaceJSON', namespaceJSON)) return
     wallet.recoverWallet(JSON.parse(namespaceJSON))
     setIsDialogOpen(false)
     setNamespaceJSON('')
@@ -59,7 +41,7 @@ export const RecoverModal: React.FC<RecoverModalProps> = ({ wallet }) => {
   const resetState = () => {
     setIsDialogOpen(false)
     setNamespaceJSON('')
-    setFieldError(null)
+    clearErrors()
   }
 
   return (
@@ -82,12 +64,11 @@ export const RecoverModal: React.FC<RecoverModalProps> = ({ wallet }) => {
               value={namespaceJSON}
               onChangeText={(txt: string) => {
                 setNamespaceJSON(txt)
-                validateField(txt)
+                validateField('namespaceJSON', txt)
               }}
-              style={[styles.textInput, { borderColor: fieldError ? '#FF3B30' : '#e0e0e0' }]}
+              style={styles.textInput}
+              error={errors.namespaceJSON}
             />
-
-            {fieldError && <Text style={styles.errorText}>{fieldError}</Text>}
           </View>
 
           <View style={styles.footer}>
@@ -98,9 +79,9 @@ export const RecoverModal: React.FC<RecoverModalProps> = ({ wallet }) => {
             <TouchableOpacity
               style={[
                 styles.recoverBtn,
-                { opacity: !namespaceJSON.trim() || fieldError ? 0.5 : 1 },
+                { opacity: !namespaceJSON.trim() || errors.namespaceJSON ? 0.5 : 1 },
               ]}
-              disabled={!namespaceJSON.trim() || fieldError !== null}
+              disabled={!namespaceJSON.trim() || errors.namespaceJSON !== null}
               onPress={submitRecovery}
             >
               <Text style={styles.recoverText}>Recover</Text>

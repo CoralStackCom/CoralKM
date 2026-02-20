@@ -6,4 +6,8 @@ export interface TextareaProps extends React.ComponentProps<typeof TextInput> {
    *
    * */
   className?: string
+  /**
+   * Validation error message. Shows error border and message when non-null.
+   */
+  error?: string | null
 }

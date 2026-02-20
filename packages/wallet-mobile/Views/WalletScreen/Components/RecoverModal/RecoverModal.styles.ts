@@ -19,7 +19,6 @@ export const styles = StyleSheet.create({
     fontFamily: 'monospace',
     marginBottom: 12,
   },
-  errorText: { fontSize: 12, color: '#FF3B30', marginBottom: 12 },
   footer: {
     flexDirection: 'row',
     gap: 8,

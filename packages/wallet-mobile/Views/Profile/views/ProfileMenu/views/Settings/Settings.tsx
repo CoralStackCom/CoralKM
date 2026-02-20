@@ -6,8 +6,9 @@ import Header from '@/components/ui/Header'
 import { IconSymbol } from '@/components/ui/icon-symbol'
 import InfoBanner from '@/components/ui/InfoBanner'
 import { Input } from '@/components/ui/Input'
+import { useFormValidation, validators } from '@/hooks'
 import { useAuth } from '@/providers/AuthContext'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Alert, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 
 import { styles } from './Settings.styles'
@@ -24,24 +25,34 @@ export const Settings: React.FC = () => {
   const [confirmPasscode, setConfirmPasscode] = useState('')
   const [showSetup, setShowSetup] = useState(false)
 
+  const schema = useMemo(
+    () => ({
+      passcode: [
+        validators.required('Passcode is required'),
+        validators.exactLength(6, 'Passcode must be 6 digits'),
+        validators.pattern(/^\d{6}$/, 'Passcode must be 6 digits'),
+      ],
+      confirmPasscode: [
+        validators.required('Please confirm your passcode'),
+        validators.matches('passcode', 'Passcodes do not match'),
+      ],
+    }),
+    []
+  )
+
+  const { errors, validateAll, clearFieldError, clearErrors } = useFormValidation(schema)
+
   /**
    * Handles enabling authentication with passcode validation
    */
   const handleEnableAuth = async () => {
-    if (passcode.length !== 6) {
-      Alert.alert('Error', 'Passcode must be 6 digits')
-      return
-    }
-
-    if (passcode !== confirmPasscode) {
-      Alert.alert('Error', 'Passcodes do not match')
-      return
-    }
+    if (!validateAll({ passcode, confirmPasscode })) return
 
     await enableAuth(passcode)
     setPasscode('')
     setConfirmPasscode('')
     setShowSetup(false)
+    clearErrors()
     Alert.alert('Success', 'Authentication enabled successfully')
   }
 
@@ -67,6 +78,7 @@ export const Settings: React.FC = () => {
     setShowSetup(false)
     setPasscode('')
     setConfirmPasscode('')
+    clearErrors()
   }
 
   return (
@@ -110,11 +122,15 @@ export const Settings: React.FC = () => {
                 <Input
                   style={styles.input}
                   value={passcode}
-                  onChangeText={setPasscode}
+                  onChangeText={(text) => {
+                    setPasscode(text)
+                    clearFieldError('passcode')
+                  }}
                   keyboardType="number-pad"
                   maxLength={6}
                   secureTextEntry
                   placeholder="6-digit passcode"
+                  error={errors.passcode}
                 />
               </View>
 
@@ -123,11 +139,15 @@ export const Settings: React.FC = () => {
                 <Input
                   style={styles.input}
                   value={confirmPasscode}
-                  onChangeText={setConfirmPasscode}
+                  onChangeText={(text) => {
+                    setConfirmPasscode(text)
+                    clearFieldError('confirmPasscode')
+                  }}
                   keyboardType="number-pad"
                   maxLength={6}
                   secureTextEntry
                   placeholder="Re-enter passcode"
+                  error={errors.confirmPasscode}
                 />
               </View>
 

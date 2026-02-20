@@ -5,13 +5,23 @@ import AvatarUpload from '@/components/ui/AvatarUploading'
 import Header from '@/components/ui/Header'
 import { IconSymbol } from '@/components/ui/icon-symbol'
 import { Input } from '@/components/ui/Input'
+import { useFormValidation, validators } from '@/hooks'
 import { useUserContext } from '@/providers/UserContext'
 import { useRouter } from 'expo-router'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 
 import type { ProfileScreenProps } from './ProfileScreen.interfaces'
 import { styles } from './ProfileScreen.styles'
+
+const schema = {
+  firstName: [validators.required('First Name is required')],
+  lastName: [validators.required('Last Name is required')],
+  email: [validators.required('Email is required'), validators.email('Invalid email format')],
+  householdName: [validators.required('Household Name is required')],
+  country: [validators.required('Country is required')],
+  currency: [validators.required('Currency is required')],
+}
 
 /**
  * ProfileScreen component.
@@ -32,8 +42,21 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigateSettings
   const [editCountry, setEditCountry] = useState(household?.country || '')
   const [editCurrency, setEditCurrency] = useState(household?.currency || '')
 
+  const { errors, validateAll, clearFieldError, clearErrors } = useFormValidation(schema)
+
   /** Saves edited profile and household data */
   const handleSave = () => {
+    const values: Record<string, string> = {
+      firstName: editFirstName,
+      lastName: editLastName,
+      email: editEmail,
+      householdName: editHouseholdName,
+      country: editCountry,
+      currency: editCurrency,
+    }
+
+    if (!validateAll(values)) return
+
     if (user) {
       updateUser({
         firstName: editFirstName,
@@ -60,6 +83,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigateSettings
     setEditCountry(household?.country || '')
     setEditCurrency(household?.currency || '')
     setIsEditing(false)
+    clearErrors()
   }
 
   /** Renders an info row with label and either editable input or display value */
@@ -68,6 +92,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigateSettings
     value: string | undefined,
     editValue: string,
     onChangeText: (text: string) => void,
+    fieldName: string,
     options?: { keyboardType?: 'default' | 'email-address'; autoCapitalize?: 'none' | 'sentences' }
   ) => (
     <View style={styles.infoRow}>
@@ -76,11 +101,15 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigateSettings
         <Input
           style={styles.input}
           value={editValue}
-          onChangeText={onChangeText}
+          onChangeText={(text) => {
+            onChangeText(text)
+            clearFieldError(fieldName)
+          }}
           placeholder={label}
           placeholderTextColor="#A0A0A0"
           keyboardType={options?.keyboardType}
           autoCapitalize={options?.autoCapitalize}
+          error={errors[fieldName]}
         />
       ) : (
         <Text style={styles.value}>{value ?? ''}</Text>
@@ -142,11 +171,11 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigateSettings
             </View>
 
             <View style={styles.cardContent}>
-              {renderInfoRow('First Name', user?.firstName, editFirstName, setEditFirstName)}
+              {renderInfoRow('First Name', user?.firstName, editFirstName, setEditFirstName, 'firstName')}
               <View style={styles.divider} />
-              {renderInfoRow('Last Name', user?.lastName, editLastName, setEditLastName)}
+              {renderInfoRow('Last Name', user?.lastName, editLastName, setEditLastName, 'lastName')}
               <View style={styles.divider} />
-              {renderInfoRow('Email Address', user?.email, editEmail, setEditEmail, {
+              {renderInfoRow('Email Address', user?.email, editEmail, setEditEmail, 'email', {
                 keyboardType: 'email-address',
                 autoCapitalize: 'none',
               })}
@@ -173,11 +202,11 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigateSettings
                   />
                 </View>
 
-                {renderInfoRow('Household Name', household.name, editHouseholdName, setEditHouseholdName)}
+                {renderInfoRow('Household Name', household.name, editHouseholdName, setEditHouseholdName, 'householdName')}
                 <View style={styles.divider} />
-                {renderInfoRow('Country', household.country, editCountry, setEditCountry)}
+                {renderInfoRow('Country', household.country, editCountry, setEditCountry, 'country')}
                 <View style={styles.divider} />
-                {renderInfoRow('Currency', household.currency, editCurrency, setEditCurrency)}
+                {renderInfoRow('Currency', household.currency, editCurrency, setEditCurrency, 'currency')}
               </View>
             </Section>
           )}

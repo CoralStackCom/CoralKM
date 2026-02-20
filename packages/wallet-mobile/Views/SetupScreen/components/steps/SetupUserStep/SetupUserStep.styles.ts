@@ -1,5 +1,7 @@
 import { StyleSheet } from "react-native";
 
+import { VALIDATION_ERROR_COLOR } from "@/constants/validation";
+
 export const styles = StyleSheet.create({
   description: {
     fontSize: 16,
@@ -27,7 +29,7 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
   },
   required: {
-    color: "#ff0000",
+    color: VALIDATION_ERROR_COLOR,
   },
   input: {
     borderWidth: 1,
@@ -37,13 +39,5 @@ export const styles = StyleSheet.create({
     paddingVertical: 10,
     fontSize: 16,
     backgroundColor: "#fff",
-  },
-  inputError: {
-    borderColor: "#ff0000",
-  },
-  errorText: {
-    color: "#ff0000",
-    fontSize: 12,
-    marginTop: 4,
   },
 });
