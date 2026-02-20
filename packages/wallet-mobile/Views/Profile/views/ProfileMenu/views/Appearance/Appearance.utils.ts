@@ -1,7 +1,8 @@
+import type { IconSymbolName } from '@/components/ui/icon-symbol'
 import { AccentColor, Theme } from './Appearance.interfaces'
 
-export const themes: { key: Theme; label: string; icon: string }[] = [
-  { key: 'light', label: 'Light', icon: 'wb-sunny' },
+export const themes: { key: Theme; label: string; icon: IconSymbolName }[] = [
+  { key: 'light', label: 'Light', icon: 'sun.fill' },
   { key: 'dark', label: 'Dark', icon: 'moon.fill' },
   { key: 'system', label: 'System', icon: 'gear' },
 ]

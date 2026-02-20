@@ -24,7 +24,7 @@ export const BubbleStep: React.FC<BubbleStepProps> = ({
   isActive = false,
   isComplete = false,
   showDelay = 1.5,
-}: BubbleStepProps) {
+}) => {
   // Component State
   const scale = useSharedValue(0);
   const animationScale = useSharedValue(1);

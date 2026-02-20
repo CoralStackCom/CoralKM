@@ -23,7 +23,7 @@ export const SetupUserStep: React.FC<SetupUserStepProps> = ({
   const { user, setUser } = useUserContext()
   const [firstName, setFirstName] = useState(authenticatedUser.firstName || '')
   const [lastName, setLastName] = useState(authenticatedUser.lastName || '')
-  const [avatar, setAvatar] = useState(authenticatedUser.avatar)
+  const [avatar, setAvatar] = useState(authenticatedUser.avatar ?? '')
   const [errors, setErrors] = useState({ firstName: false, lastName: false })
 
   const isFirstTimeUser = !authenticatedUser.firstName && !authenticatedUser.lastName
@@ -45,7 +45,7 @@ export const SetupUserStep: React.FC<SetupUserStepProps> = ({
 
   const isReady = firstName.trim() !== '' && lastName.trim() !== ''
   useEffect(() => {
-    if (user?.id) {
+    if (user?.id && user) {
       setUser({ ...user, firstName, lastName, avatar })
     }
   }, [firstName, lastName, avatar])

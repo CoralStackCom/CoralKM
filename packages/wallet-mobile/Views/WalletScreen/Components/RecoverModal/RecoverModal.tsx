@@ -80,7 +80,7 @@ export const RecoverModal: React.FC<RecoverModalProps> = ({ wallet }) => {
               placeholder="Namespace JSON"
               numberOfLines={8}
               value={namespaceJSON}
-              onChangeText={txt => {
+              onChangeText={(txt: string) => {
                 setNamespaceJSON(txt)
                 validateField(txt)
               }}

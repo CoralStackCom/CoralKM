@@ -2,6 +2,7 @@
 import { IconSymbol } from '@/components/ui/icon-symbol'
 import React from 'react'
 import { Text, View } from 'react-native'
+import { SectionRowHeaderProps } from './SectionRowHeader.interfaces'
 import { styles } from './SectionRowHeader.styles'
 
 /**

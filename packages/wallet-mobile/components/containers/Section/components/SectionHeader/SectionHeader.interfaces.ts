@@ -1,6 +1,8 @@
+import type { IconSymbolName } from '@/components/ui/icon-symbol'
+
 export interface SectionHeaderProps {
   /** Icon name displayed above the title */
-  iconName: string
+  iconName: IconSymbolName
 
   /** Title text of the section */
   title: string

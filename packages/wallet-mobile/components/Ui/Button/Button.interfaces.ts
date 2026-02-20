@@ -1,4 +1,4 @@
-import { type TextStyle, type ViewStyle } from 'react-native'
+import { type StyleProp, type TextStyle, type ViewStyle } from 'react-native'
 
 /**
  * Button component properties
@@ -20,7 +20,7 @@ export interface ButtonProps {
   onPress?: () => void
 
   /** Custom style for the button container */
-  style?: ViewStyle
+  style?: StyleProp<ViewStyle>
 
   /** Custom style for the text inside the button */
   textStyle?: TextStyle

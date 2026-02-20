@@ -1,5 +1,5 @@
 import { router } from 'expo-router'
-import type { MenuItem } from './Profilemenu.interfaces'
+import type { MenuItem } from './ProfileMenu.interfaces'
 
 export const menuItems: MenuItem[] = [
   {

@@ -1,5 +1,5 @@
 import type React from 'react'
-import { Pressable, Text } from 'react-native'
+import { Pressable, StyleSheet, Text, type ViewStyle } from 'react-native'
 import { ButtonProps } from './Button.interfaces'
 import { styles } from './Button.styles'
 
@@ -21,17 +21,19 @@ export const Button: React.FC<ButtonProps> = ({
   style,
   textStyle,
 }) => {
-  const buttonStyle = [
+  const buttonStyle: ViewStyle[] = [
     styles.base,
-    styles[variant as keyof typeof styles],
-    styles[`size-${size}` as keyof typeof styles],
-    disabled && styles.disabled,
-    style,
+    styles[variant as keyof typeof styles] as ViewStyle,
+    styles[`size-${size}` as keyof typeof styles] as ViewStyle,
+    disabled ? styles.disabled : {},
+    StyleSheet.flatten(style) ?? {},
   ]
 
   return (
     <Pressable
-      style={({ pressed }) => [buttonStyle, pressed && !disabled && styles.pressed]}
+      style={({ pressed }) =>
+        [...buttonStyle, pressed && !disabled ? styles.pressed : {}] as ViewStyle[]
+      }
       onPress={onPress}
       disabled={disabled}
     >

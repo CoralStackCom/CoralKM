@@ -17,7 +17,7 @@ polyfillWebCrypto()
 // 4. Ensure crypto.getRandomValues is available globally
 // This is critical for Veramo and other crypto libraries
 if (typeof global.crypto === 'undefined') {
-  global.crypto = {}
+  ;(global as any).crypto = {}
 }
 
 // If getRandomValues is still not defined after polyfillWebCrypto,
@@ -25,7 +25,7 @@ if (typeof global.crypto === 'undefined') {
 if (typeof global.crypto.getRandomValues === 'undefined') {
   // react-native-get-random-values should have set this up
   // but we ensure it's available
-  const getRandomValues = array => {
+  const getRandomValues = (array: ArrayBufferView) => {
     const bytes = require('react-native-get-random-values').getRandomValues(array)
     return bytes
   }
@@ -46,5 +46,5 @@ try {
   global.crypto.getRandomValues(testArray)
   console.log('✅ Shim loaded: Buffer, Process, Crypto, and getRandomValues ready.')
 } catch (e) {
-  console.error('❌ Shim Error: crypto.getRandomValues failed:', e.message)
+  console.error('❌ Shim Error: crypto.getRandomValues failed:', (e as Error).message)
 }

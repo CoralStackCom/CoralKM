@@ -24,6 +24,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
   size = 100,
   onImageChange,
   editable = true,
+  style: containerStyle,
 }) => {
   // Component State
   const [imageUri, setImageUri] = useState(uri)
@@ -86,7 +87,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
   }
 
   return (
-    <View style={[styles.container, { width: size, height: size }]}>
+    <View style={[styles.container, { width: size, height: size }, containerStyle]}>
       {imageUri ? (
         <Image
           source={{ uri: imageUri }}

@@ -1,3 +1,5 @@
+import type { IconSymbolName } from '../icon-symbol'
+
 // Component Props Interfaces
 
 export interface SelectableListItem {
@@ -12,7 +14,7 @@ export interface SelectableListItem {
   /**
    * Optional icon name for the item
    */
-  icon?: string
+  icon?: IconSymbolName
 }
 
 export interface SelectableListProps<T> {

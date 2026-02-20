@@ -1,3 +1,5 @@
+import type { IconSymbolName } from '../icon-symbol'
+
 export interface ActionRowProps {
   /** Title of the action row */
   title: string
@@ -5,8 +7,8 @@ export interface ActionRowProps {
   description?: string
   /** Optional onPress handler for the action row */
   onPress?: () => void
-  /** Optional left icon component */
-  leftIcon?: React.ReactNode
+  /** Optional left icon name */
+  leftIcon?: IconSymbolName
   /** Optional right icon component */
   rightIcon?: React.ReactNode
   /** Optional color for the icons */

@@ -1,1 +1,1 @@
-export { default as EntropyGenerator } from "./EntropyGenerator";
+export { EntropyGenerator } from "./EntropyGenerator";

@@ -83,7 +83,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigateSettings
           autoCapitalize={options?.autoCapitalize}
         />
       ) : (
-        <Text style={styles.value}>{value}</Text>
+        <Text style={styles.value}>{value ?? ''}</Text>
       )}
     </View>
   )
@@ -104,7 +104,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigateSettings
         {/* Profile Header Card */}
         <View style={styles.profileHeaderCard}>
           <View style={styles.avatarWrapper}>
-            <AvatarUpload uri={user?.avatar} style={styles.avatar} />
+            <AvatarUpload uri={user?.avatar ?? ''} style={styles.avatar} />
           </View>
 
           <Text style={styles.userName}>

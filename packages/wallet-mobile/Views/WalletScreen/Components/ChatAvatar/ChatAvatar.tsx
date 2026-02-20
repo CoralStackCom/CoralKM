@@ -26,7 +26,7 @@ export const ChatAvatar: React.FC<ChatAvatarProps> = ({ name, picture, size = 48
   const initials = name?.charAt(0)?.toUpperCase()
 
   const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8']
-  const bgColor = colors[name?.charCodeAt(0) % colors.length]
+  const bgColor = colors[(name?.charCodeAt(0) ?? 0) % colors.length]
 
   return (
     <View style={styles(size, bgColor).container}>

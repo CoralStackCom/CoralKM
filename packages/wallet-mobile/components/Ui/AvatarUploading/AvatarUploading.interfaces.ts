@@ -1,3 +1,5 @@
+import type { StyleProp, ViewStyle } from 'react-native'
+
 export interface AvatarUploadProps {
   /** URI of the current avatar image */
   uri: string
@@ -10,4 +12,7 @@ export interface AvatarUploadProps {
 
   /** Whether the avatar is editable */
   editable?: boolean
+
+  /** Optional style for the container */
+  style?: StyleProp<ViewStyle>
 }

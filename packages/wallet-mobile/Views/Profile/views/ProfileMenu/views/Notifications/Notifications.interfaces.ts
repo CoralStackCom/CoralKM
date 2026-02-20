@@ -1,3 +1,5 @@
+import type { IconSymbolName } from '@/components/ui/icon-symbol'
+
 /**
  * Interfaces for NotificationsScreen component.
  *
@@ -10,7 +12,7 @@ export interface NotificationSettingItem {
   /** Description text shown below the title */
   description: string
   /** Icon name from the icon set */
-  leftIcon: string
+  leftIcon: IconSymbolName
   /** Current toggle state */
   value: boolean
   /** Callback when toggle changes */

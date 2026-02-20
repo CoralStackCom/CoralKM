@@ -170,7 +170,7 @@ export const Wallet: React.FC = () => {
           selectChannel={setSelectedChannelId}
         />
         <MessageComposer
-          currentUser={currentUser}
+          currentUser={currentUser!}
           selectedChannel={selectedChannel}
           sendMessage={async message => {
             await wallet.sendMessage(message)

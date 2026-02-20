@@ -5,7 +5,7 @@ import { SymbolWeight } from 'expo-symbols'
 import { ComponentProps } from 'react'
 import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native'
 
-type IconSymbolName =
+export type IconSymbolName =
   | 'house.fill'
   | 'paperplane.fill'
   | 'chevron.left.forwardslash.chevron.right'
@@ -15,15 +15,18 @@ type IconSymbolName =
   | 'person.text.rectangle'
   | 'person.fill'
   | 'lock.fill'
+  | 'lock'
+  | 'lock.shield.fill'
   | 'arrow.right.square'
+  | 'arrow.left'
   | 'notifications.fill'
   | 'moon'
+  | 'moon.fill'
+  | 'sun.fill'
   | 'smartphone'
   | 'help.fill'
   | 'camera'
-  | 'arrow.left'
   | 'gear'
-  | 'lock.shield.fill'
   | 'info.circle.fill'
   | 'warning.fill'
   | 'inbox.fill'
@@ -35,8 +38,6 @@ type IconSymbolName =
   | 'calendar.fill'
   | 'chart.fill'
   | 'card.fill'
-  | 'moon.fill'
-  | 'sun.fill'
   | 'phone.fill'
   | 'tablet.fill'
   | 'desktop.fill'
@@ -49,7 +50,6 @@ type IconSymbolName =
   | 'biometric.fill'
   | 'search'
   | 'privacy.security.fill'
-  | 'biometric.fill'
   | 'download.data.fill'
   | 'activity.alerts.fill'
   | 'budget.alerts.fill'
@@ -57,6 +57,24 @@ type IconSymbolName =
   | 'report.bug.fill'
   | 'help.support.fill'
   | 'notifications.page.fill'
+  | 'line.3.horizontal'
+  | 'pencil'
+  | 'checkmark'
+  | 'faceid'
+  | 'touchid'
+  | 'delete.left'
+  | 'message.fill'
+  | 'book'
+  | 'video'
+  | 'bug'
+  | 'bell'
+  | 'house'
+  | 'calendar'
+  | 'mail'
+  | 'megaphone'
+  | 'key'
+  | 'location'
+  | 'trash.fill'
 
 type IconMapping = Record<IconSymbolName, ComponentProps<typeof MaterialIcons>['name']>
 
@@ -66,21 +84,38 @@ type IconMapping = Record<IconSymbolName, ComponentProps<typeof MaterialIcons>['
  * - see SF Symbols in the [SF Symbols](https://developer.apple.com/sf-symbols/) app.
  */
 const MAPPING: IconMapping = {
+  'house.fill': 'home',
+  'paperplane.fill': 'send',
+  'chevron.left.forwardslash.chevron.right': 'code',
+  'chevron.right': 'chevron-right',
+  'info.circle': 'info-outline',
+  'wallet.pass': 'account-balance-wallet',
+  'person.text.rectangle': 'badge',
+  'person.fill': 'person',
+  'lock.fill': 'lock',
+  lock: 'lock',
+  'lock.shield.fill': 'security',
+  'arrow.right.square': 'open-in-new',
+  'arrow.left': 'arrow-back',
+  'notifications.fill': 'notifications',
+  moon: 'dark-mode',
+  'moon.fill': 'brightness-2',
+  'sun.fill': 'wb-sunny',
+  smartphone: 'smartphone',
+  'help.fill': 'help',
+  camera: 'camera-alt',
+  gear: 'settings',
+  'info.circle.fill': 'info',
   'warning.fill': 'warning',
   'inbox.fill': 'inbox',
   'location.fill': 'location-on',
   'key.fill': 'vpn-key',
-  'notifications.fill': 'notifications',
   'touch.fill': 'touch-app',
-  'lock.fill': 'lock',
   'announcement.fill': 'campaign',
   'mail.fill': 'mail-outline',
   'calendar.fill': 'calendar-today',
   'chart.fill': 'bar-chart',
   'card.fill': 'credit-card',
-  gear: 'settings',
-  'moon.fill': 'brightness-2',
-  'sun.fill': 'wb-sunny',
   'phone.fill': 'smartphone',
   'tablet.fill': 'tablet',
   'desktop.fill': 'computer',
@@ -100,6 +135,24 @@ const MAPPING: IconMapping = {
   'report.bug.fill': 'bug-report',
   'help.support.fill': 'support-agent',
   'notifications.page.fill': 'notifications',
+  'line.3.horizontal': 'menu',
+  pencil: 'edit',
+  checkmark: 'check',
+  faceid: 'face',
+  touchid: 'fingerprint',
+  'delete.left': 'backspace',
+  'message.fill': 'message',
+  book: 'menu-book',
+  video: 'ondemand-video',
+  bug: 'bug-report',
+  bell: 'notifications',
+  house: 'home',
+  calendar: 'calendar-today',
+  mail: 'mail-outline',
+  megaphone: 'campaign',
+  key: 'vpn-key',
+  location: 'location-on',
+  'trash.fill': 'delete',
 }
 
 /**
