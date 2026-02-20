@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { TextInput, View } from 'react-native'
-import { OOBFieldProps } from './OOBField.interface'
-import { styles } from './OOBField.style'
+import { OOBFieldProps } from './OOBField.interfaces'
+import { styles } from './OOBField.styles'
 
 /**
  * OOB (Out-of-Band) field component for entering verification codes

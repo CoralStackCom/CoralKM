@@ -1,11 +1,24 @@
 import { Ionicons } from '@expo/vector-icons'
-import type React from 'react'
-import { useLayoutEffect, useRef, useState } from 'react'
-import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useLayoutEffect, useRef, useState } from 'react'
+import { Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+
 import ChatAvatar from '../ChatAvatar'
 import { ChatMessage } from '../ChatMessage'
+import { ChannelViewProps } from './ChannelView.interfaces'
+import { styles } from './ChannelView.styles'
 
-export default function ChannelView({ channel, styleMessage, selectChannel }: any) {
+/**
+ * ChannelView component.
+ *
+ * Displays a single channel's chat messages with a header showing
+ * the contact's avatar and name. Includes modals for viewing
+ * raw message data and channel info.
+ */
+export const ChannelView: React.FC<ChannelViewProps> = ({
+  channel,
+  styleMessage,
+  selectChannel,
+}) => {
   const scrollViewRef = useRef<ScrollView>(null)
   const [selectedMessage, setSelectedMessage] = useState<any | null>(null)
   const [isMessageDrawerOpen, setIsMessageDrawerOpen] = useState(false)
@@ -15,6 +28,9 @@ export default function ChannelView({ channel, styleMessage, selectChannel }: an
     scrollViewRef.current?.scrollToEnd({ animated: true })
   }, [channel?.messages.length, channel?.id])
 
+  /**
+   * Opens the message detail drawer for a specific message
+   */
   const handleViewMessage = (message: any) => {
     setSelectedMessage(message)
     setIsMessageDrawerOpen(true)
@@ -142,107 +158,4 @@ export default function ChannelView({ channel, styleMessage, selectChannel }: an
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-    gap: 12,
-  },
-  backButton: { padding: 4, marginRight: 4 },
-  avatarContainer: {
-    width: 40,
-    height: 40,
-  },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  avatarFallback: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#e0e0e0',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  avatarText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-  },
-  headerTitle: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-  },
-  infoButton: {
-    padding: 4,
-  },
-  messagesContainer: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  messagesContent: {
-    paddingHorizontal: 16,
-    paddingVertical: 24,
-    paddingBottom: 80,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  drawerContainer: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    maxHeight: '80%',
-    minHeight: '50%',
-  },
-  drawerHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-  },
-  drawerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-  },
-  drawerContent: {
-    padding: 20,
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#333',
-    marginTop: 12,
-    marginBottom: 8,
-  },
-  codeBlock: {
-    backgroundColor: '#f0f0f0',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 12,
-  },
-  codeText: {
-    fontFamily: 'monospace',
-    fontSize: 12,
-    color: '#333',
-  },
-})
+export default ChannelView

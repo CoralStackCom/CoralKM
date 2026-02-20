@@ -1,6 +1,0 @@
-export { AppearanceScreen } from './Appearance'
-export { Devices } from './Devices'
-export { HelpSupportScreen } from './HelpAndSupport'
-export { NotificationsScreen } from './Notifications'
-export { PrivacySecurityScreen } from './Privacy&Securty'
-export { Settings } from './Settings'

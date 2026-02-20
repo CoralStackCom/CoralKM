@@ -1,49 +1,39 @@
-import { StyleSheet, View } from "react-native";
-import { BubbleListProps } from "./BubbleList.interface";
-import BubbleStep from "./BubbleStep";
+import React from 'react'
+import { View } from 'react-native'
+
+import { BubbleListProps } from './BubbleList.interfaces'
+import { styles } from './BubbleList.styles'
+import { BubbleStep } from './BubbleStep'
 
 /**
- * Bubble list component for displaying step progression
+ * Bubble list component for displaying step progression.
+ *
+ * Renders a horizontal row of animated bubble steps showing
+ * the current progress through a multi-step flow.
  */
-export default function BubbleList({
+export const BubbleList: React.FC<BubbleListProps> = ({
   totalSteps,
   activeStep,
   labels,
-}: BubbleListProps) {
-  // Validate props
-  const validTotalSteps = Math.max(0, totalSteps);
-  const validActiveStep = Math.max(0, Math.min(activeStep, validTotalSteps));
+}) => {
+  const validTotalSteps = Math.max(0, totalSteps)
+  const validActiveStep = Math.max(0, Math.min(activeStep, validTotalSteps))
 
-  // Generate bubbles
-  const bubbles = [];
-  const initialTransitionDelay = 1;
+  const initialTransitionDelay = 1
 
-  for (let i = 1; i <= validTotalSteps; i++) {
-    const isComplete = i < validActiveStep;
-    const isActive = i === validActiveStep;
-    const transitionDelay = initialTransitionDelay + (i - 1) * 0.2;
-
-    bubbles.push(
+  const bubbles = Array.from({ length: validTotalSteps }, (_, i) => {
+    const stepNum = i + 1
+    return (
       <BubbleStep
-        key={i}
-        label={labels[i - 1] || ""}
-        stepNumber={i}
-        isActive={isActive}
-        isComplete={isComplete}
-        showDelay={transitionDelay}
+        key={stepNum}
+        label={labels[i] || ''}
+        stepNumber={stepNum}
+        isActive={stepNum === validActiveStep}
+        isComplete={stepNum < validActiveStep}
+        showDelay={initialTransitionDelay + i * 0.2}
       />
-    );
-  }
+    )
+  })
 
-  // Render
-  return <View style={styles.container}>{bubbles}</View>;
+  return <View style={styles.container}>{bubbles}</View>
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingVertical: 20,
-  },
-});

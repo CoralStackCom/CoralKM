@@ -9,8 +9,8 @@ import * as Clipboard from 'expo-clipboard'
 import { useCallback, useRef, useState } from 'react'
 import { Alert, PanResponder, Pressable, Text, TouchableOpacity, View } from 'react-native'
 import Canvas from 'react-native-canvas'
-import { styles } from './SetupEntropyStep.style'
-import { SetupEntropyStepProps } from './SetupentroupyStep.interfaces'
+import { styles } from './SetupEntropyStep.styles'
+import { SetupEntropyStepProps } from './SetupEntropyStep.interfaces'
 
 /**
  * Setup Entropy Step

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Image, Text, View } from 'react-native'
-import { ChatAvatarProps } from './ChatAvatar.interface'
-import { styles } from './ChatAvatar.style'
+import { ChatAvatarProps } from './ChatAvatar.interfaces'
+import { styles } from './ChatAvatar.styles'
 
 /**
  * ChatAvatar Component

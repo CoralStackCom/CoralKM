@@ -1,37 +1,49 @@
+import { AddContactDialog } from '@/components/AddContactDialog'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import * as Clipboard from 'expo-clipboard'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Alert, FlatList, Text, TouchableOpacity, View } from 'react-native'
+
 import ChatAvatar from '../ChatAvatar'
-import { styles } from './ChannelList.style'
-import { AddContactDialog } from '@/components/AddContactDialog'
+import { ChannelListProps } from './ChannelList.interfaces'
+import { styles } from './ChannelList.styles'
 
 /**
- * ChannelList Component
+ * ChannelList component.
  *
- * Renders a list of channels/contacts with their avatar, name, DID, guardian status,
- * and message count. Allows selecting a channel and copying DID to clipboard.
- *
- * @param {Object} props - Component props
- * @param {Array} props.channels - List of channel objects
- * @param {Object|null} props.selectedChannel - Currently selected channel
- * @param {Function} props.onSelectChannel - Called when a channel is selected
+ * Renders a list of channels/contacts with their avatar, name, DID,
+ * guardian status, and message count. Allows selecting a channel,
+ * copying DID to clipboard, and adding new contacts.
  */
-export function ChannelList({ channels, selectedChannel, onSelectChannel, onAddChannel }: any) {
+export const ChannelList: React.FC<ChannelListProps> = ({
+  channels,
+  selectedChannel,
+  onSelectChannel,
+  onAddChannel,
+}) => {
   const DID_REGEX = /^did:[a-z0-9]+:[a-zA-Z0-9.\-_:%]+$/
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [newChannelId, setNewChannelId] = useState('')
   const [didError, setDidError] = useState<string | null>(null)
 
+  /**
+   * Copies a DID string to the clipboard
+   */
   const copyToClipboard = async (value: string) => {
     await Clipboard.setStringAsync(value)
     Alert.alert('Copied!', 'DID copied to clipboard.')
   }
 
+  /**
+   * Validates a DID string format
+   */
   const isValidDid = (did: string) => {
     return DID_REGEX.test(did)
   }
 
+  /**
+   * Handles adding a new channel by DID
+   */
   const handleAddChannel = () => {
     const did = newChannelId.trim()
 
@@ -49,11 +61,10 @@ export function ChannelList({ channels, selectedChannel, onSelectChannel, onAddC
   }
 
   /**
-   * Renders each channel item in the FlatList.
+   * Renders each channel item in the FlatList
    */
-  const renderChannelItem = ({ item }: any) => {
+  const renderChannelItem = ({ item }: { item: typeof channels[number] }) => {
     const isSelected = selectedChannel?.id === item.id
-    console.log('Rendering channel item:', 'Selected:', selectedChannel?.id, isSelected, 's')
     return (
       <View style={[styles.channelItem, isSelected && styles.channelItemSelected]}>
         <ChatAvatar
@@ -63,7 +74,6 @@ export function ChannelList({ channels, selectedChannel, onSelectChannel, onAddC
         />
 
         <View style={styles.channelInfo}>
-          {/* FIRST ROW */}
           <View style={styles.nameRow}>
             <TouchableOpacity onPress={() => onSelectChannel(item)} style={styles.touchableName}>
               <Text style={styles.nameText}>{item.profile.displayName}</Text>
@@ -83,7 +93,6 @@ export function ChannelList({ channels, selectedChannel, onSelectChannel, onAddC
             </TouchableOpacity>
           </View>
 
-          {/* SECOND ROW */}
           <View style={styles.didRow}>
             <Text numberOfLines={1} style={styles.didText}>
               {item.id}
@@ -93,16 +102,15 @@ export function ChannelList({ channels, selectedChannel, onSelectChannel, onAddC
       </View>
     )
   }
+
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Contacts</Text>
         <TouchableOpacity onPress={() => setIsDialogOpen(true)}>
           <MaterialCommunityIcons name="plus" size={24} color="#000" />
         </TouchableOpacity>
       </View>
-      {/* Channel List */}
       <FlatList data={channels} keyExtractor={item => item.id} renderItem={renderChannelItem} />
       <AddContactDialog
         isDialogOpen={isDialogOpen}

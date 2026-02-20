@@ -1,20 +1,30 @@
 import { Background } from '@/components/Background'
+import Section from '@/components/containers/Section'
+import { SectionTitle } from '@/components/containers/Section/components/SectionTitle/SectionTitle'
 import AvatarUpload from '@/components/ui/AvatarUploading'
 import Header from '@/components/ui/Header'
 import { IconSymbol } from '@/components/ui/icon-symbol'
+import { Input } from '@/components/ui/Input'
 import { useUserContext } from '@/providers/UserContext'
 import { useRouter } from 'expo-router'
-import { useState } from 'react'
-import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import { styles } from './PorfileScreen.styles'
-import type { ProfileScreenProps } from './profileScreen.interfaces'
+import React, { useState } from 'react'
+import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 
+import type { ProfileScreenProps } from './ProfileScreen.interfaces'
+import { styles } from './ProfileScreen.styles'
+
+/**
+ * ProfileScreen component.
+ *
+ * Displays the user's profile with editable personal and household
+ * information cards. Includes avatar upload, inline editing mode,
+ * and navigation to the profile menu.
+ */
 export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigateSettings, onLogout }) => {
   const router = useRouter()
   const { user, household, updateUser, updateHousehold } = useUserContext()
   const [isEditing, setIsEditing] = useState(false)
 
-  // Local state for editing
   const [editFirstName, setEditFirstName] = useState(user?.firstName || '')
   const [editLastName, setEditLastName] = useState(user?.lastName || '')
   const [editEmail, setEditEmail] = useState(user?.email || '')
@@ -22,6 +32,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigateSettings
   const [editCountry, setEditCountry] = useState(household?.country || '')
   const [editCurrency, setEditCurrency] = useState(household?.currency || '')
 
+  /** Saves edited profile and household data */
   const handleSave = () => {
     if (user) {
       updateUser({
@@ -40,6 +51,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigateSettings
     setIsEditing(false)
   }
 
+  /** Resets form state and exits editing mode */
   const handleCancel = () => {
     setEditFirstName(user?.firstName || '')
     setEditLastName(user?.lastName || '')
@@ -50,10 +62,35 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigateSettings
     setIsEditing(false)
   }
 
+  /** Renders an info row with label and either editable input or display value */
+  const renderInfoRow = (
+    label: string,
+    value: string | undefined,
+    editValue: string,
+    onChangeText: (text: string) => void,
+    options?: { keyboardType?: 'default' | 'email-address'; autoCapitalize?: 'none' | 'sentences' }
+  ) => (
+    <View style={styles.infoRow}>
+      <Text style={styles.label}>{label}</Text>
+      {isEditing ? (
+        <Input
+          style={styles.input}
+          value={editValue}
+          onChangeText={onChangeText}
+          placeholder={label}
+          placeholderTextColor="#A0A0A0"
+          keyboardType={options?.keyboardType}
+          autoCapitalize={options?.autoCapitalize}
+        />
+      ) : (
+        <Text style={styles.value}>{value}</Text>
+      )}
+    </View>
+  )
+
   return (
     <SafeAreaView style={styles.container}>
       <Background view="underwater" />
-      {/* Header */}
       <Header
         title="Profile"
         rightComponent={
@@ -75,7 +112,6 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigateSettings
           </Text>
           <Text style={styles.userEmail}>{user?.email}</Text>
 
-          {/* Edit/Save Buttons */}
           {!isEditing ? (
             <TouchableOpacity style={styles.editButton} onPress={() => setIsEditing(true)}>
               <IconSymbol name="pencil" size={16} color="#fff" />
@@ -94,79 +130,37 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigateSettings
           )}
         </View>
 
-        {/* Content Cards Container */}
+        {/* Content Cards */}
         <View style={styles.cardsContainer}>
-          {/* Personal Information Card */}
-          <View style={styles.card}>
+          {/* Personal Information */}
+          <Section>
             <View style={styles.cardHeader}>
               <View style={styles.cardIconWrapper}>
                 <IconSymbol name="person.fill" size={20} color="#1B5678" />
               </View>
-              <Text style={styles.cardTitle}>Personal Information</Text>
+              <SectionTitle value="Personal Information" />
             </View>
 
             <View style={styles.cardContent}>
-              <View style={styles.infoRow}>
-                <Text style={styles.label}>First Name</Text>
-                {isEditing ? (
-                  <TextInput
-                    style={styles.input}
-                    value={editFirstName}
-                    onChangeText={setEditFirstName}
-                    placeholder="First Name"
-                    placeholderTextColor="#A0A0A0"
-                  />
-                ) : (
-                  <Text style={styles.value}>{user?.firstName}</Text>
-                )}
-              </View>
-
+              {renderInfoRow('First Name', user?.firstName, editFirstName, setEditFirstName)}
               <View style={styles.divider} />
-
-              <View style={styles.infoRow}>
-                <Text style={styles.label}>Last Name</Text>
-                {isEditing ? (
-                  <TextInput
-                    style={styles.input}
-                    value={editLastName}
-                    onChangeText={setEditLastName}
-                    placeholder="Last Name"
-                    placeholderTextColor="#A0A0A0"
-                  />
-                ) : (
-                  <Text style={styles.value}>{user?.lastName}</Text>
-                )}
-              </View>
-
+              {renderInfoRow('Last Name', user?.lastName, editLastName, setEditLastName)}
               <View style={styles.divider} />
-
-              <View style={styles.infoRow}>
-                <Text style={styles.label}>Email Address</Text>
-                {isEditing ? (
-                  <TextInput
-                    style={styles.input}
-                    value={editEmail}
-                    onChangeText={setEditEmail}
-                    placeholder="Email"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    placeholderTextColor="#A0A0A0"
-                  />
-                ) : (
-                  <Text style={styles.value}>{user?.email}</Text>
-                )}
-              </View>
+              {renderInfoRow('Email Address', user?.email, editEmail, setEditEmail, {
+                keyboardType: 'email-address',
+                autoCapitalize: 'none',
+              })}
             </View>
-          </View>
+          </Section>
 
-          {/* Household Information Card */}
+          {/* Household Information */}
           {household && (
-            <View style={styles.card}>
+            <Section>
               <View style={styles.cardHeader}>
                 <View style={styles.cardIconWrapper}>
                   <IconSymbol name="house.fill" size={20} color="#1B5678" />
                 </View>
-                <Text style={styles.cardTitle}>Household Information</Text>
+                <SectionTitle value="Household Information" />
               </View>
 
               <View style={styles.cardContent}>
@@ -175,68 +169,26 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigateSettings
                     uri={household.logo}
                     size={70}
                     editable={isEditing}
-                    onImageChange={newUri => {
-                      // Handle logo change if needed
-                    }}
+                    onImageChange={() => {}}
                   />
                 </View>
 
-                <View style={styles.infoRow}>
-                  <Text style={styles.label}>Household Name</Text>
-                  {isEditing ? (
-                    <TextInput
-                      style={styles.input}
-                      value={editHouseholdName}
-                      onChangeText={setEditHouseholdName}
-                      placeholder="Household Name"
-                      placeholderTextColor="#A0A0A0"
-                    />
-                  ) : (
-                    <Text style={styles.value}>{household.name}</Text>
-                  )}
-                </View>
+                {renderInfoRow('Household Name', household.name, editHouseholdName, setEditHouseholdName)}
                 <View style={styles.divider} />
-                <View style={styles.infoRow}>
-                  <Text style={styles.label}>Country</Text>
-                  {isEditing ? (
-                    <TextInput
-                      style={styles.input}
-                      value={editCountry}
-                      onChangeText={setEditCountry}
-                      placeholder="Country"
-                      placeholderTextColor="#A0A0A0"
-                    />
-                  ) : (
-                    <Text style={styles.value}>{household.country}</Text>
-                  )}
-                </View>
-
+                {renderInfoRow('Country', household.country, editCountry, setEditCountry)}
                 <View style={styles.divider} />
-
-                <View style={styles.infoRow}>
-                  <Text style={styles.label}>Currency</Text>
-                  {isEditing ? (
-                    <TextInput
-                      style={styles.input}
-                      value={editCurrency}
-                      onChangeText={setEditCurrency}
-                      placeholder="Currency"
-                      placeholderTextColor="#A0A0A0"
-                    />
-                  ) : (
-                    <Text style={styles.value}>{household.currency}</Text>
-                  )}
-                </View>
+                {renderInfoRow('Currency', household.currency, editCurrency, setEditCurrency)}
               </View>
-            </View>
+            </Section>
           )}
-          {/* Security Card */}
-          <View style={styles.card}>
+
+          {/* Security */}
+          <Section>
             <View style={styles.cardHeader}>
               <View style={styles.cardIconWrapper}>
                 <IconSymbol name="lock.fill" size={20} color="#1B5678" />
               </View>
-              <Text style={styles.cardTitle}>Security</Text>
+              <SectionTitle value="Security" />
             </View>
             <View style={styles.cardContent}>
               <View style={styles.infoRow}>
@@ -244,10 +196,9 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ onNavigateSettings
                 <Text style={styles.value}>••••••••</Text>
               </View>
             </View>
-          </View>
+          </Section>
         </View>
 
-        {/* Bottom Spacing */}
         <View style={styles.bottomSpacer} />
       </ScrollView>
     </SafeAreaView>

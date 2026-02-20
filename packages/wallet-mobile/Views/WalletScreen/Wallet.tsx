@@ -12,7 +12,7 @@ import ChannelView from './Components/ChannelView'
 import { MessageComposer } from './Components/MessageComposer/MessageComposer'
 import { UserProfileSelector } from './Components/UserProfileSelector'
 import { IChannelMessage } from './wallet.interfaces'
-import { styles } from './wallet.style'
+import { styles } from './wallet.styles'
 /**
  * Wallet Screen
  * The main screen for the wallet application, displaying user info,

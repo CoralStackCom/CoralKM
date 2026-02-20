@@ -2,7 +2,7 @@ import { Text } from 'react-native'
 
 import { useThemeColor } from '@/hooks/use-theme-color'
 import { ThemedTextProps } from './ThemedText.interfaces'
-import { styles } from './ThemedText.syles'
+import { styles } from './ThemedText.styles'
 
 /**
  * ThemedText component.

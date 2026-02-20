@@ -1,10 +1,12 @@
 import { StepPanel } from '@/components/Stepper/components'
 import AvatarUpload from '@/components/ui/AvatarUploading'
+import { Input } from '@/components/ui/Input'
 import { useUserContext } from '@/providers/UserContext'
-import { useEffect, useState } from 'react'
-import { Text, TextInput, View } from 'react-native'
-import { styles } from './SetupHouseholStep.style'
-import { SetupHouseholdStepProps } from './SetupHouseholdStep.interface'
+import React, { useEffect, useState } from 'react'
+import { Text, View } from 'react-native'
+
+import { SetupHouseholdStepProps } from './SetupHouseholdStep.interfaces'
+import { styles } from './SetupHouseholdStep.styles'
 
 /**
  * Setup Household Step
@@ -53,7 +55,7 @@ export const SetupHouseholdStep: React.FC<SetupHouseholdStepProps> = ({
         <Text style={styles.label}>
           Household Name <Text style={styles.required}>*</Text>
         </Text>
-        <TextInput
+        <Input
           style={styles.input}
           placeholder="Enter household name"
           value={name}
@@ -65,7 +67,7 @@ export const SetupHouseholdStep: React.FC<SetupHouseholdStepProps> = ({
         <Text style={styles.label}>
           Country <Text style={styles.required}>*</Text>
         </Text>
-        <TextInput
+        <Input
           style={styles.input}
           placeholder="Enter country"
           value={country}
@@ -77,7 +79,7 @@ export const SetupHouseholdStep: React.FC<SetupHouseholdStepProps> = ({
         <Text style={styles.label}>
           Currency <Text style={styles.required}>*</Text>
         </Text>
-        <TextInput
+        <Input
           style={styles.input}
           placeholder="Enter currency code (e.g., USD)"
           value={currency}

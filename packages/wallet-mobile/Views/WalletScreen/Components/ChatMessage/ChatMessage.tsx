@@ -2,7 +2,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import ChatAvatar from '../ChatAvatar'
-import { ChatMessageProps, MessageContent } from './ChatMessage.intrfaces'
+import { ChatMessageProps, MessageContent } from './ChatMessage.interfaces'
 import { styles } from './ChatMessage.styles'
 
 /**

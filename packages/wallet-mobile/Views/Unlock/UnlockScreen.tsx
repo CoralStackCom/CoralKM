@@ -4,7 +4,7 @@ import { useAuth } from '@/providers/AuthContext'
 import type React from 'react'
 import { useState } from 'react'
 import { Text, TouchableOpacity, Vibration, View } from 'react-native'
-import { styles } from './UnlockScreen.style'
+import { styles } from './UnlockScreen.styles'
 
 /**
  * Unlock screen component for app authentication

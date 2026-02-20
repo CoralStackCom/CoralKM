@@ -1,2 +1,2 @@
 export { default as Background } from './Background'
-export type { BackgroundProps } from './Background.interface'
+export type { BackgroundProps } from './Background.interfaces'

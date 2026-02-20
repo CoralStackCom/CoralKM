@@ -11,7 +11,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import Svg, { Defs, LinearGradient, Path, Stop } from 'react-native-svg'
-import type { LightRayData } from '../Background.interface'
+import type { LightRayData } from '../Background.interfaces'
 import { randomNumber } from '../Background.utils'
 
 const AnimatedPath = Animated.createAnimatedComponent(Path)

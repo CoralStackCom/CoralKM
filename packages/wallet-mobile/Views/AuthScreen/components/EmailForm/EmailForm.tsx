@@ -1,8 +1,8 @@
 import { useUserContext } from '@/providers/UserContext'
 import React, { useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, Image, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import { EmailFormProps } from './EmailForm.interface'
-import { styles } from './EmailForm.style'
+import { EmailFormProps } from './EmailForm.interfaces'
+import { styles } from './EmailForm.styles'
 
 /**
  * Reset password form component for email verification

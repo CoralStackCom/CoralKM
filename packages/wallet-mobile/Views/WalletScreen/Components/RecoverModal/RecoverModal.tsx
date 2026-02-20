@@ -1,6 +1,8 @@
+import { Textarea } from '@/components/ui/TextArea'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import React from 'react'
-import { Modal, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Modal, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
+
 import { RecoverModalProps } from './RecoverModal.interfaces'
 import { styles } from './RecoverModal.styles'
 
@@ -74,9 +76,8 @@ export const RecoverModal: React.FC<RecoverModalProps> = ({ wallet }) => {
           </View>
 
           <View style={styles.body}>
-            <TextInput
+            <Textarea
               placeholder="Namespace JSON"
-              multiline
               numberOfLines={8}
               value={namespaceJSON}
               onChangeText={txt => {

@@ -6,8 +6,8 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated'
-import { StepperProps } from './Stepper.interface'
-import { styles } from './Stepper.style'
+import { StepperProps } from './Stepper.interfaces'
+import { styles } from './Stepper.styles'
 import { BubbleList } from './components/BubbleList'
 
 const { height } = Dimensions.get('window')

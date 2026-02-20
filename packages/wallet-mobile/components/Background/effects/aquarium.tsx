@@ -11,7 +11,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import Svg, { Path } from 'react-native-svg'
-import type { FishData } from '../Background.interface'
+import type { FishData } from '../Background.interfaces'
 import { hslToHex, randomNumber } from '../Background.utils'
 
 const FISH_PATH =

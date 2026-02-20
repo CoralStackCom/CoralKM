@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Animated, View } from 'react-native'
 
-import { AuthScreenProps } from './AuthScreen.interface'
-import { styles } from './AuthScreen.style'
+import { AuthScreenProps } from './AuthScreen.interfaces'
+import { styles } from './AuthScreen.styles'
 import AuthForm from './components/AuthForm'
 import EmailForm from './components/EmailForm'
 

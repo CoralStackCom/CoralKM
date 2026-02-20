@@ -1,20 +1,24 @@
-import { Audio } from "expo-av";
-import LottieView from "lottie-react-native";
-import { useEffect, useRef } from "react";
-import { StyleSheet } from "react-native";
+import { Audio } from 'expo-av'
+import LottieView from 'lottie-react-native'
+import React, { useEffect, useRef } from 'react'
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withDelay,
   withSpring,
   withTiming,
-} from "react-native-reanimated";
-import { BubbleStepProps } from "./BubbleStep.interface";
+} from 'react-native-reanimated'
+
+import { BubbleStepProps } from './BubbleStep.interfaces'
+import { styles } from './BubbleStep.styles'
 
 /**
- * Animated bubble step component for stepper progression
+ * Animated bubble step component for stepper progression.
+ *
+ * Displays a numbered bubble with entrance, active, and completion
+ * animations including sound effects and Lottie animations.
  */
-export default function BubbleStep({
+export const BubbleStep: React.FC<BubbleStepProps> = ({
   label,
   stepNumber,
   isActive = false,
@@ -125,33 +129,3 @@ export default function BubbleStep({
     </Animated.View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    marginHorizontal: 4,
-  },
-  animationWrapper: {
-    width: 64,
-    height: 64,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 4,
-  },
-  lottie: {
-    width: 64,
-    height: 64,
-    position: "absolute",
-  },
-  number: {
-    fontSize: 18,
-    color: "#fff",
-    fontWeight: "bold",
-  },
-  label: {
-    fontSize: 18,
-    color: "#fff",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-});

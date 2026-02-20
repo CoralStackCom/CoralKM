@@ -1,6 +1,6 @@
 export { UserInfoScreen } from './Info/Info'
 export { ProfileScreen } from './Profile/ProfileScreen'
-export { ProfileMenu } from './Profile/views/ProileMenu'
+export { ProfileMenu } from './Profile/views/ProfileMenu'
 export {
   AppearanceScreen,
   Devices,
@@ -8,6 +8,6 @@ export {
   NotificationsScreen,
   PrivacySecurityScreen,
   Settings,
-} from './Profile/views/ProileMenu/views'
+} from './Profile/views/ProfileMenu/views'
 export { SetupScreen } from './SetupScreen/SetupScreen'
 export { Wallet } from './WalletScreen/Wallet'

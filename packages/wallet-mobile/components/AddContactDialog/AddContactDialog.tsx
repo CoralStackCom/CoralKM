@@ -11,7 +11,7 @@ import {
 } from 'react-native'
 
 import QRScanner from '../QrScanner'
-import { AddContactDialogProps } from './AddContactDialog.intefaces'
+import { AddContactDialogProps } from './AddContactDialog.interfaces'
 import { styles } from './AddContactDialog.styles'
 
 /**

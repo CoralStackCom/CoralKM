@@ -1,6 +1,8 @@
 import type React from 'react'
 import Animated from 'react-native-reanimated'
 
+import { styles } from './HelloWave.styles'
+
 /**
  * HelloWave component.
  *
@@ -10,16 +12,16 @@ import Animated from 'react-native-reanimated'
 export const HelloWave: React.FC = () => {
   return (
     <Animated.Text
-      style={{
-        fontSize: 28,
-        lineHeight: 32,
-        marginTop: -6,
-        animationName: {
-          '50%': { transform: [{ rotate: '25deg' }] },
+      style={[
+        styles.wave,
+        {
+          animationName: {
+            '50%': { transform: [{ rotate: '25deg' }] },
+          },
+          animationIterationCount: 4,
+          animationDuration: '300ms',
         },
-        animationIterationCount: 4,
-        animationDuration: '300ms',
-      }}
+      ]}
     >
       👋
     </Animated.Text>

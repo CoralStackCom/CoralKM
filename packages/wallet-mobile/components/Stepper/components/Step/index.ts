@@ -1,2 +1,2 @@
-export { default as Step } from './Step'
-export type { StepProps } from './Step.interface'
+export { Step, Step as default } from './Step'
+export type { StepProps } from './Step.interfaces'

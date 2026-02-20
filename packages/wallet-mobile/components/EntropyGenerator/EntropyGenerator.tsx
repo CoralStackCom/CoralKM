@@ -3,8 +3,8 @@ import type React from 'react'
 import { useCallback, useRef, useState } from 'react'
 import { Alert, PanResponder, Pressable, Text, TouchableOpacity, View } from 'react-native'
 import Canvas from 'react-native-canvas'
-import { EntropyScreenProps } from './EntropyGenerator.interface'
-import { styles } from './EntropyGenerator.style'
+import { EntropyScreenProps } from './EntropyGenerator.interfaces'
+import { styles } from './EntropyGenerator.styles'
 import { drawPattern, fadeOut, resetCanvas, updateSeed } from './EntropyGenerator.utils'
 
 /**

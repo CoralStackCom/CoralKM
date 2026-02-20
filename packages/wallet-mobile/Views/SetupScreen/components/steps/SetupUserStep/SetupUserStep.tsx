@@ -1,10 +1,12 @@
 import { StepPanel } from '@/components/Stepper/components'
 import AvatarUpload from '@/components/ui/AvatarUploading'
+import { Input } from '@/components/ui/Input'
 import { useUserContext } from '@/providers/UserContext'
-import { useEffect, useState } from 'react'
-import { Text, TextInput, View } from 'react-native'
-import { SetupUserStepProps } from './SetupUserStep.interface'
-import { styles } from './SetupUserStep.style'
+import React, { useEffect, useState } from 'react'
+import { Text, View } from 'react-native'
+
+import { SetupUserStepProps } from './SetupUserStep.interfaces'
+import { styles } from './SetupUserStep.styles'
 
 /**
  * Setup User Step
@@ -70,7 +72,7 @@ export const SetupUserStep: React.FC<SetupUserStepProps> = ({
         <Text style={styles.label}>
           First Name <Text style={styles.required}>*</Text>
         </Text>
-        <TextInput
+        <Input
           style={[styles.input, errors.firstName && styles.inputError]}
           placeholder="Enter your First Name"
           value={firstName}
@@ -83,7 +85,7 @@ export const SetupUserStep: React.FC<SetupUserStepProps> = ({
         <Text style={styles.label}>
           Last Name <Text style={styles.required}>*</Text>
         </Text>
-        <TextInput
+        <Input
           style={[styles.input, errors.lastName && styles.inputError]}
           placeholder="Enter your Last Name"
           value={lastName}

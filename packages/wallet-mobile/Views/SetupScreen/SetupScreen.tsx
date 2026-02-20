@@ -7,11 +7,13 @@ import { View } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SetupHouseholdStep, SetupUserStep } from './components/steps'
 import { SetupEntropyStep } from './components/steps/SetupEntropyStep'
-import { styles } from './SetupScreen.style'
+import { styles } from './SetupScreen.styles'
 
-/*
- * Setup Screen
- * A multi-step setup wizard to onboard new users.
+/**
+ * SetupScreen component.
+ *
+ * A multi-step setup wizard to onboard new users through
+ * profile creation, household setup, and encryption key generation.
  */
 
 export const SetupScreen: React.FC = () => {

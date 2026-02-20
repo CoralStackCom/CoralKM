@@ -7,8 +7,8 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated'
-import type { BackgroundProps, PhaseType, ViewType } from './Background.interface'
-import { styles } from './Background.style'
+import type { BackgroundProps, PhaseType, ViewType } from './Background.interfaces'
+import { styles } from './Background.styles'
 import { getCurrentPhase, getPhaseGradients } from './Background.utils'
 import { Aquarium } from './effects/aquarium'
 import { WaterGlimmer } from './effects/WaterGlimmer'

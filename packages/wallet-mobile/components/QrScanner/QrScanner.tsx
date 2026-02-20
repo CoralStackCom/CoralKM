@@ -2,7 +2,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol'
 import { Camera, CameraView } from 'expo-camera'
 import { useEffect, useState } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
-import { QRScannerComponentProps } from './QeScanner.interfaces'
+import { QRScannerComponentProps } from './QrScanner.interfaces'
 import { styles } from './QrScanner.styles'
 
 /**

@@ -3,8 +3,8 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Dimensions, Image, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { LoginAnimation, type LoginAnimationRef } from '../LoginAnimation'
-import { AuthFormProps } from './AuthForm.interface'
-import { styles } from './AuthForm.style'
+import { AuthFormProps } from './AuthForm.interfaces'
+import { styles } from './AuthForm.styles'
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window')
 

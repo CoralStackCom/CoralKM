@@ -1,6 +1,6 @@
 import { Link } from 'expo-router'
 import { openBrowserAsync, WebBrowserPresentationStyle } from 'expo-web-browser'
-import { ExternalLinkProps } from './ExternalLink.styles'
+import { ExternalLinkProps } from './ExternalLink.interfaces'
 
 /**
  * ExternalLink component.

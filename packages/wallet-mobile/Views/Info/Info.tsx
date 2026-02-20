@@ -1,7 +1,7 @@
 import '@/app/shim'
 
 import { Background } from '@/components/Background'
-import { SectionHeader } from '@/components/contianers/Section/components/SectionHeader/SectionHeader'
+import { SectionHeader } from '@/components/containers/Section/components/SectionHeader/SectionHeader'
 import Header from '@/components/ui/Header'
 import { useWallet } from '@/providers/wallet'
 import React, { useState } from 'react'
@@ -9,6 +9,12 @@ import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-na
 import { InfoTabs } from './components/Tabs'
 import { styles } from './Info.styles'
 
+/**
+ * UserInfoScreen component.
+ *
+ * Displays wallet information including namespace, encryption key,
+ * wallet data, and user identifiers across tabbed sections.
+ */
 export const UserInfoScreen: React.FC = () => {
   // Wallet Context
   const { user: currentUser, namespace, walletKey, backupData } = useWallet()

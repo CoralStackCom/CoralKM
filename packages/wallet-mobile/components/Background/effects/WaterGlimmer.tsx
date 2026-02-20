@@ -11,7 +11,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import Svg, { Path } from 'react-native-svg'
-import type { GlimmerData } from '../Background.interface'
+import type { GlimmerData } from '../Background.interfaces'
 import { randomNumber } from '../Background.utils'
 
 const AnimatedPath = Animated.createAnimatedComponent(Path)

@@ -1,6 +1,6 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import { StepProps } from "../Step";
-import { styles } from "./StepPanel.style";
+import { styles } from "./StepPanel.styles";
 
 /**
  * Step panel component for displaying step content with navigation controls

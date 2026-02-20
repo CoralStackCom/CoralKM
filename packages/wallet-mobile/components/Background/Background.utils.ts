@@ -1,4 +1,4 @@
-import type { PhaseType } from './Background.interface'
+import type { PhaseType } from './Background.interfaces'
 
 export function getCurrentPhase(): PhaseType {
   const hour = new Date().getHours()

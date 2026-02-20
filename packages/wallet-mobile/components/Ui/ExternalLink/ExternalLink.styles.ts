@@ -1,14 +1,6 @@
-import { Href, Link } from 'expo-router'
-import type { ComponentProps } from 'react'
+import { StyleSheet } from 'react-native'
 
 /**
- * Props for ExternalLink component
- *
- * Extends Expo Router Link props but enforces string-based external href.
+ * Styles for ExternalLink component.
  */
-export type ExternalLinkProps = Omit<ComponentProps<typeof Link>, 'href'> & {
-  /**
-   * External URL to open
-   */
-  href: Href & string
-}
+export const styles = StyleSheet.create({})
