@@ -19,15 +19,17 @@ export const SearchInput: React.FC<SearchInputProps> = ({
   placeholderTextColor = '#999',
 }) => {
   return (
-    <View style={styles.container}>
+    <View style={styles.container} accessible={true} accessibilityRole="search">
       <IconSymbol name="search" size={20} style={styles.icon} />
 
       <TextInput
-        style={styles.input}
+        style={[styles.input, { minHeight: 44 }]}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
         placeholderTextColor={placeholderTextColor}
+        accessibilityLabel="Search"
+        accessibilityHint="Type to search or filter content"
       />
     </View>
   )

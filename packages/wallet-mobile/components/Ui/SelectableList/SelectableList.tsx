@@ -10,16 +10,20 @@ import { styles } from './SelectableList.styles'
 export const SelectableList: React.FC<SelectableListProps<any>> = ({ List, value, onChange }) => {
   // Render
   return (
-    <View style={styles.container}>
+    <View style={styles.container} accessibilityRole="radiogroup">
       {List?.map((item, index) => {
         const selected = value === item.key
 
         return (
           <View key={item.key}>
             <TouchableOpacity
-              style={styles.row}
+              style={[styles.row, { minHeight: 44 }]}
               onPress={() => onChange(item.key)}
               activeOpacity={0.7}
+              accessibilityRole="radio"
+              accessibilityLabel={item.label}
+              accessibilityState={{ selected }}
+              accessibilityHint={selected ? `${item.label} is currently selected` : `Select ${item.label}`}
             >
               <View style={styles.left}>
                 {item.icon && <IconSymbol name={item.icon} size={24} style={styles.icon} />}

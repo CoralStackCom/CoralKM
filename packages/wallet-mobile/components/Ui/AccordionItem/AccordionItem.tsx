@@ -8,10 +8,12 @@ import { styles } from './AccordionItem.styles'
  *
  * A reusable expandable item component used to show
  * and hide content such as FAQs, details, or explanations.
+ *
+ * Wrapped in React.memo to prevent unnecessary re-renders when props are unchanged.
  */
 
 // component
-export const AccordionItem: React.FC<AccordionItemProps> = ({
+const AccordionItemComponent: React.FC<AccordionItemProps> = ({
   title,
   content,
   expanded,
@@ -21,7 +23,15 @@ export const AccordionItem: React.FC<AccordionItemProps> = ({
 }) => {
   return (
     <View>
-      <TouchableOpacity style={styles.header} onPress={onToggle} activeOpacity={activeOpacity}>
+      <TouchableOpacity
+        style={[styles.header, { minHeight: 44 }]}
+        onPress={onToggle}
+        activeOpacity={activeOpacity}
+        accessibilityRole="button"
+        accessibilityLabel={title}
+        accessibilityHint={expanded ? 'Collapse this section' : 'Expand this section'}
+        accessibilityState={{ expanded }}
+      >
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.chevron}>{expanded ? '−' : '+'}</Text>
       </TouchableOpacity>
@@ -36,3 +46,6 @@ export const AccordionItem: React.FC<AccordionItemProps> = ({
     </View>
   )
 }
+
+export const AccordionItem = React.memo(AccordionItemComponent)
+AccordionItem.displayName = 'AccordionItem'

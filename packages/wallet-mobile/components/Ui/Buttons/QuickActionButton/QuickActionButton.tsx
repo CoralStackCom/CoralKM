@@ -10,10 +10,12 @@ import { styles } from './QuickActionButton.styles'
  *
  * A compact button used for quick user actions
  * such as chat, call, share, or navigate.
+ *
+ * Wrapped in React.memo to prevent unnecessary re-renders when props are unchanged.
  */
 
 // component
-export const QuickActionButton: React.FC<QuickActionButtonProps> = ({
+const QuickActionButtonComponent: React.FC<QuickActionButtonProps> = ({
   label,
   iconName,
   iconBackgroundColor,
@@ -21,7 +23,14 @@ export const QuickActionButton: React.FC<QuickActionButtonProps> = ({
   activeOpacity = 0.8,
 }) => {
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={activeOpacity}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={onPress}
+      activeOpacity={activeOpacity}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityHint={`Perform ${label} action`}
+    >
       <View style={[styles.iconContainer, { backgroundColor: iconBackgroundColor }]}>
         <IconSymbol name={iconName} size={20} style={styles.icon} color="white" />
       </View>
@@ -30,3 +39,6 @@ export const QuickActionButton: React.FC<QuickActionButtonProps> = ({
     </TouchableOpacity>
   )
 }
+
+export const QuickActionButton = React.memo(QuickActionButtonComponent)
+QuickActionButton.displayName = 'QuickActionButton'
