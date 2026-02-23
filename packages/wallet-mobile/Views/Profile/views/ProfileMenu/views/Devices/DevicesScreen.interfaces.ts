@@ -5,6 +5,8 @@ export interface Device {
   name: string
   /// Type of the device
   type: 'phone' | 'tablet' | 'desktop'
+  /// Platform of the device
+  platform: 'ios' | 'android' | 'web'
   /// Last known location of the device
   location: string
   /// Last active time of the device

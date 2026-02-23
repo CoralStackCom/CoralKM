@@ -9,9 +9,10 @@ import { ActionButton } from '@/components/ui/Buttons/ActionButton'
 import Header from '@/components/ui/Header'
 import { IconSymbol } from '@/components/ui/icon-symbol'
 import InfoBanner from '@/components/ui/InfoBanner'
+import { useDevices } from '@/providers/devices'
 import React from 'react'
 import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native'
-import { devices, getDeviceIcon, handleLogoutAll, handleRemoveDevice } from './Devices.utils'
+import { getDeviceIcon, handleLogoutAll, handleRemoveDevice } from './Devices.utils'
 import { styles } from './DevicesScreen.styles'
 
 /**
@@ -22,6 +23,8 @@ import { styles } from './DevicesScreen.styles'
  */
 
 export const Devices: React.FC = () => {
+  const { devices, removeDevice, removeAllOthers } = useDevices()
+
   // Render
   return (
     <SafeAreaView style={styles.container}>
@@ -40,7 +43,7 @@ export const Devices: React.FC = () => {
           <ListCard>
             {devices.map((device, index) => (
               <ListItem
-                key={index}
+                key={device.id ?? index}
                 left={
                   <>
                     <IconSymbol
@@ -60,7 +63,7 @@ export const Devices: React.FC = () => {
                 right={
                   !device.isCurrent && (
                     <TouchableOpacity
-                      onPress={() => handleRemoveDevice(device)}
+                      onPress={() => handleRemoveDevice(device, removeDevice)}
                       activeOpacity={0.7}
                     >
                       <Text style={styles.removeButtonText}>Remove</Text>
@@ -77,7 +80,7 @@ export const Devices: React.FC = () => {
           <ActionButton
             // style={styles.logoutAllButton}
             label="Log Out of All Other Devices"
-            onPress={handleLogoutAll}
+            onPress={() => handleLogoutAll(removeAllOthers)}
           />
         </Section>
 
