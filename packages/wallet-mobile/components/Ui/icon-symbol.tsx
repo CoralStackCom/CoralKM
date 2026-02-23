@@ -75,6 +75,10 @@ export type IconSymbolName =
   | 'key'
   | 'location'
   | 'trash.fill'
+  | 'flashlight.on.fill'
+  | 'flashlight.off.fill'
+  | 'photo.on.rectangle'
+  | 'exclamationmark.triangle'
 
 type IconMapping = Record<IconSymbolName, ComponentProps<typeof MaterialIcons>['name']>
 
@@ -153,6 +157,10 @@ const MAPPING: IconMapping = {
   key: 'vpn-key',
   location: 'location-on',
   'trash.fill': 'delete',
+  'flashlight.on.fill': 'flash-on',
+  'flashlight.off.fill': 'flash-off',
+  'photo.on.rectangle': 'photo-library',
+  'exclamationmark.triangle': 'error-outline',
 }
 
 /**
