@@ -3,13 +3,14 @@ import { Text, View } from 'react-native'
 import { ListItemMetaProps } from './ListItemMeta.interfaces'
 import { styles } from './ListItemMeta.styles'
 
-/*
+/**
  * ListItemMeta component.
  * Displays title, subtitle, caption, and optional badge.
  * Used within ListItem to show item metadata.
+ *
+ * Wrapped in React.memo to prevent unnecessary re-renders when props are unchanged.
  */
-
-export const ListItemMeta: React.FC<ListItemMetaProps> = ({ title, subtitle, caption, badge }) => {
+const ListItemMetaComponent: React.FC<ListItemMetaProps> = ({ title, subtitle, caption, badge }) => {
   return (
     <View style={styles.container}>
       <View style={styles.titleRow}>
@@ -22,3 +23,6 @@ export const ListItemMeta: React.FC<ListItemMetaProps> = ({ title, subtitle, cap
     </View>
   )
 }
+
+export const ListItemMeta = React.memo(ListItemMetaComponent)
+ListItemMeta.displayName = 'ListItemMeta'

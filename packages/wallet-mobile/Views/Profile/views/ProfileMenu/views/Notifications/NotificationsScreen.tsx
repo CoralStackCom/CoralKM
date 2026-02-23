@@ -2,7 +2,7 @@ import Section from '@/components/containers/Section'
 import SectionTitle from '@/components/containers/Section/components/SectionTitle'
 import ActionRow from '@/components/ui/ActionRow'
 import Header from '@/components/ui/Header'
-import React, { useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { SafeAreaView, ScrollView, Switch, View } from 'react-native'
 
 import type { NotificationSettingItem } from './Notifications.interfaces'
@@ -24,8 +24,8 @@ export const NotificationsScreen: React.FC = () => {
   const [securityAlerts, setSecurityAlerts] = useState(true)
   const [marketingEmails, setMarketingEmails] = useState(false)
 
-  /** Activity alert settings config */
-  const activityAlerts: NotificationSettingItem[] = [
+  /** Activity alert settings config (memoized to avoid re-creating on every render) */
+  const activityAlerts: NotificationSettingItem[] = useMemo(() => [
     {
       title: 'Activity Alerts',
       description: 'Get notified about important activity',
@@ -57,10 +57,10 @@ export const NotificationsScreen: React.FC = () => {
       onValueChange: setSecurityAlerts,
       disabled: !pushEnabled,
     },
-  ]
+  ], [pushEnabled, budgetAlerts, householdUpdates, securityAlerts])
 
-  /** Report settings config */
-  const reportSettings: NotificationSettingItem[] = [
+  /** Report settings config (memoized to avoid re-creating on every render) */
+  const reportSettings: NotificationSettingItem[] = useMemo(() => [
     {
       title: 'Weekly Reports',
       description: 'Summary of your account activity',
@@ -77,10 +77,10 @@ export const NotificationsScreen: React.FC = () => {
       onValueChange: setMonthlyReports,
       disabled: !pushEnabled,
     },
-  ]
+  ], [weeklyReports, monthlyReports, pushEnabled])
 
-  /** Email notification settings config */
-  const emailSettings: NotificationSettingItem[] = [
+  /** Email notification settings config (memoized to avoid re-creating on every render) */
+  const emailSettings: NotificationSettingItem[] = useMemo(() => [
     {
       title: 'Email Notifications',
       description: 'Manage your email notifications',
@@ -96,10 +96,10 @@ export const NotificationsScreen: React.FC = () => {
       onValueChange: setMarketingEmails,
       disabled: !emailEnabled,
     },
-  ]
+  ], [emailEnabled, marketingEmails])
 
-  /** Renders a section of notification settings */
-  const renderSettingsSection = (
+  /** Renders a section of notification settings (memoized to maintain stable reference) */
+  const renderSettingsSection = useCallback((
     title: string,
     items: NotificationSettingItem[]
   ) => (
@@ -123,7 +123,7 @@ export const NotificationsScreen: React.FC = () => {
         ))}
       </View>
     </Section>
-  )
+  ), [])
 
   return (
     <SafeAreaView style={styles.container}>

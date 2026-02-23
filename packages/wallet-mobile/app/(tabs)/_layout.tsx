@@ -1,3 +1,4 @@
+import { ErrorBoundary } from '@/components/containers/ErrorBoundary'
 import { IconSymbol } from '@/components/ui/icon-symbol'
 import { AuthProvider, useAuth } from '@/providers/AuthContext'
 import UnlockScreen from '@/views/Unlock'
@@ -12,7 +13,13 @@ interface TabButtonProps {
   onPress: (...args: any[]) => void
 }
 
-const TabButton: React.FC<TabButtonProps> = ({ label, iconName, isFocused, onPress }) => {
+/**
+ * TabButton component for rendering individual tab bar items with animation.
+ *
+ * Wrapped in React.memo to prevent unnecessary re-renders when tab focus state
+ * and other props remain unchanged.
+ */
+const TabButtonComponent: React.FC<TabButtonProps> = ({ label, iconName, isFocused, onPress }) => {
   const scaleAnim = React.useRef(new Animated.Value(isFocused ? 1.1 : 1)).current
 
   React.useEffect(() => {
@@ -41,6 +48,9 @@ const TabButton: React.FC<TabButtonProps> = ({ label, iconName, isFocused, onPre
   )
 }
 
+const TabButton = React.memo(TabButtonComponent)
+TabButton.displayName = 'TabButton'
+
 function TabsContent() {
   const pathname = usePathname()
   const { isLocked } = useAuth()
@@ -50,52 +60,54 @@ function TabsContent() {
   }
 
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: styles.tabBar,
-      }}
-    >
-      <Tabs.Screen
-        name="Wallet/index"
-        options={{
-          tabBarButton: ({ onPress }) => (
-            <TabButton
-              onPress={onPress!}
-              isFocused={pathname === '/(tabs)/wallet'}
-              label="Wallet"
-              iconName="person.text.rectangle"
-            />
-          ),
+    <ErrorBoundary>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarStyle: styles.tabBar,
         }}
-      />
-      <Tabs.Screen
-        name="Info/index"
-        options={{
-          tabBarButton: ({ onPress }) => (
-            <TabButton
-              onPress={onPress!}
-              isFocused={pathname === '/(tabs)/Info'}
-              label="Info"
-              iconName="info.circle"
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="Profile/index"
-        options={{
-          tabBarButton: ({ onPress }) => (
-            <TabButton
-              onPress={onPress!}
-              isFocused={pathname === '/(tabs)/Profile'}
-              label="Profile"
-              iconName="person.fill"
-            />
-          ),
-        }}
-      />
-    </Tabs>
+      >
+        <Tabs.Screen
+          name="Wallet/index"
+          options={{
+            tabBarButton: ({ onPress }) => (
+              <TabButton
+                onPress={onPress!}
+                isFocused={pathname === '/(tabs)/wallet'}
+                label="Wallet"
+                iconName="person.text.rectangle"
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="Info/index"
+          options={{
+            tabBarButton: ({ onPress }) => (
+              <TabButton
+                onPress={onPress!}
+                isFocused={pathname === '/(tabs)/Info'}
+                label="Info"
+                iconName="info.circle"
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="Profile/index"
+          options={{
+            tabBarButton: ({ onPress }) => (
+              <TabButton
+                onPress={onPress!}
+                isFocused={pathname === '/(tabs)/Profile'}
+                label="Profile"
+                iconName="person.fill"
+              />
+            ),
+          }}
+        />
+      </Tabs>
+    </ErrorBoundary>
   )
 }
 export default function TabLayout() {

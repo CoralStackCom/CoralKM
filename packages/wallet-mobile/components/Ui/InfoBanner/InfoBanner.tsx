@@ -3,10 +3,12 @@ import { Text, View } from 'react-native'
 import { InfoBannerProps } from './InfoBanner.interfaces'
 import { styles } from './InfoBanner.styles'
 
-/*
- * InfoBanner component to display informational messages with optional icon
+/**
+ * InfoBanner component to display informational messages with optional icon.
+ *
+ * Wrapped in React.memo to prevent unnecessary re-renders when props are unchanged.
  */
-export const InfoBanner: React.FC<InfoBannerProps> = ({ icon, children }) => {
+const InfoBannerComponent: React.FC<InfoBannerProps> = ({ icon, children }) => {
   // Render
   return (
     <View style={styles.infoCard}>
@@ -15,3 +17,6 @@ export const InfoBanner: React.FC<InfoBannerProps> = ({ icon, children }) => {
     </View>
   )
 }
+
+export const InfoBanner = React.memo(InfoBannerComponent)
+InfoBanner.displayName = 'InfoBanner'
