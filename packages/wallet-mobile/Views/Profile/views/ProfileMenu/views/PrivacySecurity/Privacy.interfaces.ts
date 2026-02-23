@@ -19,6 +19,8 @@ export interface PrivacySettingItem {
   onValueChange?: (value: boolean) => void
   /** Callback when row is pressed (if action type) */
   onPress?: () => void
+  /** Whether the setting toggle is disabled */
+  disabled?: boolean
 }
 
 export interface PrivacySecurityScreenProps {}
