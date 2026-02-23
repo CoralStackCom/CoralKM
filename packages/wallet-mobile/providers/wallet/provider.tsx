@@ -1,7 +1,11 @@
 import React from 'react'
 
+import { createLogger } from '@/utils/logger'
+
 import { WalletContext } from './context'
 import { Wallet } from './wallet'
+
+const log = createLogger('WalletProvider')
 
 /**
  * Provider component to supply the Wallet instance via context
@@ -16,7 +20,7 @@ export function WalletProvider({
   gatewayDID: string
   children: React.ReactNode
 }) {
-  console.log('[WalletProvider] Initializing with gatewayDID:', gatewayDID)
+  log.info('Initializing', { gatewayDID })
 
   // Keep Wallet instance stable across re-renders and StrictMode re-mounts
   const walletRef = React.useRef<Wallet | null>(null)
@@ -25,24 +29,24 @@ export function WalletProvider({
 
   if (walletRef.current === null) {
     // Create only once per provider lifetime
-    console.log('[WalletProvider] Creating Wallet instance')
+    log.info('Creating Wallet instance')
     walletRef.current = new Wallet(gatewayDID)
   }
 
   React.useEffect(() => {
     let cancelled = false
     const initWallet = async () => {
-      console.log('[WalletProvider.initWallet] Starting wallet initialization')
+      log.info('Starting wallet initialization')
       try {
         await walletRef.current!.init()
         if (!cancelled) {
-          console.log('[WalletProvider.initWallet] ✓ Wallet initialized successfully')
+          log.info('Wallet initialized successfully')
           setIsInitialized(true)
           setInitError(null)
         }
       } catch (err) {
         const error = err instanceof Error ? err : new Error(String(err))
-        console.error('[WalletProvider.initWallet] Failed to initialize wallet:', error.message)
+        log.error('Failed to initialize wallet', error)
         if (!cancelled) {
           setInitError(error)
         }
@@ -55,7 +59,7 @@ export function WalletProvider({
     }
 
     return () => {
-      console.log('[WalletProvider.cleanup] Cleaning up wallet provider')
+      log.debug('Cleaning up wallet provider')
       cancelled = true
     }
   }, [isInitialized, initError])
