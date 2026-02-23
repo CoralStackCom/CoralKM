@@ -4,9 +4,8 @@ import SectionTitle from '@/components/containers/Section/components/SectionTitl
 import ActionRow from '@/components/ui/ActionRow'
 import Header from '@/components/ui/Header'
 import SelectableList from '@/components/ui/SelectableList'
-import { useState } from 'react'
+import { useTheme } from '@/providers/ThemeProvider'
 import { SafeAreaView, ScrollView, View } from 'react-native'
-import { Theme } from './Appearance.interfaces'
 import { styles } from './Appearance.styles'
 import { themes } from './Appearance.utils'
 
@@ -14,12 +13,12 @@ import { themes } from './Appearance.utils'
  * AppearanceScreen component.
  *
  * Manages appearance settings including theme selection
- * and app icon customization.
+ * and app icon customization. Wired to ThemeProvider for
+ * global theme state management.
  */
 
 export const AppearanceScreen: React.FC = () => {
-  // Component State
-  const [theme, setTheme] = useState<Theme>('system')
+  const { mode, setMode } = useTheme()
 
   return (
     <SafeAreaView style={styles.container}>
@@ -29,7 +28,7 @@ export const AppearanceScreen: React.FC = () => {
         {/* Theme Section */}
         <Section style={styles.section}>
           <SectionTitle value="Theme" />
-          <SelectableList List={themes} value={theme} onChange={setTheme} />
+          <SelectableList List={themes} value={mode} onChange={setMode} />
         </Section>
 
         {/* App Icon Section */}

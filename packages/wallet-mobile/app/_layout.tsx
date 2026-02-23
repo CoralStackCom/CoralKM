@@ -1,5 +1,7 @@
 import { Background } from '@/components/Background'
+import { ErrorBoundary } from '@/components/containers/ErrorBoundary'
 import { AuthProvider } from '@/providers/AuthContext'
+import { ThemeProvider } from '@/providers/ThemeProvider'
 import { UserProvider } from '@/providers/UserContext'
 import { WalletProvider } from '@/providers/wallet'
 import { Slot } from 'expo-router'
@@ -32,15 +34,19 @@ export default function RootLayout() {
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      <Background view="underwater" />
-      <WalletProvider gatewayDID="did:web:coralkm-wallet-gateway.developers-6d6.workers.dev">
-        <AuthProvider>
-          <UserProvider>
-            {isAuthenticated ? <Slot initialRouteName="tabs" /> : <Slot initialRouteName="index" />}
-          </UserProvider>
-        </AuthProvider>
-      </WalletProvider>
-    </View>
+    <ThemeProvider>
+      <View style={{ flex: 1 }}>
+        <ErrorBoundary>
+          <Background view="underwater" />
+          <WalletProvider gatewayDID="did:web:coralkm-wallet-gateway.developers-6d6.workers.dev">
+            <AuthProvider>
+              <UserProvider>
+                {isAuthenticated ? <Slot initialRouteName="tabs" /> : <Slot initialRouteName="index" />}
+              </UserProvider>
+            </AuthProvider>
+          </WalletProvider>
+        </ErrorBoundary>
+      </View>
+    </ThemeProvider>
   )
 }
