@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react'
 
 export interface User {
   id: string
@@ -45,50 +45,49 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   })
   const [encryptionSeed, setEncryptionSeedState] = useState<string | null>('sample-seed-12345')
 
-  const setUser = (userData: User) => {
+  const setUser = useCallback((userData: User) => {
     setUserState(userData)
-  }
+  }, [])
 
-  const setHousehold = (householdData: Household) => {
+  const setHousehold = useCallback((householdData: Household) => {
     setHouseholdState(householdData)
-  }
+  }, [])
 
-  const setEncryptionSeed = (seed: string) => {
+  const setEncryptionSeed = useCallback((seed: string) => {
     setEncryptionSeedState(seed)
-  }
+  }, [])
 
-  const updateUser = (updates: Partial<User>) => {
-    if (user) {
-      setUserState({ ...user, ...updates })
-    }
-  }
+  const updateUser = useCallback((updates: Partial<User>) => {
+    setUserState((prev) => (prev ? { ...prev, ...updates } : prev))
+  }, [])
 
-  const updateHousehold = (updates: Partial<Household>) => {
-    if (household) {
-      setHouseholdState({ ...household, ...updates })
-    }
-  }
+  const updateHousehold = useCallback((updates: Partial<Household>) => {
+    setHouseholdState((prev) => (prev ? { ...prev, ...updates } : prev))
+  }, [])
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setUserState({} as User)
     setHouseholdState(null)
     setEncryptionSeedState(null)
-  }
-  console.log('UserProvider Render: ', { user, household, encryptionSeed })
+  }, [])
+
+  const contextValue = useMemo(
+    () => ({
+      user,
+      household,
+      encryptionSeed,
+      setUser,
+      setHousehold,
+      setEncryptionSeed,
+      updateUser,
+      updateHousehold,
+      logout,
+    }),
+    [user, household, encryptionSeed, setUser, setHousehold, setEncryptionSeed, updateUser, updateHousehold, logout]
+  )
+
   return (
-    <UserContext.Provider
-      value={{
-        user,
-        household,
-        encryptionSeed,
-        setUser,
-        setHousehold,
-        setEncryptionSeed,
-        updateUser,
-        updateHousehold,
-        logout,
-      }}
-    >
+    <UserContext.Provider value={contextValue}>
       {children}
     </UserContext.Provider>
   )
