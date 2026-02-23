@@ -1,4 +1,5 @@
 export { UserInfoScreen } from './Info/Info'
+export { NotificationsList } from './NotificationsList'
 export { ProfileScreen } from './Profile/ProfileScreen'
 export { ProfileMenu } from './Profile/views/ProfileMenu'
 export {
