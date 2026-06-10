@@ -1,3 +1,5 @@
+import { IconSymbol } from '@/components/ui/icon-symbol'
+import { palette } from '@/constants/design'
 import { useState } from 'react'
 import {
   Alert,
@@ -14,35 +16,37 @@ import QRScanner from '../QrScanner'
 import { AddContactDialogProps } from './AddContactDialog.interfaces'
 import { styles } from './AddContactDialog.styles'
 
+/** Loose DID shape used to validate scanned/entered values. */
+const DID_PATTERN = /^did:[a-z0-9]+:.+/i
+
 /**
  * AddContactDialog component.
  *
- * Provides a modal interface to add a new contact either by:
- * - Manually entering a DID
- * - Scanning a DID from a QR code
+ * A bottom-sheet to add a new contact either by entering a DID or by scanning a
+ * DID QR code. Scanning opens the full-screen QR scanner.
  */
 export const AddContactDialog: React.FC<AddContactDialogProps> = ({
   isDialogOpen,
   setIsDialogOpen,
   onAddContact,
 }) => {
-  /**
-   * Component State
-   */
   const [mode, setMode] = useState<'input' | 'scanner'>('input')
   const [newChannelId, setNewChannelId] = useState('')
   const [didError, setDidError] = useState<string | null>(null)
 
-  /**
-   * Handle adding a new contact
-   */
+  /** Handle adding a new contact */
   const handleAddChannel = () => {
-    if (!newChannelId.trim()) {
-      setDidError('Please enter a valid DID')
+    const did = newChannelId.trim()
+    if (!did) {
+      setDidError('Please enter a DID')
+      return
+    }
+    if (!DID_PATTERN.test(did)) {
+      setDidError('Enter a valid DID (e.g. did:peer:...)')
       return
     }
 
-    onAddContact(newChannelId.trim())
+    onAddContact(did)
 
     setNewChannelId('')
     setDidError(null)
@@ -50,9 +54,7 @@ export const AddContactDialog: React.FC<AddContactDialogProps> = ({
     setIsDialogOpen(false)
   }
 
-  /**
-   * Handle successful QR scan
-   */
+  /** Handle successful QR scan */
   const handleQRScanned = (data: string) => {
     setNewChannelId(data)
     setMode('input')
@@ -62,9 +64,7 @@ export const AddContactDialog: React.FC<AddContactDialogProps> = ({
     ])
   }
 
-  /**
-   * Close dialog and reset state
-   */
+  /** Close dialog and reset state */
   const handleClose = () => {
     setIsDialogOpen(false)
     setMode('input')
@@ -74,70 +74,79 @@ export const AddContactDialog: React.FC<AddContactDialogProps> = ({
 
   return (
     <Modal visible={isDialogOpen} transparent animationType="slide" onRequestClose={handleClose}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            {mode === 'input' ? (
-              <>
-                <View style={styles.modalHeader}>
-                  <Text style={styles.modalTitle}>Add New Contact</Text>
-                  <TouchableOpacity onPress={handleClose}>
-                    <Text style={styles.closeButton}>✕</Text>
-                  </TouchableOpacity>
-                </View>
+      {mode === 'scanner' ? (
+        <QRScanner
+          onScan={handleQRScanned}
+          onCancel={() => setMode('input')}
+          validPattern={DID_PATTERN}
+          invalidMessage="That QR code isn't a valid DID"
+        />
+      ) : (
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContainer}>
+              <View style={styles.handle} />
 
-                <View style={styles.tabContainer}>
-                  <TouchableOpacity
-                    style={[styles.tab, styles.tabActive]}
-                    onPress={() => setMode('input')}
-                  >
-                    <Text style={styles.tabTextActive}>Manual Input</Text>
-                  </TouchableOpacity>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Add New Contact</Text>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={handleClose}
+                  accessibilityRole="button"
+                  accessibilityLabel="Close"
+                >
+                  <Text style={styles.closeButtonText}>✕</Text>
+                </TouchableOpacity>
+              </View>
 
-                  <TouchableOpacity style={styles.tab} onPress={() => setMode('scanner')}>
-                    <Text style={styles.tabText}>Scan QR Code</Text>
-                  </TouchableOpacity>
-                </View>
+              <View style={styles.tabContainer}>
+                <TouchableOpacity style={[styles.tab, styles.tabActive]} onPress={() => setMode('input')}>
+                  <IconSymbol name="pencil" size={16} color={palette.navy} />
+                  <Text style={styles.tabTextActive}>Manual Input</Text>
+                </TouchableOpacity>
 
-                <TextInput
-                  style={[styles.input, didError && { borderColor: '#FF3B30' }]}
-                  placeholder="Contact DID"
-                  value={newChannelId}
-                  onChangeText={text => {
-                    setNewChannelId(text)
-                    setDidError(null)
-                  }}
-                  placeholderTextColor="#999"
-                />
+                <TouchableOpacity style={styles.tab} onPress={() => setMode('scanner')}>
+                  <IconSymbol name="qrcode" size={16} color={palette.textMuted} />
+                  <Text style={styles.tabText}>Scan QR Code</Text>
+                </TouchableOpacity>
+              </View>
 
-                {didError && <Text style={styles.errorText}>{didError}</Text>}
+              <Text style={styles.label}>Contact DID</Text>
+              <TextInput
+                style={[styles.input, didError && { borderColor: palette.coral }]}
+                placeholder="did:peer:..."
+                value={newChannelId}
+                onChangeText={text => {
+                  setNewChannelId(text)
+                  setDidError(null)
+                }}
+                placeholderTextColor={palette.textMuted}
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
 
-                <View style={styles.modalButtonContainer}>
-                  <TouchableOpacity
-                    style={[styles.button, styles.buttonOutline]}
-                    onPress={handleClose}
-                  >
-                    <Text style={styles.buttonTextOutline}>Cancel</Text>
-                  </TouchableOpacity>
+              {didError && <Text style={styles.errorText}>{didError}</Text>}
 
-                  <TouchableOpacity
-                    style={[styles.button, !newChannelId.trim() && styles.buttonDisabled]}
-                    onPress={handleAddChannel}
-                    disabled={!newChannelId.trim()}
-                  >
-                    <Text style={styles.buttonText}>Add Contact</Text>
-                  </TouchableOpacity>
-                </View>
-              </>
-            ) : (
-              <QRScanner onScan={handleQRScanned} onCancel={() => setMode('input')} />
-            )}
+              <View style={styles.modalButtonContainer}>
+                <TouchableOpacity style={[styles.button, styles.buttonOutline]} onPress={handleClose}>
+                  <Text style={styles.buttonTextOutline}>Cancel</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.button, !newChannelId.trim() && styles.buttonDisabled]}
+                  onPress={handleAddChannel}
+                  disabled={!newChannelId.trim()}
+                >
+                  <Text style={styles.buttonText}>Add Contact</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
-        </View>
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+      )}
     </Modal>
   )
 }

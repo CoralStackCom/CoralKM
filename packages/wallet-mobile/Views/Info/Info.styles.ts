@@ -73,6 +73,31 @@ export const styles = StyleSheet.create({
     marginBottom: 6,
   },
 
+  infoTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 8,
+  },
+
+  infoTitleRowSpaced: {
+    marginTop: 16,
+  },
+
+  infoChip: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  infoTitleText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#13415C',
+  },
+
   dataContainerScroll: {
     backgroundColor: '#0F172A', // dark code block
     borderRadius: 12,

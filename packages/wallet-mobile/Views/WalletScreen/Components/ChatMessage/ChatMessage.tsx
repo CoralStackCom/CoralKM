@@ -1,3 +1,4 @@
+import { palette } from '@/constants/design'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
@@ -38,8 +39,8 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
       })
     : ''
 
-  const bubbleColor = message.is_sent ? '#007AFF' : '#E5E5EA'
-  const textColor = message.is_sent ? '#fff' : '#000'
+  const bubbleColor = message.is_sent ? palette.navy : palette.surface
+  const textColor = message.is_sent ? '#fff' : palette.heading
 
   return (
     <View style={[styles.container, message.is_sent ? styles.rowReverse : styles.row]}>

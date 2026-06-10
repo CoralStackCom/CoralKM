@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import { cardShadow, palette } from '@/constants/design'
 
 export const styles = StyleSheet.create({
   container: {
@@ -17,8 +18,9 @@ export const styles = StyleSheet.create({
   alignEnd: { alignItems: 'flex-end' },
 
   bubble: {
-    borderRadius: 16,
+    borderRadius: 18,
     overflow: 'hidden',
+    ...cardShadow,
   },
 
   header: {
@@ -46,7 +48,8 @@ export const styles = StyleSheet.create({
 
   timestamp: {
     fontSize: 11,
-    color: '#999',
+    color: palette.textMuted,
     marginTop: 4,
+    marginHorizontal: 4,
   },
 })

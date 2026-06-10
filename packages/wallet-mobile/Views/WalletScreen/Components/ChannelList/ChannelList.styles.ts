@@ -1,38 +1,57 @@
 import { StyleSheet } from 'react-native'
+import { cardShadow, palette, radius, tint } from '@/constants/design'
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
   },
 
   header: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    paddingTop: 4,
+    paddingBottom: 12,
+    paddingHorizontal: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
 
   headerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 22,
+    fontWeight: '700',
+    color: palette.heading,
+    letterSpacing: -0.4,
+  },
+
+  addButton: {
+    width: 40,
+    height: 40,
+    borderRadius: radius.md,
+    backgroundColor: palette.navy,
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...cardShadow,
+  },
+
+  listContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 24,
+    gap: 10,
   },
 
   channelItem: {
     paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 14,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#f5f5f5',
+    gap: 12,
+    backgroundColor: palette.surface,
+    borderRadius: radius.lg,
+    ...cardShadow,
   },
 
   channelItemSelected: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: tint(palette.navy, '14'),
   },
 
   channelInfo: {
@@ -51,16 +70,26 @@ export const styles = StyleSheet.create({
     gap: 6,
   },
   nameText: {
-    fontWeight: '600',
-    fontSize: 14,
-    flex: 1,
+    fontWeight: '700',
+    fontSize: 15,
+    color: palette.heading,
+    flexShrink: 1,
   },
 
   msgCount: {
     fontSize: 12,
-    color: '#999',
+    color: palette.textMuted,
     paddingLeft: 4,
     paddingRight: 8,
+  },
+
+  copyButton: {
+    width: 32,
+    height: 32,
+    borderRadius: radius.sm,
+    backgroundColor: tint(palette.navy),
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   didRow: {
@@ -71,77 +100,25 @@ export const styles = StyleSheet.create({
 
   didText: {
     fontSize: 12,
-    color: '#666',
+    color: palette.textMuted,
     flex: 1,
   },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'flex-end',
-  },
 
-  modalContainer: {
-    backgroundColor: '#fff',
-    padding: 16,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-  },
-
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 12,
-  },
-
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    marginBottom: 16,
-    fontSize: 14,
-  },
-
-  modalButtonContainer: {
-    flexDirection: 'row',
+  emptyState: {
+    alignItems: 'center',
+    paddingTop: 64,
+    paddingHorizontal: 32,
     gap: 12,
   },
-
-  button: {
-    flex: 1,
-    paddingVertical: 12,
-    backgroundColor: '#007AFF',
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+  emptyTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: palette.heading,
   },
-
-  buttonOutline: {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-
-  buttonDisabled: {
-    opacity: 0.5,
-  },
-
-  buttonText: {
-    color: '#fff',
+  emptyText: {
     fontSize: 14,
-    fontWeight: '600',
-  },
-
-  buttonTextOutline: {
-    color: '#333',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  errorText: {
-    color: '#FF3B30',
-    fontSize: 12,
-    marginTop: -10,
-    marginBottom: 12,
+    color: palette.textMuted,
+    textAlign: 'center',
+    lineHeight: 20,
   },
 })

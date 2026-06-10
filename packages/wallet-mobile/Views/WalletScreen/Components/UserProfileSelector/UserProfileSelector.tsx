@@ -1,4 +1,5 @@
 import { userProfiles } from '@/lib/user-profiles'
+import { palette } from '@/constants/design'
 import { useUserContext } from '@/providers/UserContext'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { useState } from 'react'
@@ -41,7 +42,7 @@ export const UserProfileSelector: React.FC<UserProfileSelectorProps> = ({
           <Text style={styles.triggerName}>{currentProfile?.displayName}</Text>
         </View>
 
-        <MaterialCommunityIcons name="chevron-down" size={20} color="#666" />
+        <MaterialCommunityIcons name="chevron-down" size={20} color={palette.navy} />
       </TouchableOpacity>
 
       <Modal
@@ -52,6 +53,7 @@ export const UserProfileSelector: React.FC<UserProfileSelectorProps> = ({
       >
         <SafeAreaView style={styles.modal}>
           <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Switch Profile</Text>
             <TouchableOpacity onPress={() => setIsOpen(false)}>
               <Text style={styles.modalClose}>Close</Text>
             </TouchableOpacity>
@@ -73,7 +75,7 @@ export const UserProfileSelector: React.FC<UserProfileSelectorProps> = ({
                 <Text style={styles.itemName}>{item?.displayName}</Text>
 
                 {currentProfile?.displayName === item?.displayName && (
-                  <MaterialCommunityIcons name="check" size={20} color="#007AFF" />
+                  <MaterialCommunityIcons name="check" size={20} color={palette.navy} />
                 )}
               </TouchableOpacity>
             )}

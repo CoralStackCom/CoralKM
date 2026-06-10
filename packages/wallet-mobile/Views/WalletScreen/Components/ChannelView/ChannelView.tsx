@@ -1,3 +1,4 @@
+import { palette } from '@/constants/design'
 import { Ionicons } from '@expo/vector-icons'
 import React, { useLayoutEffect, useRef, useState } from 'react'
 import { Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native'
@@ -41,7 +42,7 @@ export const ChannelView: React.FC<ChannelViewProps> = ({
       {/* Chat Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => selectChannel(null)}>
-          <Ionicons name="arrow-back" size={24} color="#333" />
+          <Ionicons name="arrow-back" size={22} color={palette.navy} />
         </TouchableOpacity>
         <View style={styles.avatarContainer}>
           <ChatAvatar
@@ -54,7 +55,7 @@ export const ChannelView: React.FC<ChannelViewProps> = ({
           {channel?.profile?.displayName}
         </Text>
         <TouchableOpacity style={styles.infoButton} onPress={() => setIsChannelDrawerOpen(true)}>
-          <Ionicons name="information-circle-outline" size={24} color="#666" />
+          <Ionicons name="information-circle-outline" size={22} color={palette.navy} />
         </TouchableOpacity>
       </View>
 
@@ -96,7 +97,7 @@ export const ChannelView: React.FC<ChannelViewProps> = ({
                   setTimeout(() => setSelectedMessage(null), 300)
                 }}
               >
-                <Ionicons name="close" size={28} color="#333" />
+                <Ionicons name="close" size={26} color={palette.textMuted} />
               </TouchableOpacity>
             </View>
             <ScrollView style={styles.drawerContent}>
@@ -124,7 +125,7 @@ export const ChannelView: React.FC<ChannelViewProps> = ({
             <View style={styles.drawerHeader}>
               <Text style={styles.drawerTitle}>Channel Info</Text>
               <TouchableOpacity onPress={() => setIsChannelDrawerOpen(false)}>
-                <Ionicons name="close" size={28} color="#333" />
+                <Ionicons name="close" size={26} color={palette.textMuted} />
               </TouchableOpacity>
             </View>
             <ScrollView style={styles.drawerContent}>

@@ -1,6 +1,8 @@
 import '@/app/shim'
 
+import { Background } from '@/components/Background'
 import { DidQrGenerator } from '@/components/DidQrGenerator/DidQrGenerator'
+import { StateView } from '@/components/ui/StateView'
 import { styleMessage } from '@/lib/style-messages'
 import { useWallet } from '@/providers/wallet'
 import { Ionicons } from '@expo/vector-icons'
@@ -54,14 +56,19 @@ export const Wallet: React.FC = () => {
 
   // --- Safe Wrapper ---
   const SafeWrapper = ({ children }: { children: React.ReactNode }) => (
-    <View style={styles.safeWrapper}>{children}</View>
+    <View style={styles.safeWrapper}>
+      <Background view="underwater" />
+      {children}
+    </View>
   )
   if (!wallet && !currentUser) {
     return (
       <SafeWrapper>
-        <View style={styles.container}>
-          <Text>Loading wallet...</Text>
-        </View>
+        <StateView
+          variant="loading"
+          title="Setting up your wallet…"
+          message="Connecting securely to the gateway."
+        />
       </SafeWrapper>
     )
   }
@@ -90,27 +97,33 @@ export const Wallet: React.FC = () => {
               </Text>
               <TouchableOpacity
                 onPress={handleRotateKeys}
-                style={styles.headerButton}
+                style={[styles.headerButton, { backgroundColor: '#2BB3A31A' }]}
                 disabled={isRotating}
               >
                 <Ionicons
                   name="refresh"
                   size={20}
-                  color="#1B5678"
+                  color="#2BB3A3"
                   style={isRotating ? styles.spinning : {}}
                 />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => setShowShareModal(true)} style={styles.headerButton}>
-                <Ionicons name="share" size={20} color="#1B5678" />
+              <TouchableOpacity
+                onPress={() => setShowShareModal(true)}
+                style={[styles.headerButton, { backgroundColor: '#3B82F61A' }]}
+              >
+                <Ionicons name="share" size={20} color="#3B82F6" />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => handleCopy(currentUser?.mediator_id || 'No DID', 'did')}
-                style={styles.headerButton}
+                style={[
+                  styles.headerButton,
+                  { backgroundColor: copied === 'did' ? '#2BB3A31A' : '#1B56781A' },
+                ]}
               >
                 <Ionicons
                   name={copied === 'did' ? 'checkmark' : 'copy'}
                   size={20}
-                  color={copied === 'did' ? '#1B5678' : '#1B5678'}
+                  color={copied === 'did' ? '#2BB3A3' : '#1B5678'}
                 />
               </TouchableOpacity>
             </View>

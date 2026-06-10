@@ -52,7 +52,7 @@ export const MessageComposer: React.FC<MessageComposerProps> = ({
           onPress={() => addGuardian(selectedChannel.id)}
           activeOpacity={0.7}
         >
-          <Ionicons name="shield-checkmark" size={16} color="#000000" style={styles.icon} />
+          <Ionicons name="shield-checkmark" size={16} color="#ffffff" style={styles.icon} />
           <Text style={[styles.buttonText, styles.guardianButtonText]}>Request Guardianship</Text>
         </TouchableOpacity>
       )}

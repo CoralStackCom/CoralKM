@@ -1,4 +1,5 @@
 import { AddContactDialog } from '@/components/AddContactDialog'
+import { palette } from '@/constants/design'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import * as Clipboard from 'expo-clipboard'
 import React, { useState } from 'react'
@@ -79,17 +80,17 @@ export const ChannelList: React.FC<ChannelListProps> = ({
               <Text style={styles.nameText}>{item.profile.displayName}</Text>
 
               {item.supports_guardian && !item.is_guardian && (
-                <MaterialCommunityIcons name="shield-outline" size={18} color="#666" />
+                <MaterialCommunityIcons name="shield-outline" size={18} color={palette.teal} />
               )}
 
               {item.is_guardian && (
-                <MaterialCommunityIcons name="shield-check" size={18} color="#666" />
+                <MaterialCommunityIcons name="shield-check" size={18} color={palette.teal} />
               )}
 
               <Text style={styles.msgCount}>({item.messages.length})</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => copyToClipboard(item.id)}>
-              <MaterialCommunityIcons name="content-copy" size={16} color="#777" />
+            <TouchableOpacity style={styles.copyButton} onPress={() => copyToClipboard(item.id)}>
+              <MaterialCommunityIcons name="content-copy" size={16} color={palette.navy} />
             </TouchableOpacity>
           </View>
 
@@ -107,11 +108,31 @@ export const ChannelList: React.FC<ChannelListProps> = ({
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Contacts</Text>
-        <TouchableOpacity onPress={() => setIsDialogOpen(true)}>
-          <MaterialCommunityIcons name="plus" size={24} color="#000" />
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => setIsDialogOpen(true)}
+          accessibilityRole="button"
+          accessibilityLabel="Add contact"
+        >
+          <MaterialCommunityIcons name="plus" size={24} color="#fff" />
         </TouchableOpacity>
       </View>
-      <FlatList data={channels} keyExtractor={item => item.id} renderItem={renderChannelItem} />
+      <FlatList
+        data={channels}
+        keyExtractor={item => item.id}
+        renderItem={renderChannelItem}
+        contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          <View style={styles.emptyState}>
+            <ChatAvatar name="?" size={56} />
+            <Text style={styles.emptyTitle}>No contacts yet</Text>
+            <Text style={styles.emptyText}>
+              Tap the + button to add a contact by DID or by scanning their QR code.
+            </Text>
+          </View>
+        }
+      />
       <AddContactDialog
         isDialogOpen={isDialogOpen}
         setIsDialogOpen={setIsDialogOpen}

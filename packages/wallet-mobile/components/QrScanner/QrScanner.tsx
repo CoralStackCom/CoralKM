@@ -3,7 +3,7 @@ import { Camera, CameraView } from 'expo-camera'
 import * as Haptics from 'expo-haptics'
 import * as ImagePicker from 'expo-image-picker'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { Animated, Easing, Text, TouchableOpacity, View } from 'react-native'
+import { Animated, Easing, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { QRScannerComponentProps } from './QrScanner.interfaces'
 import { SCAN_FRAME_DIMENSIONS, styles } from './QrScanner.styles'
 
@@ -208,8 +208,9 @@ export const QRScanner: React.FC<QRScannerComponentProps> = ({
    */
   if (hasPermission === null) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.message}>Requesting camera permission...</Text>
+      <View style={styles.stateContainer}>
+        <IconSymbol name="camera" size={56} color="#7EADC9" />
+        <Text style={styles.message}>Requesting camera permission…</Text>
       </View>
     )
   }
@@ -219,12 +220,10 @@ export const QRScanner: React.FC<QRScannerComponentProps> = ({
    */
   if (hasPermission === false) {
     return (
-      <View style={styles.container}>
-        <IconSymbol name="camera" size={64} color="#999" />
+      <View style={styles.stateContainer}>
+        <IconSymbol name="camera" size={64} color="#7EADC9" />
         <Text style={styles.message}>No access to camera</Text>
-        <Text style={styles.subMessage}>
-          Please enable camera permissions in settings
-        </Text>
+        <Text style={styles.subMessage}>Please enable camera permissions in settings</Text>
         {onCancel && (
           <TouchableOpacity
             style={[styles.cancelButton, { minHeight: 44 }]}
@@ -242,118 +241,103 @@ export const QRScanner: React.FC<QRScannerComponentProps> = ({
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header} accessible={true}>
-        <Text style={styles.title} accessibilityRole="header">Scan QR Code</Text>
-        <Text style={styles.subtitle}>
-          Point camera at the DID QR code
-        </Text>
-      </View>
+      {/* Live camera fills the screen */}
+      <CameraView
+        style={styles.camera}
+        facing="back"
+        enableTorch={torch}
+        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+        barcodeScannerSettings={{ barcodeTypes: ['qr', 'pdf417'] }}
+      />
 
-      {/* Camera viewport */}
-      <View style={styles.cameraContainer}>
-        <CameraView
-          style={styles.camera}
-          facing="back"
-          enableTorch={torch}
-          onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
-          barcodeScannerSettings={{
-            barcodeTypes: ['qr', 'pdf417'],
-          }}
-        >
-          <View style={styles.overlay}>
-            {/* Scan frame with animated corners */}
-            <View style={styles.scanFrameWrapper}>
-              <AnimatedCorner
-                position="topLeft"
-                animatedOpacity={cornerOpacity}
-              />
-              <AnimatedCorner
-                position="topRight"
-                animatedOpacity={cornerOpacity}
-              />
-              <AnimatedCorner
-                position="bottomLeft"
-                animatedOpacity={cornerOpacity}
-              />
-              <AnimatedCorner
-                position="bottomRight"
-                animatedOpacity={cornerOpacity}
-              />
-
-              {/* Animated scan line */}
-              <Animated.View
-                style={[
-                  styles.scanLine,
-                  {
-                    top: SCAN_FRAME_DIMENSIONS.cornerThickness + 4,
-                    transform: [{ translateY: scanLinePosition }],
-                    opacity: cornerOpacity,
-                  },
-                ]}
-              />
-            </View>
+      {/* Dimming mask with a clear cutout window */}
+      <View style={StyleSheet.absoluteFill}>
+        <View style={styles.maskTop} />
+        <View style={styles.maskRow}>
+          <View style={styles.maskSide} />
+          <View style={styles.scanFrameWrapper}>
+            <AnimatedCorner position="topLeft" animatedOpacity={cornerOpacity} />
+            <AnimatedCorner position="topRight" animatedOpacity={cornerOpacity} />
+            <AnimatedCorner position="bottomLeft" animatedOpacity={cornerOpacity} />
+            <AnimatedCorner position="bottomRight" animatedOpacity={cornerOpacity} />
+            <Animated.View
+              style={[
+                styles.scanLine,
+                {
+                  top: SCAN_FRAME_DIMENSIONS.cornerThickness + 6,
+                  transform: [{ translateY: scanLinePosition }],
+                  opacity: cornerOpacity,
+                },
+              ]}
+            />
           </View>
-        </CameraView>
-      </View>
-
-      {/* Bottom controls */}
-      <View style={styles.bottomControls}>
-        {/* Error message */}
-        {error && (
-          <View style={styles.errorContainer}>
-            <IconSymbol
-              name="exclamationmark.triangle"
-              size={18}
-              color="#ff3b30"
-            />
-            <Text style={styles.errorText}>{error}</Text>
-          </View>
-        )}
-
-        {/* Action buttons: torch + gallery */}
-        <View style={styles.actionsRow}>
-          <TouchableOpacity
-            style={[styles.torchButton, torch && styles.torchButtonActive, { minHeight: 44, minWidth: 44 }]}
-            onPress={handleToggleTorch}
-            accessibilityLabel={torch ? 'Turn off flashlight' : 'Turn on flashlight'}
-            accessibilityRole="button"
-            accessibilityHint="Toggle the camera flashlight"
-            accessibilityState={{ selected: torch }}
-          >
-            <IconSymbol
-              name={torch ? 'flashlight.on.fill' : 'flashlight.off.fill'}
-              size={24}
-              color="#fff"
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.galleryButton, { minHeight: 44, minWidth: 44 }]}
-            onPress={handleGalleryImport}
-            accessibilityLabel="Import QR code from gallery"
-            accessibilityRole="button"
-            accessibilityHint="Open photo gallery to select a QR code image"
-          >
-            <IconSymbol
-              name="photo.on.rectangle"
-              size={24}
-              color="#fff"
-            />
-          </TouchableOpacity>
+          <View style={styles.maskSide} />
         </View>
 
-        {/* Cancel button */}
-        {onCancel && (
+        {/* Bottom scrim: instruction, error, and controls */}
+        <View style={styles.maskBottom}>
+          <View style={styles.instructionPill}>
+            <IconSymbol name="search" size={16} color="#fff" />
+            <Text style={styles.instructionText}>Align the QR code within the frame</Text>
+          </View>
+
+          {error && (
+            <View style={styles.errorContainer}>
+              <IconSymbol name="exclamationmark.triangle" size={18} color="#fff" />
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
+          )}
+
+          <View style={styles.actionsRow}>
+            <View style={styles.control}>
+              <TouchableOpacity
+                style={[styles.controlButton, torch && styles.controlButtonActive]}
+                onPress={handleToggleTorch}
+                accessibilityLabel={torch ? 'Turn off flashlight' : 'Turn on flashlight'}
+                accessibilityRole="button"
+                accessibilityState={{ selected: torch }}
+              >
+                <IconSymbol
+                  name={torch ? 'flashlight.on.fill' : 'flashlight.off.fill'}
+                  size={24}
+                  color="#fff"
+                />
+              </TouchableOpacity>
+              <Text style={styles.controlLabel}>{torch ? 'Light on' : 'Light'}</Text>
+            </View>
+
+            <View style={styles.control}>
+              <TouchableOpacity
+                style={styles.controlButton}
+                onPress={handleGalleryImport}
+                accessibilityLabel="Import QR code from gallery"
+                accessibilityRole="button"
+              >
+                <IconSymbol name="photo.on.rectangle" size={24} color="#fff" />
+              </TouchableOpacity>
+              <Text style={styles.controlLabel}>Gallery</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+
+      {/* Header with title + close */}
+      <View style={styles.header}>
+        <View style={styles.headerSpacer} />
+        <Text style={styles.headerTitle} accessibilityRole="header">
+          Scan QR Code
+        </Text>
+        {onCancel ? (
           <TouchableOpacity
-            style={[styles.cancelButton, { minHeight: 44 }]}
+            style={styles.closeButton}
             onPress={onCancel}
             accessibilityRole="button"
-            accessibilityLabel="Cancel scanning"
-            accessibilityHint="Stop scanning and go back"
+            accessibilityLabel="Close scanner"
           >
-            <Text style={styles.cancelButtonText}>Cancel</Text>
+            <IconSymbol name="xmark" size={22} color="#fff" />
           </TouchableOpacity>
+        ) : (
+          <View style={styles.headerSpacer} />
         )}
       </View>
     </View>
