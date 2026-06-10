@@ -1,5 +1,6 @@
 import { Stepper } from '@/components/Stepper'
 import { StepPanel } from '@/components/Stepper/components'
+import { useUserContext } from '@/providers/UserContext'
 import type { User } from '@/types'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
@@ -19,16 +20,24 @@ import { styles } from './SetupScreen.styles'
 export const SetupScreen: React.FC = () => {
   // Router and State Management
   const router = useRouter()
+  // UserContext is the single source of truth — login captured the email here,
+  // and each setup step writes its data into it (and persists to SecureStore).
+  const { user, setEncryptionSeed } = useUserContext()
   const [activeStep, setActiveStep] = useState(1)
   const [isOpen, setIsOpen] = useState(true)
-  const [encryptionSeed, setEncryptionSeed] = useState<string>('')
-  const [authenticatedUser, setAuthenticatedUser] = useState<Partial<User>>({
-    id: '1',
-    email: 'user@example.com',
-  })
+
+  // Prefill the steps from whatever the login/earlier steps already stored.
+  const authenticatedUser: Partial<User> = {
+    id: user?.id,
+    email: user?.email,
+    firstName: user?.firstName,
+    lastName: user?.lastName,
+    avatar: user?.avatar,
+  }
+
   /* Handlers */
-  const handleUpdateUser = (firstName: string, lastName: string, avatar?: string) => {
-    setAuthenticatedUser({ ...authenticatedUser, firstName, lastName, avatar })
+  const handleUpdateUser = (_firstName: string, _lastName: string, _avatar?: string) => {
+    // SetupUserStep already persists the fields into UserContext as they change.
     setActiveStep(2)
   }
   const handleEntropySeed = (seed: string) => {
@@ -36,10 +45,10 @@ export const SetupScreen: React.FC = () => {
     setActiveStep(4)
   }
   const handleCreateHousehold = (
-    name: string,
-    country: string,
-    currency: string,
-    logo?: string
+    _name: string,
+    _country: string,
+    _currency: string,
+    _logo?: string
   ) => {
     setActiveStep(3)
   }

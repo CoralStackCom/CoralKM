@@ -10,9 +10,13 @@ import { SetupHouseholdStepProps } from './SetupHouseholdStep.interfaces'
 import { styles } from './SetupHouseholdStep.styles'
 
 const schema = {
-  name: [validators.required('Household Name is required')],
-  country: [validators.required('Country is required')],
-  currency: [validators.required('Currency is required')],
+  name: [
+    validators.required('Household Name is required'),
+    validators.minLength(2),
+    validators.maxLength(60),
+  ],
+  country: [validators.required('Country is required'), validators.name(), validators.maxLength(56)],
+  currency: [validators.required('Currency is required'), validators.currencyCode()],
 }
 
 /**
@@ -69,6 +73,8 @@ export const SetupHouseholdStep: React.FC<SetupHouseholdStepProps> = ({
           style={styles.input}
           placeholder="Enter household name"
           value={name}
+          maxLength={60}
+          showCounter
           onChangeText={(text) => {
             setName(text)
             clearFieldError('name')
@@ -99,10 +105,13 @@ export const SetupHouseholdStep: React.FC<SetupHouseholdStepProps> = ({
         </Text>
         <Input
           style={styles.input}
-          placeholder="Enter currency code (e.g., USD)"
+          placeholder="USD"
           value={currency}
+          maxLength={3}
+          autoCapitalize="characters"
+          autoCorrect={false}
           onChangeText={(text) => {
-            setCurrency(text)
+            setCurrency(text.toUpperCase())
             clearFieldError('currency')
           }}
           error={errors.currency}

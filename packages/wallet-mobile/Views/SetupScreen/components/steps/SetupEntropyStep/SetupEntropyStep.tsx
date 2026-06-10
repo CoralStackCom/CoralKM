@@ -5,22 +5,29 @@ import {
   updateSeed,
 } from '@/components/EntropyGenerator/EntropyGenerator.utils'
 import { StepPanel } from '@/components/Stepper/components'
+import { IconSymbol } from '@/components/ui/icon-symbol'
+import { palette } from '@/constants/design'
 import * as Clipboard from 'expo-clipboard'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { Alert, PanResponder, Pressable, Text, TouchableOpacity, View } from 'react-native'
 import Canvas from 'react-native-canvas'
 import { styles } from './SetupEntropyStep.styles'
 import { SetupEntropyStepProps } from './SetupEntropyStep.interfaces'
 
+/** Number of drawn samples considered "strong" entropy. */
+const STRENGTH_TARGET = 80
+
 /**
  * Setup Entropy Step
  *
- * A step in the setup wizard that allows users to generate
- * an encryption seed by drawing patterns on a canvas.
+ * A step in the setup wizard that lets users generate an encryption seed by
+ * drawing on a canvas. A live strength meter shows how much randomness has been
+ * gathered to guide the user toward a strong seed.
  */
 export const SetupEntropyStep: React.FC<SetupEntropyStepProps> = ({ onNext, nextStep }) => {
   // Component State
   const [seed, setSeed] = useState('')
+  const [points, setPoints] = useState(0)
   const canvasRef = useRef<any>(null)
   const prevXRef = useRef(0)
   const prevYRef = useRef(0)
@@ -30,29 +37,21 @@ export const SetupEntropyStep: React.FC<SetupEntropyStepProps> = ({ onNext, next
   const seedRef = useRef('')
   const boxSize = 280
 
-  /**
-   * Initialize canvas with dimensions and context
-   */
+  /** Initialize canvas with dimensions and context */
   const handleCanvas = useCallback(
     (canvas: any) => {
       if (canvas) {
         canvasRef.current = canvas
         const ctx = canvas.getContext('2d')
-
-        // Set canvas dimensions
         canvas.width = boxSize
         canvas.height = boxSize
-
-        // Initialize with black background
         resetCanvas(ctx, boxSize, boxSize)
       }
     },
     [boxSize]
   )
 
-  /**
-   * Record touch positions for drawing calculations
-   */
+  /** Record touch positions for drawing calculations */
   const recordPositions = (x: number, y: number) => {
     prevXRef.current = currXRef.current
     prevYRef.current = currYRef.current
@@ -60,9 +59,7 @@ export const SetupEntropyStep: React.FC<SetupEntropyStepProps> = ({ onNext, next
     currYRef.current = y
   }
 
-  /**
-   * Handle touch movement for drawing and entropy generation
-   */
+  /** Handle touch movement for drawing and entropy generation */
   const handleTouchMove = useCallback(
     (x: number, y: number) => {
       if (!drawRef.current || !canvasRef.current) return
@@ -79,19 +76,17 @@ export const SetupEntropyStep: React.FC<SetupEntropyStepProps> = ({ onNext, next
         boxSize,
         ctx
       )
-
       fadeOut(ctx, boxSize, boxSize)
 
       const newSeed = updateSeed(seedRef.current, currXRef.current, currYRef.current)
       seedRef.current = newSeed
       setSeed(newSeed)
+      setPoints((p) => p + 1)
     },
     [boxSize]
   )
 
-  /**
-   * Pan responder for touch interactions
-   */
+  /** Pan responder for touch interactions */
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -113,9 +108,7 @@ export const SetupEntropyStep: React.FC<SetupEntropyStepProps> = ({ onNext, next
     })
   ).current
 
-  /**
-   * Reset canvas and clear generated seed
-   */
+  /** Reset canvas and clear generated seed */
   const resetAll = useCallback(() => {
     if (canvasRef.current) {
       const ctx = canvasRef.current.getContext('2d')
@@ -123,11 +116,10 @@ export const SetupEntropyStep: React.FC<SetupEntropyStepProps> = ({ onNext, next
     }
     seedRef.current = ''
     setSeed('')
+    setPoints(0)
   }, [boxSize])
 
-  /**
-   * Copy seed to clipboard
-   */
+  /** Copy seed to clipboard */
   const copySeed = useCallback(async () => {
     if (seed) {
       await Clipboard.setStringAsync(seed)
@@ -135,26 +127,26 @@ export const SetupEntropyStep: React.FC<SetupEntropyStepProps> = ({ onNext, next
     }
   }, [seed])
 
-  /**
-   * Handle next step
-   */
+  /** Handle next step */
   const handleNext = () => {
-    if (seed) {
-      onNext(seed)
-    }
+    if (seed) onNext(seed)
   }
+
+  /** Entropy strength 0..1 and its label/color. */
+  const strength = useMemo(() => Math.min(points / STRENGTH_TARGET, 1), [points])
+  const strengthMeta = useMemo(() => {
+    if (strength <= 0) return { label: 'Start drawing', color: palette.textMuted }
+    if (strength < 0.4) return { label: 'Keep going…', color: palette.amber }
+    if (strength < 0.8) return { label: 'Good entropy', color: palette.blue }
+    return { label: 'Strong 🔒', color: palette.teal }
+  }, [strength])
 
   // Render
   return (
-    <StepPanel
-      title="Generate Encryption Seed"
-      nextStep={nextStep}
-      isReady={!!seed}
-      onNext={handleNext}
-    >
+    <StepPanel title="Generate Encryption Seed" nextStep={nextStep} isReady={!!seed} onNext={handleNext}>
       <View style={styles.content}>
         <Text style={styles.description}>
-          Move your finger across the canvas to create randomness for your encryption key
+          Move your finger across the canvas to create randomness for your encryption key.
         </Text>
 
         <View style={styles.canvasContainer}>
@@ -163,15 +155,40 @@ export const SetupEntropyStep: React.FC<SetupEntropyStepProps> = ({ onNext, next
             {...panResponder.panHandlers}
           >
             <Canvas ref={handleCanvas} />
+            {!seed && (
+              <View style={styles.canvasOverlay} pointerEvents="none">
+                <IconSymbol name="pencil" size={28} color={palette.accentLight} />
+                <Text style={styles.canvasOverlayText}>Draw here</Text>
+              </View>
+            )}
           </View>
-          <Text style={styles.canvasHint}>Draw patterns to generate entropy</Text>
         </View>
 
+        {/* Strength meter */}
+        <View style={styles.strengthSection}>
+          <View style={styles.strengthHeader}>
+            <Text style={styles.strengthLabel}>Entropy strength</Text>
+            <Text style={[styles.strengthValue, { color: strengthMeta.color }]}>
+              {strengthMeta.label}
+            </Text>
+          </View>
+          <View style={styles.strengthTrack}>
+            <View
+              style={[
+                styles.strengthFill,
+                { width: `${Math.round(strength * 100)}%`, backgroundColor: strengthMeta.color },
+              ]}
+            />
+          </View>
+        </View>
+
+        {/* Generated seed */}
         <View style={styles.seedSection}>
           <View style={styles.seedHeader}>
             <Text style={styles.seedLabel}>Generated Seed</Text>
-            {seed && (
+            {!!seed && (
               <TouchableOpacity style={styles.copyButton} onPress={copySeed}>
+                <IconSymbol name="download.alt.fill" size={13} color={palette.navy} />
                 <Text style={styles.copyButtonText}>Copy</Text>
               </TouchableOpacity>
             )}
@@ -179,11 +196,11 @@ export const SetupEntropyStep: React.FC<SetupEntropyStepProps> = ({ onNext, next
           <View style={styles.seedBox}>
             <Pressable onPress={copySeed}>
               <Text style={styles.seedText} numberOfLines={2} ellipsizeMode="middle">
-                {seed || 'No seed generated yet...'}
+                {seed || 'No seed generated yet…'}
               </Text>
             </Pressable>
           </View>
-          {seed && <Text style={styles.seedSubtext}>Length: {seed.length} characters</Text>}
+          {!!seed && <Text style={styles.seedSubtext}>{seed.length} characters · SHA-256</Text>}
         </View>
 
         <TouchableOpacity
@@ -191,7 +208,10 @@ export const SetupEntropyStep: React.FC<SetupEntropyStepProps> = ({ onNext, next
           onPress={resetAll}
           disabled={!seed}
         >
-          <Text style={styles.resetButtonText}>Reset Canvas</Text>
+          <IconSymbol name="trash.fill" size={15} color={seed ? palette.coral : palette.textMuted} />
+          <Text style={[styles.resetButtonText, { color: seed ? palette.coral : palette.textMuted }]}>
+            Reset Canvas
+          </Text>
         </TouchableOpacity>
       </View>
     </StepPanel>

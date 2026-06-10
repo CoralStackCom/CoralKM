@@ -10,8 +10,16 @@ import { SetupUserStepProps } from './SetupUserStep.interfaces'
 import { styles } from './SetupUserStep.styles'
 
 const schema = {
-  firstName: [validators.required('First Name is required')],
-  lastName: [validators.required('Last Name is required')],
+  firstName: [
+    validators.required('First Name is required'),
+    validators.name(),
+    validators.maxLength(40),
+  ],
+  lastName: [
+    validators.required('Last Name is required'),
+    validators.name(),
+    validators.maxLength(40),
+  ],
 }
 
 /**
@@ -26,7 +34,7 @@ export const SetupUserStep: React.FC<SetupUserStepProps> = ({
   onNext,
 }) => {
   // component States
-  const { user, setUser } = useUserContext()
+  const { updateUser } = useUserContext()
   const [firstName, setFirstName] = useState(authenticatedUser.firstName || '')
   const [lastName, setLastName] = useState(authenticatedUser.lastName || '')
   const [avatar, setAvatar] = useState(authenticatedUser.avatar ?? '')
@@ -41,11 +49,12 @@ export const SetupUserStep: React.FC<SetupUserStepProps> = ({
   }
 
   const isReady = firstName.trim() !== '' && lastName.trim() !== ''
+  // Persist personal details into the shared UserContext as they change.
   useEffect(() => {
-    if (user?.id && user) {
-      setUser({ ...user, firstName, lastName, avatar })
+    if (firstName || lastName || avatar) {
+      updateUser({ firstName, lastName, avatar })
     }
-  }, [firstName, lastName, avatar])
+  }, [firstName, lastName, avatar, updateUser])
 
   return (
     <StepPanel
@@ -73,6 +82,9 @@ export const SetupUserStep: React.FC<SetupUserStepProps> = ({
           style={styles.input}
           placeholder="Enter your First Name"
           value={firstName}
+          maxLength={40}
+          showCounter
+          autoCapitalize="words"
           onChangeText={(text) => {
             setFirstName(text)
             clearFieldError('firstName')
@@ -89,6 +101,9 @@ export const SetupUserStep: React.FC<SetupUserStepProps> = ({
           style={styles.input}
           placeholder="Enter your Last Name"
           value={lastName}
+          maxLength={40}
+          showCounter
+          autoCapitalize="words"
           onChangeText={(text) => {
             setLastName(text)
             clearFieldError('lastName')

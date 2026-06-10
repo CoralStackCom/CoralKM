@@ -19,7 +19,7 @@ export const ResetPasswordForm: React.FC<EmailFormProps> = ({
   const [errorMsg, setErrorMsg] = useState('')
   const [isEmailSent, setIsEmailSent] = useState(false)
   const inputRef = useRef<TextInput>(null)
-  const { user, setUser } = useUserContext()
+  const { updateUser } = useUserContext()
   /**
    * Update email when defaultEmail prop changes
    */
@@ -36,11 +36,15 @@ export const ResetPasswordForm: React.FC<EmailFormProps> = ({
     }
   }, [focused])
 
+  /**
+   * Persist the entered email into the shared UserContext so it flows to the
+   * profile and the rest of the app (creates the account record if needed).
+   */
   useEffect(() => {
-    if (user?.id) {
-      setUser({ ...user, email: email })
+    if (email.trim()) {
+      updateUser({ email: email.trim().toLowerCase() })
     }
-  }, [email])
+  }, [email, updateUser])
 
   /**
    * Handle OOB code request

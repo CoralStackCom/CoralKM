@@ -43,8 +43,11 @@ export const drawPattern = (
     c_ = c,
     d_ = height - d;
 
-  ctx.strokeStyle = "#FFFFFF";
-  ctx.lineWidth = 3; // Increased from 4 to 3 for smoother appearance
+  // Glowing aqua stroke to match the app's underwater palette.
+  ctx.strokeStyle = "#9FE7FF";
+  ctx.shadowColor = "#46B1E1";
+  ctx.shadowBlur = 8;
+  ctx.lineWidth = 2.5;
   ctx.lineCap = "round";
   ctx.lineJoin = "round"; // Added for smoother corners
 
@@ -106,7 +109,9 @@ export const drawPattern = (
  * Fades out older lines on the canvas by reducing the opacity of non-black pixels.
  */
 export const fadeOut = (ctx: any, width: number, height: number) => {
-  ctx.fillStyle = "rgba(0, 0, 0, 0.02)";
+  // Disable glow for the fade pass so the dimming rectangle itself doesn't bloom.
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = "rgba(4, 20, 29, 0.04)";
   ctx.fillRect(0, 0, width, height);
 };
 
@@ -115,7 +120,8 @@ export const fadeOut = (ctx: any, width: number, height: number) => {
  */
 export const resetCanvas = (ctx: any, width: number, height: number) => {
   ctx.clearRect(0, 0, width, height);
-  // Fill with black background
-  ctx.fillStyle = "#000000";
+  ctx.shadowBlur = 0;
+  // Fill with a deep underwater navy background.
+  ctx.fillStyle = "#04141D";
   ctx.fillRect(0, 0, width, height);
 };

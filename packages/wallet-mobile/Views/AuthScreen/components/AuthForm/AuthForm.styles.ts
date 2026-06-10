@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import { cardShadow, palette, radius } from '@/constants/design'
 
 export const styles = StyleSheet.create({
   container: {
@@ -8,17 +9,13 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   formBox: {
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.96)',
+    borderRadius: radius.xl,
     padding: 24,
     width: '100%',
-    maxWidth: 400,
+    maxWidth: 420,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 8,
+    ...cardShadow,
   },
   logoContainer: {
     height: 50,
@@ -35,16 +32,17 @@ export const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#1a1a1a',
+    fontWeight: '700',
+    color: palette.heading,
     marginBottom: 20,
     textAlign: 'center',
   },
   error: {
     fontSize: 14,
-    color: '#dc2626',
+    color: palette.coral,
     marginBottom: 12,
     textAlign: 'center',
+    fontWeight: '500',
   },
   formBottom: {
     marginTop: 24,
@@ -52,8 +50,8 @@ export const styles = StyleSheet.create({
   },
   bottomText: {
     fontSize: 14,
-    color: '#666',
-    marginBottom: 12,
+    color: palette.textSubtle,
+    marginBottom: 8,
   },
   button: {
     paddingVertical: 10,
@@ -61,7 +59,7 @@ export const styles = StyleSheet.create({
   },
   btnText: {
     fontSize: 14,
-    color: '#0066cc',
-    fontWeight: '500',
+    color: palette.navy,
+    fontWeight: '700',
   },
 })
