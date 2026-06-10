@@ -14,11 +14,18 @@ jest.mock('@ungap/structured-clone', () => ({
 
 
 // Mock expo-crypto
-jest.mock('expo-crypto', () => ({
-  digestStringAsync: jest.fn().mockResolvedValue('mocked-hash'),
-  getRandomBytes: jest.fn().mockReturnValue(new Uint8Array(32)),
-  CryptoDigestAlgorithm: { SHA256: 'SHA-256' },
-}))
+jest.mock('expo-crypto', () => {
+  let uuidCounter = 0
+  return {
+    digestStringAsync: jest.fn().mockResolvedValue('mocked-hash'),
+    getRandomBytes: jest.fn().mockReturnValue(new Uint8Array(32)),
+    getRandomBytesAsync: jest.fn().mockResolvedValue(new Uint8Array(32)),
+    randomUUID: jest.fn(
+      () => `00000000-0000-4000-8000-${(++uuidCounter).toString().padStart(12, '0')}`
+    ),
+    CryptoDigestAlgorithm: { SHA256: 'SHA-256' },
+  }
+})
 
 // Mock expo-secure-store
 jest.mock('expo-secure-store', () => ({
