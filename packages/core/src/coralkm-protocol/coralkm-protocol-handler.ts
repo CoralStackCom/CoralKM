@@ -25,7 +25,7 @@ type IContext = IAgentContext<IDIDManager & IDIDCommProtocols & IDIDComm>
 
 /**
  * Implementation of the CoralKM V0.1 Protocol Handler
- * Reference: https://coralstack.com/coralkm/0.1
+ * Reference: https://coralkm.com/coralkm/0.1
  */
 export class DCCoralKMProtocolV01 implements IDIDCommProtocolHandler {
   name = 'CoralKM'

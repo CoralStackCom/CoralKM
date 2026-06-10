@@ -1,6 +1,6 @@
 # CoralKM Protocol Overview
 
-This document describes the CoralKM v0.1 protocol implemented in `@coralstack/core`.
+This document describes the CoralKM v0.1 protocol implemented in `@coralkm/core`.
 It summarizes the purpose, roles, high-level state flows (namespace setup, guardian lifecycle, recovery) and enumerates message types with example payloads and per-field descriptions.
 
 This specification is derived from the implementation at `packages/core/src/coralkm-protocol` and is intended as a developer-facing reference for implementers of wallets, gateways and guardians.
@@ -104,7 +104,7 @@ Example:
 ```json
 {
   "id": "<uuid>",
-  "type": "https://coralstack.com/coralkm/0.1/namespace-request",
+  "type": "https://coralkm.com/coralkm/0.1/namespace-request",
   "from": "did:example:alice",
   "to": ["did:example:gateway"]
 }
@@ -128,7 +128,7 @@ Example:
 ```json
 {
   "id": "<uuid>",
-  "type": "https://coralstack.com/coralkm/0.1/namespace-grant",
+  "type": "https://coralkm.com/coralkm/0.1/namespace-grant",
   "from": "did:example:gateway",
   "to": ["did:example:alice"],
   "thid": "<namespace-request-id>",
@@ -156,7 +156,7 @@ Example:
 ```json
 {
   "id": "<uuid>",
-  "type": "https://coralstack.com/coralkm/0.1/namespace-deny",
+  "type": "https://coralkm.com/coralkm/0.1/namespace-deny",
   "from": "did:example:gateway",
   "to": ["did:example:alice"],
   "thid": "<namespace-request-id>",
@@ -184,7 +184,7 @@ PUT Example (backup):
 ```json
 {
   "id": "<uuid>",
-  "type": "https://coralstack.com/coralkm/0.1/namespace-sync",
+  "type": "https://coralkm.com/coralkm/0.1/namespace-sync",
   "from": "did:example:alice",
   "to": ["did:example:gateway"],
   "body": { "request": "PUT", "data": "<base64-encrypted-backup>" }
@@ -196,7 +196,7 @@ GET Example (restore request):
 ```json
 {
   "id": "<uuid>",
-  "type": "https://coralstack.com/coralkm/0.1/namespace-sync",
+  "type": "https://coralkm.com/coralkm/0.1/namespace-sync",
   "from": "did:example:alice",
   "to": ["did:example:gateway"],
   "body": { "request": "GET", "recovery_id": "<optional-namespace-id>" }
@@ -224,7 +224,7 @@ PUT Response Example:
 ```json
 {
   "id": "<uuid>",
-  "type": "https://coralstack.com/coralkm/0.1/namespace-sync-response",
+  "type": "https://coralkm.com/coralkm/0.1/namespace-sync-response",
   "from": "did:example:gateway",
   "to": ["did:example:alice"],
   "thid": "<sync-request-id>",
@@ -237,7 +237,7 @@ GET Response Example:
 ```json
 {
   "id": "<uuid>",
-  "type": "https://coralstack.com/coralkm/0.1/namespace-sync-response",
+  "type": "https://coralkm.com/coralkm/0.1/namespace-sync-response",
   "from": "did:example:gateway",
   "to": ["did:example:alice"],
   "thid": "<sync-request-id>",
@@ -256,7 +256,7 @@ Example:
 ```json
 {
   "id": "<uuid>",
-  "type": "https://coralstack.com/coralkm/0.1/guardian-request",
+  "type": "https://coralkm.com/coralkm/0.1/guardian-request",
   "from": "did:example:alice",
   "to": ["did:example:guardian"],
   "body": {
@@ -286,7 +286,7 @@ Example:
 ```json
 {
   "id": "<uuid>",
-  "type": "https://coralstack.com/coralkm/0.1/guardian-grant",
+  "type": "https://coralkm.com/coralkm/0.1/guardian-grant",
   "from": "did:example:guardian",
   "to": ["did:example:alice"],
   "thid": "<guardian-request-id>",
@@ -312,7 +312,7 @@ Example:
 ```json
 {
   "id": "<uuid>",
-  "type": "https://coralstack.com/coralkm/0.1/guardian-deny",
+  "type": "https://coralkm.com/coralkm/0.1/guardian-deny",
   "from": "did:example:guardian",
   "to": ["did:example:alice"],
   "thid": "<guardian-request-id>",
@@ -340,7 +340,7 @@ Example:
 ```json
 {
   "id": "<uuid>",
-  "type": "https://coralstack.com/coralkm/0.1/guardian-share-update",
+  "type": "https://coralkm.com/coralkm/0.1/guardian-share-update",
   "from": "did:example:guardian",
   "to": ["did:example:alice"],
   "thid": "<related-id>",
@@ -363,7 +363,7 @@ Example:
 ```json
 {
   "id": "<uuid>",
-  "type": "https://coralstack.com/coralkm/0.1/guardian-share-update-confirm",
+  "type": "https://coralkm.com/coralkm/0.1/guardian-share-update-confirm",
   "from": "did:example:alice",
   "to": ["did:example:guardian"],
   "thid": "<share-update-id>"
@@ -385,7 +385,7 @@ Remove Example:
 ```json
 {
   "id": "<uuid>",
-  "type": "https://coralstack.com/coralkm/0.1/guardian-remove",
+  "type": "https://coralkm.com/coralkm/0.1/guardian-remove",
   "from": "did:example:alice",
   "to": ["did:example:guardian"],
   "body": { "share_id": "<share-id>" }
@@ -397,7 +397,7 @@ Confirm Example:
 ```json
 {
   "id": "<uuid>",
-  "type": "https://coralstack.com/coralkm/0.1/guardian-remove-confirm",
+  "type": "https://coralkm.com/coralkm/0.1/guardian-remove-confirm",
   "from": "did:example:guardian",
   "to": ["did:example:alice"],
   "thid": "<remove-id>"
@@ -413,7 +413,7 @@ Example:
 ```json
 {
   "id": "<uuid>",
-  "type": "https://coralstack.com/coralkm/0.1/guardian-verification-challenge",
+  "type": "https://coralkm.com/coralkm/0.1/guardian-verification-challenge",
   "from": "did:example:guardian",
   "to": ["did:example:device"],
   "pthid": "<recovery-request-id>",
@@ -439,7 +439,7 @@ Example:
 ```json
 {
   "id": "<uuid>",
-  "type": "https://coralstack.com/coralkm/0.1/guardian-verification-challenge-response",
+  "type": "https://coralkm.com/coralkm/0.1/guardian-verification-challenge-response",
   "from": "did:example:device",
   "to": ["did:example:guardian"],
   "pthid": "<recovery-request-id>",
@@ -463,7 +463,7 @@ Example:
 ```json
 {
   "id": "<uuid>",
-  "type": "https://coralstack.com/coralkm/0.1/guardian-release-share",
+  "type": "https://coralkm.com/coralkm/0.1/guardian-release-share",
   "from": "did:example:guardian",
   "to": ["did:example:device"],
   "pthid": "<recovery-request-id>",
@@ -481,7 +481,7 @@ Fields:
 
 ### 4.7 Implementation notes and caveats
 
-The current `DCCoralKMProtocolV01` handler implemented in `@coralstack/core` contains demonstration and convenience behavior that must be replaced for production:
+The current `DCCoralKMProtocolV01` handler implemented in `@coralkm/core` contains demonstration and convenience behavior that must be replaced for production:
 
 - Static verification code: The demo handler uses a static challenge code (`"123456"`) and accepts that as a successful verification. Replace this with a secure, time-limited challenge mechanism (random nonce, HMAC or signed challenge, or use verifiable credentials proof).
 - Auto-grant behavior: The gateway currently auto-grants namespace requests in some demo flows. Real deployments should enforce policy checks, rate limits, and proper authentication before issuing `NAMESPACE_GRANT`.

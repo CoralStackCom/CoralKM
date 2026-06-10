@@ -10,9 +10,9 @@ CoralKM is a user-friendly protocol for decentralized key management built as a 
 
 ```
 ./packages/
-  @coralstack/core/     # Core library shared across packages, contains Veramo Agent plugins for the CoralKM protocol, DIDComm Protocol Handler plugin, and a fork of the web-did-resolver that adds an override function to resolve web DIDs locally
-  @coralstack/wallet/       # A React Single Page Application (SPA) wallet for demoing the CoralKM protocol. It sets up a new wallet and mediation via the gateway, and allows the user to interact with the CoralKM protocol
-  @coralstack/gateway/      # This is a Cloudflare worker that acts as a gateway for the wallet to communicate with other peers using DidComm messaging and websockets
+  @coralkm/core/     # Core library shared across packages, contains Veramo Agent plugins for the CoralKM protocol, DIDComm Protocol Handler plugin, and a fork of the web-did-resolver that adds an override function to resolve web DIDs locally
+  @coralkm/wallet/       # A React Single Page Application (SPA) wallet for demoing the CoralKM protocol. It sets up a new wallet and mediation via the gateway, and allows the user to interact with the CoralKM protocol
+  @coralkm/gateway/      # This is a Cloudflare worker that acts as a gateway for the wallet to communicate with other peers using DidComm messaging and websockets
 ```
 
 ### Inter-Package Communication
@@ -40,7 +40,7 @@ CoralKM is a user-friendly protocol for decentralized key management built as a 
 
 ### Package Organization
 
-#### `@coralstack/core`
+#### `@coralkm/core`
 
 Core key management protocol implementation
 
@@ -49,7 +49,7 @@ Core key management protocol implementation
 - `/src/utils/`: Any shared utility functions
 - `/src/web-did-resolver/`: A fork of the web-did-resolver that adds an override function to resolve web DIDs locally
 
-#### `@coralstack/gateway`
+#### `@coralkm/gateway`
 
 Cloudflare worker gateway implementation. Acts as a DidComm mediator and message router using websockets and a CoralKM wallet gateway and guardian for backup and recovery.
 
@@ -61,7 +61,7 @@ Cloudflare worker gateway implementation. Acts as a DidComm mediator and message
 - `/src/index.ts`: The Cloudflare worker entry point with endpoint routing
 - `/src/websocket-worker.ts`: A Cloudflare Durable Object implementation for managing websocket connections with hibernation support
 
-#### `@coralstack/wallet`
+#### `@coralkm/wallet`
 
 A React.js Single Page Application (SPA) wallet for demoing the CoralKM protocol.
 
@@ -97,7 +97,7 @@ A React.js Single Page Application (SPA) wallet for demoing the CoralKM protocol
 
 ### Monorepo Development Patterns
 
-- Use `yarn workspace @coralstack/[package] [command]` for package-specific operations
+- Use `yarn workspace @coralkm/[package] [command]` for package-specific operations
 - Shared dependencies go in root `package.json`
 - Package-specific dependencies in individual `package.json` files
 - Use TypeScript project references for fast builds
