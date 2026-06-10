@@ -4,20 +4,25 @@ import type { LinkedDevice } from './device-types'
 
 /**
  * Hook to access device management state.
+ *
+ * Initializes the persisted device service on mount (loading saved devices and
+ * registering the current device), then stays subscribed to changes.
  */
 export function useDevices() {
   const [devices, setDevices] = useState<LinkedDevice[]>(DeviceService.getAll())
 
   useEffect(() => {
-    return DeviceService.subscribe(setDevices)
+    const unsubscribe = DeviceService.subscribe(setDevices)
+    void DeviceService.init().then(() => setDevices(DeviceService.getAll()))
+    return unsubscribe
   }, [])
 
   const removeDevice = useCallback((id: string) => {
-    DeviceService.removeDevice(id)
+    void DeviceService.removeDevice(id)
   }, [])
 
   const removeAllOthers = useCallback(() => {
-    DeviceService.removeAllOthers()
+    void DeviceService.removeAllOthers()
   }, [])
 
   return { devices, removeDevice, removeAllOthers }

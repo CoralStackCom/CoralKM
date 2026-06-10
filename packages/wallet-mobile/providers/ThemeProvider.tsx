@@ -1,5 +1,6 @@
 import { Colors } from '@/constants/theme'
-import React, { createContext, useCallback, useContext, useMemo, useState } from 'react'
+import { getJSON, setJSON, StorageKeys } from '@/lib/storage'
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useColorScheme as useSystemColorScheme } from 'react-native'
 
 type ThemeMode = 'light' | 'dark' | 'system'
@@ -22,6 +23,20 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const systemScheme = useSystemColorScheme()
   const [mode, setModeState] = useState<ThemeMode>('system')
 
+  // Hydrate the saved theme preference on mount.
+  useEffect(() => {
+    let active = true
+    ;(async () => {
+      const saved = await getJSON<ThemeMode>(StorageKeys.themeMode)
+      if (active && (saved === 'light' || saved === 'dark' || saved === 'system')) {
+        setModeState(saved)
+      }
+    })()
+    return () => {
+      active = false
+    }
+  }, [])
+
   const resolvedTheme: ResolvedTheme = useMemo(() => {
     if (mode === 'system') return systemScheme === 'dark' ? 'dark' : 'light'
     return mode
@@ -31,6 +46,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const setMode = useCallback((newMode: ThemeMode) => {
     setModeState(newMode)
+    void setJSON(StorageKeys.themeMode, newMode)
   }, [])
 
   const value = useMemo(

@@ -1,49 +1,117 @@
-import ActionRow from '@/components/ui/ActionRow'
+import { Background } from '@/components/Background'
 import Header from '@/components/ui/Header'
+import { IconSymbol } from '@/components/ui/icon-symbol'
 import { useUserContext } from '@/providers/UserContext'
 import { useRouter } from 'expo-router'
-import { SafeAreaView, ScrollView, View } from 'react-native'
+import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import type { MenuItem } from './ProfileMenu.interfaces'
 import { styles } from './ProfileMenu.styles'
-import { menuItems } from './ProfileMenu.utils'
+import { menuSections } from './ProfileMenu.utils'
 
 /**
  * ProfileMenu component.
  *
- * Displays the profile navigation menu with action rows
- * for settings, privacy, notifications, appearance, devices,
- * help, and logout.
+ * Settings hub for the profile area: a compact account summary followed by
+ * grouped, color-coded shortcuts (Account, Preferences, Support) and a
+ * sign-out action.
  */
-
 export const MenuScreen: React.FC = () => {
   const router = useRouter()
-  const { logout } = useUserContext()
+  const { user, logout } = useUserContext()
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await logout()
     router.replace('/')
   }
 
+  const fullName = [user?.firstName, user?.lastName].filter(Boolean).join(' ').trim()
+  const initials =
+    [user?.firstName?.[0], user?.lastName?.[0]].filter(Boolean).join('').toUpperCase() || '?'
+
+  /** Render a single color-coded menu row. */
+  const renderItem = (item: MenuItem, isLast: boolean) => (
+    <TouchableOpacity
+      key={item.label}
+      style={[styles.row, isLast && styles.rowLast]}
+      activeOpacity={0.7}
+      onPress={item.onPress}
+      accessibilityRole="button"
+      accessibilityLabel={item.label}
+    >
+      <View style={[styles.iconChip, { backgroundColor: `${item.color}1A` }]}>
+        <IconSymbol name={item.icon} size={22} color={item.color} />
+      </View>
+      <View style={styles.rowText}>
+        <Text style={styles.rowLabel}>{item.label}</Text>
+        <Text style={styles.rowDescription}>{item.description}</Text>
+      </View>
+      <IconSymbol name="chevron.right" size={20} color="#B6C4CE" />
+    </TouchableOpacity>
+  )
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header with Back Button */}
+      <Background view="underwater" />
       <Header title="Menu" />
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Menu Items */}
-        <View style={styles.menuCard}>
-          {menuItems.map((item, index) => (
-            <ActionRow key={index} title={item.label} leftIcon={item.icon} onPress={item.onPress} />
-          ))}
-        </View>
-        {/* Logout Button */}
-        <View style={styles.logoutCard}>
-          <ActionRow
-            title="Log Out"
-            leftIcon="arrow.right.square"
-            rightIcon={null}
-            onPress={handleLogout}
-            iconColor="#ff3b30"
-          />
-        </View>
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Account summary */}
+        <TouchableOpacity
+          style={styles.summaryCard}
+          activeOpacity={0.8}
+          onPress={() => router.navigate('/(tabs)/Profile')}
+          accessibilityRole="button"
+          accessibilityLabel="View profile"
+        >
+          <View style={styles.avatar}>
+            {user?.avatar ? (
+              <Image source={{ uri: user.avatar }} style={styles.avatarImage} />
+            ) : (
+              <Text style={styles.avatarInitials}>{initials}</Text>
+            )}
+          </View>
+          <View style={styles.summaryText}>
+            <Text style={styles.summaryName} numberOfLines={1}>
+              {fullName || 'Your Profile'}
+            </Text>
+            {!!user?.email && (
+              <Text style={styles.summaryEmail} numberOfLines={1}>
+                {user.email}
+              </Text>
+            )}
+            <Text style={styles.summaryLink}>View profile</Text>
+          </View>
+          <IconSymbol name="chevron.right" size={20} color="#B6C4CE" />
+        </TouchableOpacity>
+
+        {/* Grouped sections */}
+        {menuSections.map((section) => (
+          <View key={section.title} style={styles.section}>
+            <Text style={styles.sectionTitle}>{section.title}</Text>
+            <View style={styles.card}>
+              {section.items.map((item, index) =>
+                renderItem(item, index === section.items.length - 1)
+              )}
+            </View>
+          </View>
+        ))}
+
+        {/* Logout */}
+        <TouchableOpacity
+          style={styles.logoutButton}
+          activeOpacity={0.7}
+          onPress={handleLogout}
+          accessibilityRole="button"
+          accessibilityLabel="Log out"
+        >
+          <IconSymbol name="arrow.right.square" size={20} color="#E0533D" />
+          <Text style={styles.logoutLabel}>Log Out</Text>
+        </TouchableOpacity>
+
+        <View style={styles.bottomSpacer} />
       </ScrollView>
     </SafeAreaView>
   )

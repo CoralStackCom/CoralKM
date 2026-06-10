@@ -13,6 +13,8 @@ export interface NotificationSettingItem {
   description: string
   /** Icon name from the icon set */
   leftIcon: IconSymbolName
+  /** Accent color for the icon chip */
+  color: string
   /** Current toggle state */
   value: boolean
   /** Callback when toggle changes */

@@ -1,80 +1,90 @@
 import { Platform, StyleSheet } from 'react-native'
 
+const cardShadow = Platform.select({
+  ios: {
+    shadowColor: '#0B3A52',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+  },
+  android: { elevation: 3 },
+})
+
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-
   menuButton: {
     padding: 8,
   },
   scrollView: {
     flex: 1,
   },
-  profileHeaderCard: {
-    paddingVertical: 32,
+  scrollContent: {
+    paddingTop: 8,
+  },
+
+  /* Hero */
+  heroCard: {
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 16,
+    borderRadius: 24,
+    paddingBottom: 24,
     paddingHorizontal: 24,
     alignItems: 'center',
-    marginBottom: 16,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.08,
-        shadowRadius: 12,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
+    marginBottom: 20,
+    overflow: 'hidden',
+    ...cardShadow,
+  },
+  heroBand: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 72,
+    backgroundColor: '#1B5678',
   },
   avatarWrapper: {
-    marginBottom: 16,
+    marginTop: 28,
+    marginBottom: 14,
+    padding: 4,
+    borderRadius: 64,
+    backgroundColor: '#FFFFFF',
+    ...cardShadow,
   },
   avatar: {
-    width: 110,
-    height: 110,
-    borderRadius: 55,
-    borderWidth: 4,
-    borderColor: '#F0F4F8',
+    width: 104,
+    height: 104,
+    borderRadius: 52,
+    borderWidth: 3,
+    borderColor: '#FFFFFF',
   },
   userName: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: '700',
-    color: '#7eadc9ff',
-    marginBottom: 6,
+    color: '#13415C',
+    marginBottom: 4,
     letterSpacing: -0.5,
   },
   userEmail: {
-    fontSize: 15,
+    fontSize: 14,
     color: '#6B7280',
-    marginBottom: 24,
+    marginBottom: 20,
   },
   editButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#1B5678',
-    paddingVertical: 14,
+    paddingVertical: 13,
     paddingHorizontal: 32,
-    borderRadius: 12,
+    borderRadius: 14,
     gap: 8,
-    minWidth: 160,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#1B5678',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
+    minWidth: 180,
   },
   editButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
   },
   editActions: {
@@ -84,17 +94,17 @@ export const styles = StyleSheet.create({
   },
   cancelButton: {
     flex: 1,
-    paddingVertical: 14,
-    borderRadius: 12,
+    paddingVertical: 13,
+    borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#F1F5F8',
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: '#E2E8F0',
   },
   cancelButtonText: {
     color: '#4B5563',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
   },
   saveButton: {
@@ -103,75 +113,51 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#1B5678',
-    paddingVertical: 14,
-    borderRadius: 12,
+    paddingVertical: 13,
+    borderRadius: 14,
     gap: 6,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#1B5678',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
   },
   saveButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
   },
+
+  /* Cards */
   cardsContainer: {
     paddingHorizontal: 16,
     gap: 16,
   },
   card: {
     backgroundColor: '#FFFFFF',
-    opacity: 0.85,
-    borderRadius: 16,
-    marginBottom: 16,
+    borderRadius: 18,
     overflow: 'hidden',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.06,
-        shadowRadius: 12,
-      },
-      android: {
-        elevation: 3,
-      },
-    }),
+    ...cardShadow,
   },
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 18,
-    backgroundColor: '#F9FAFB',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    gap: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#EEF2F5',
   },
   cardIconWrapper: {
-    width: 36,
-    height: 36,
-    borderRadius: 8,
-    backgroundColor: '#EBF4F8',
+    width: 38,
+    height: 38,
+    borderRadius: 11,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
   },
   cardTitle: {
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: '700',
-    color: '#1B5678',
+    color: '#13415C',
     letterSpacing: -0.3,
   },
   cardContent: {
-    paddingHorizontal: 20,
-    paddingVertical: 8,
+    paddingHorizontal: 16,
   },
   householdLogoWrapper: {
     alignItems: 'center',
@@ -181,37 +167,43 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 16,
+    paddingVertical: 15,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#EEF2F5',
+  },
+  infoRowLast: {
+    borderBottomWidth: 0,
   },
   label: {
-    fontSize: 15,
+    fontSize: 14,
     color: '#6B7280',
     fontWeight: '500',
   },
   value: {
     fontSize: 15,
-    color: '#1B5678',
+    color: '#13415C',
     fontWeight: '600',
     maxWidth: '60%',
     textAlign: 'right',
   },
+  secureValue: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
   input: {
     fontSize: 15,
-    color: '#1B5678',
+    color: '#13415C',
     fontWeight: '500',
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#F7FAFB',
     borderWidth: 1.5,
-    borderColor: '#E5E7EB',
+    borderColor: '#E2E8F0',
     borderRadius: 10,
     paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingVertical: 9,
     minWidth: 160,
     maxWidth: '60%',
     textAlign: 'right',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#F3F4F6',
   },
   bottomSpacer: {
     height: 32,

@@ -13,6 +13,18 @@ export const getDeviceIcon = (type: Device['type']) => {
   }
 }
 
+// Accent color for a device's icon chip, by type
+export const getDeviceColor = (type: Device['type']) => {
+  switch (type) {
+    case 'phone':
+      return '#2BB3A3'
+    case 'tablet':
+      return '#6C5CE7'
+    case 'desktop':
+      return '#2B86B8'
+  }
+}
+
 // Function to handle device removal with confirmation
 export const handleRemoveDevice = (device: Device, onConfirm: (id: string) => void) => {
   Alert.alert(

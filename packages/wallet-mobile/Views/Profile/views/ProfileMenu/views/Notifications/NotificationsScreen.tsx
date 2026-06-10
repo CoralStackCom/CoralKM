@@ -2,7 +2,8 @@ import Section from '@/components/containers/Section'
 import SectionTitle from '@/components/containers/Section/components/SectionTitle'
 import ActionRow from '@/components/ui/ActionRow'
 import Header from '@/components/ui/Header'
-import React, { useCallback, useMemo, useState } from 'react'
+import { usePreferences } from '@/providers/preferences'
+import React, { useCallback, useMemo } from 'react'
 import { SafeAreaView, ScrollView, Switch, View } from 'react-native'
 
 import type { NotificationSettingItem } from './Notifications.interfaces'
@@ -11,18 +12,30 @@ import { styles } from './Notifications.styles'
 /**
  * NotificationsScreen component.
  *
- * Manages push notification, activity alert, report,
- * and email notification preferences using config-driven rendering.
+ * Manages push notification, activity alert, report, and email notification
+ * preferences. Backed by PreferencesProvider so toggles persist across reloads.
  */
 export const NotificationsScreen: React.FC = () => {
-  const [pushEnabled, setPushEnabled] = useState(true)
-  const [emailEnabled, setEmailEnabled] = useState(true)
-  const [budgetAlerts, setBudgetAlerts] = useState(true)
-  const [weeklyReports, setWeeklyReports] = useState(false)
-  const [monthlyReports, setMonthlyReports] = useState(true)
-  const [householdUpdates, setHouseholdUpdates] = useState(true)
-  const [securityAlerts, setSecurityAlerts] = useState(true)
-  const [marketingEmails, setMarketingEmails] = useState(false)
+  const { preferences, setNotificationPref } = usePreferences()
+  const {
+    pushEnabled,
+    emailEnabled,
+    budgetAlerts,
+    weeklyReports,
+    monthlyReports,
+    householdUpdates,
+    securityAlerts,
+    marketingEmails,
+  } = preferences.notifications
+
+  const setPushEnabled = (v: boolean) => setNotificationPref('pushEnabled', v)
+  const setEmailEnabled = (v: boolean) => setNotificationPref('emailEnabled', v)
+  const setBudgetAlerts = (v: boolean) => setNotificationPref('budgetAlerts', v)
+  const setWeeklyReports = (v: boolean) => setNotificationPref('weeklyReports', v)
+  const setMonthlyReports = (v: boolean) => setNotificationPref('monthlyReports', v)
+  const setHouseholdUpdates = (v: boolean) => setNotificationPref('householdUpdates', v)
+  const setSecurityAlerts = (v: boolean) => setNotificationPref('securityAlerts', v)
+  const setMarketingEmails = (v: boolean) => setNotificationPref('marketingEmails', v)
 
   /** Activity alert settings config (memoized to avoid re-creating on every render) */
   const activityAlerts: NotificationSettingItem[] = useMemo(() => [
@@ -30,6 +43,7 @@ export const NotificationsScreen: React.FC = () => {
       title: 'Activity Alerts',
       description: 'Get notified about important activity',
       leftIcon: 'help.support.fill',
+      color: '#F2A93B',
       value: pushEnabled,
       onValueChange: setPushEnabled,
     },
@@ -37,6 +51,7 @@ export const NotificationsScreen: React.FC = () => {
       title: 'Budget Alerts',
       description: 'Warnings when nearing budget limits',
       leftIcon: 'chart.fill',
+      color: '#2BB3A3',
       value: budgetAlerts,
       onValueChange: setBudgetAlerts,
       disabled: !pushEnabled,
@@ -45,6 +60,7 @@ export const NotificationsScreen: React.FC = () => {
       title: 'Household Updates',
       description: 'Activity from household members',
       leftIcon: 'house',
+      color: '#2B86B8',
       value: householdUpdates,
       onValueChange: setHouseholdUpdates,
       disabled: !pushEnabled,
@@ -53,6 +69,7 @@ export const NotificationsScreen: React.FC = () => {
       title: 'Security Alerts',
       description: 'Important security notifications',
       leftIcon: 'lock',
+      color: '#E0533D',
       value: securityAlerts,
       onValueChange: setSecurityAlerts,
       disabled: !pushEnabled,
@@ -65,6 +82,7 @@ export const NotificationsScreen: React.FC = () => {
       title: 'Weekly Reports',
       description: 'Summary of your account activity',
       leftIcon: 'calendar',
+      color: '#6C5CE7',
       value: weeklyReports,
       onValueChange: setWeeklyReports,
       disabled: !pushEnabled,
@@ -73,6 +91,7 @@ export const NotificationsScreen: React.FC = () => {
       title: 'Monthly Reports',
       description: 'Detailed monthly summary',
       leftIcon: 'calendar.fill',
+      color: '#3B82F6',
       value: monthlyReports,
       onValueChange: setMonthlyReports,
       disabled: !pushEnabled,
@@ -85,6 +104,7 @@ export const NotificationsScreen: React.FC = () => {
       title: 'Email Notifications',
       description: 'Manage your email notifications',
       leftIcon: 'mail',
+      color: '#2B86B8',
       value: emailEnabled,
       onValueChange: setEmailEnabled,
     },
@@ -92,6 +112,7 @@ export const NotificationsScreen: React.FC = () => {
       title: 'Marketing Emails',
       description: 'Tips, offers, and updates',
       leftIcon: 'megaphone',
+      color: '#F2A93B',
       value: marketingEmails,
       onValueChange: setMarketingEmails,
       disabled: !emailEnabled,
@@ -112,6 +133,7 @@ export const NotificationsScreen: React.FC = () => {
             title={item.title}
             description={item.description}
             leftIcon={item.leftIcon}
+            chipColor={item.color}
             rightIcon={
               <Switch
                 value={item.value}
@@ -137,6 +159,7 @@ export const NotificationsScreen: React.FC = () => {
               title="Push Notifications"
               description="Enable all push notifications"
               leftIcon="bell"
+              chipColor="#1B5678"
               rightIcon={<Switch value={pushEnabled} onValueChange={setPushEnabled} />}
             />
           </View>

@@ -68,6 +68,13 @@ export const styles = StyleSheet.create({
     fontSize: 28,
     marginTop: 2,
   },
+  iconChip: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   deviceInfo: {
     flex: 1,
   },

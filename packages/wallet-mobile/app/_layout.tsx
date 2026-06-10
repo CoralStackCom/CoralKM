@@ -1,6 +1,7 @@
 import { Background } from '@/components/Background'
 import { ErrorBoundary } from '@/components/containers/ErrorBoundary'
 import { AuthProvider } from '@/providers/AuthContext'
+import { PreferencesProvider } from '@/providers/preferences'
 import { ThemeProvider } from '@/providers/ThemeProvider'
 import { UserProvider } from '@/providers/UserContext'
 import { WalletProvider } from '@/providers/wallet'
@@ -41,7 +42,9 @@ export default function RootLayout() {
           <WalletProvider gatewayDID="did:web:coralkm-wallet-gateway.developers-6d6.workers.dev">
             <AuthProvider>
               <UserProvider>
-                {isAuthenticated ? <Slot initialRouteName="tabs" /> : <Slot initialRouteName="index" />}
+                <PreferencesProvider>
+                  {isAuthenticated ? <Slot initialRouteName="tabs" /> : <Slot initialRouteName="index" />}
+                </PreferencesProvider>
               </UserProvider>
             </AuthProvider>
           </WalletProvider>

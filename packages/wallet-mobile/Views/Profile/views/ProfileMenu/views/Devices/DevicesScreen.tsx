@@ -12,7 +12,7 @@ import InfoBanner from '@/components/ui/InfoBanner'
 import { useDevices } from '@/providers/devices'
 import React from 'react'
 import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native'
-import { getDeviceIcon, handleLogoutAll, handleRemoveDevice } from './Devices.utils'
+import { getDeviceColor, getDeviceIcon, handleLogoutAll, handleRemoveDevice } from './Devices.utils'
 import { styles } from './DevicesScreen.styles'
 
 /**
@@ -46,11 +46,18 @@ export const Devices: React.FC = () => {
                 key={device.id ?? index}
                 left={
                   <>
-                    <IconSymbol
-                      name={getDeviceIcon(device.type)}
-                      size={24}
-                      style={styles.deviceIcon}
-                    />
+                    <View
+                      style={[
+                        styles.iconChip,
+                        { backgroundColor: `${getDeviceColor(device.type)}1A` },
+                      ]}
+                    >
+                      <IconSymbol
+                        name={getDeviceIcon(device.type)}
+                        size={22}
+                        color={getDeviceColor(device.type)}
+                      />
+                    </View>
 
                     <ListItemMeta
                       title={device.name}

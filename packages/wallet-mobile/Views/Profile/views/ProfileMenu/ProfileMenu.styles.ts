@@ -1,99 +1,150 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
+
+const cardShadow = Platform.select({
+  ios: {
+    shadowColor: '#0B3A52',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+  },
+  android: { elevation: 3 },
+})
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-  },
-  backButton: {
-    padding: 8,
-    width: 40,
-  },
-  backIcon: {
-    fontSize: 24,
-    color: '#1B5678',
-    fontWeight: '600',
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1B5678',
-  },
-  placeholder: {
-    width: 40,
-  },
   content: {
     flex: 1,
+  },
+  contentContainer: {
     paddingHorizontal: 16,
-    paddingTop: 16,
+    paddingTop: 12,
   },
-  menuCard: {
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-    borderRadius: 12,
-    marginBottom: 24,
-    opacity: 0.85,
-  },
-  logoutCard: {
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-    borderRadius: 12,
-    opacity: 0.89,
-    marginBottom: 24,
-  },
-  menuItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-  },
-  menuItemLeft: {
+
+  /* Account summary */
+  summaryCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    padding: 16,
+    gap: 14,
+    marginBottom: 24,
+    ...cardShadow,
   },
-  menuIcon: {
-    fontSize: 20,
+  avatar: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#1B5678',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
   },
-  menuLabel: {
+  avatarImage: {
+    width: '100%',
+    height: '100%',
+  },
+  avatarInitials: {
+    color: '#FFFFFF',
+    fontSize: 22,
+    fontWeight: '700',
+  },
+  summaryText: {
+    flex: 1,
+  },
+  summaryName: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#13415C',
+    letterSpacing: -0.3,
+  },
+  summaryEmail: {
+    fontSize: 13,
+    color: '#6B7280',
+    marginTop: 2,
+  },
+  summaryLink: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#2B86B8',
+    marginTop: 6,
+  },
+
+  /* Sections */
+  section: {
+    marginBottom: 22,
+  },
+  sectionTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#5B7689',
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    marginBottom: 10,
+    marginLeft: 6,
+  },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    overflow: 'hidden',
+    ...cardShadow,
+  },
+
+  /* Rows */
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    gap: 14,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#EEF2F5',
+  },
+  rowLast: {
+    borderBottomWidth: 0,
+  },
+  iconChip: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  rowText: {
+    flex: 1,
+  },
+  rowLabel: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#000',
+    fontWeight: '600',
+    color: '#13415C',
   },
-  chevron: {
-    fontSize: 24,
-    color: '#999',
-    fontWeight: '300',
+  rowDescription: {
+    fontSize: 13,
+    color: '#8194A1',
+    marginTop: 2,
   },
-  logoutIcon: {
-    fontSize: 20,
+
+  /* Logout */
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 18,
+    paddingVertical: 16,
+    borderWidth: 1,
+    borderColor: '#F5D6D0',
+    ...cardShadow,
   },
   logoutLabel: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#ff3b30',
+    fontWeight: '700',
+    color: '#E0533D',
   },
-  divider: {
-    height: 1,
-    backgroundColor: '#f0f0f0',
-    marginLeft: 48,
+  bottomSpacer: {
+    height: 40,
   },
 })
