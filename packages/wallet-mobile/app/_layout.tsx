@@ -1,5 +1,10 @@
-import './shim'
-
+import { Background } from '@/components/Background'
+import { ErrorBoundary } from '@/components/containers/ErrorBoundary'
+import { AuthProvider } from '@/providers/AuthContext'
+import { PreferencesProvider } from '@/providers/preferences'
+import { ThemeProvider } from '@/providers/ThemeProvider'
+import { UserProvider } from '@/providers/UserContext'
+import { WalletProvider } from '@/providers/wallet'
 import { Slot } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
@@ -30,8 +35,21 @@ export default function RootLayout() {
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      {isAuthenticated ? <Slot initialRouteName="tabs" /> : <Slot initialRouteName="index" />}
-    </View>
+    <ThemeProvider>
+      <View style={{ flex: 1 }}>
+        <ErrorBoundary>
+          <Background view="underwater" />
+          <WalletProvider gatewayDID="did:web:coralkm-wallet-gateway.developers-6d6.workers.dev">
+            <AuthProvider>
+              <UserProvider>
+                <PreferencesProvider>
+                  {isAuthenticated ? <Slot initialRouteName="tabs" /> : <Slot initialRouteName="index" />}
+                </PreferencesProvider>
+              </UserProvider>
+            </AuthProvider>
+          </WalletProvider>
+        </ErrorBoundary>
+      </View>
+    </ThemeProvider>
   )
 }

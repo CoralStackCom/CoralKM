@@ -1,9 +1,7 @@
-import '../shim'
-
-import { IconSymbol } from '@/components/others/icon-symbol'
-import UnlockScreen from '@/components/ui/UnlockScreen/UnlockScreen'
+import { ErrorBoundary } from '@/components/containers/ErrorBoundary'
+import { IconSymbol } from '@/components/ui/icon-symbol'
 import { AuthProvider, useAuth } from '@/providers/AuthContext'
-import { WalletProvider } from '@/providers/wallet'
+import UnlockScreen from '@/views/Unlock'
 import { Tabs, usePathname } from 'expo-router'
 import React from 'react'
 import { Animated, StyleSheet, Text, TouchableOpacity } from 'react-native'
@@ -15,7 +13,13 @@ interface TabButtonProps {
   onPress: (...args: any[]) => void
 }
 
-const TabButton: React.FC<TabButtonProps> = ({ label, iconName, isFocused, onPress }) => {
+/**
+ * TabButton component for rendering individual tab bar items with animation.
+ *
+ * Wrapped in React.memo to prevent unnecessary re-renders when tab focus state
+ * and other props remain unchanged.
+ */
+const TabButtonComponent: React.FC<TabButtonProps> = ({ label, iconName, isFocused, onPress }) => {
   const scaleAnim = React.useRef(new Animated.Value(isFocused ? 1.1 : 1)).current
 
   React.useEffect(() => {
@@ -44,6 +48,9 @@ const TabButton: React.FC<TabButtonProps> = ({ label, iconName, isFocused, onPre
   )
 }
 
+const TabButton = React.memo(TabButtonComponent)
+TabButton.displayName = 'TabButton'
+
 function TabsContent() {
   const pathname = usePathname()
   const { isLocked } = useAuth()
@@ -51,88 +58,63 @@ function TabsContent() {
   if (isLocked) {
     return <UnlockScreen />
   }
+
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: styles.tabBar,
-      }}
-    >
-      <Tabs.Screen
-        name="Home/index"
-        options={{
-          tabBarButton: ({ onPress }) => (
-            <TabButton
-              onPress={onPress!}
-              isFocused={pathname === '/(tabs)/Home'}
-              label="Home"
-              iconName="house"
-            />
-          ),
+    <ErrorBoundary>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarStyle: styles.tabBar,
         }}
-      />
-      <Tabs.Screen
-        name="Generator/index"
-        options={{
-          tabBarButton: ({ onPress }) => (
-            <TabButton
-              onPress={onPress!}
-              isFocused={pathname === '/(tabs)/Generator'}
-              label="Generator"
-              iconName="sparkles"
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="Scanner/index"
-        options={{
-          tabBarButton: ({ onPress }) => (
-            <TabButton
-              onPress={onPress!}
-              isFocused={pathname === '/(tabs)/Scanner'}
-              label="Scanner"
-              iconName="qrcode"
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="Settings/index"
-        options={{
-          tabBarButton: ({ onPress }) => (
-            <TabButton
-              onPress={onPress!}
-              isFocused={pathname === '/(tabs)/Settings'}
-              label="Settings"
-              iconName="gear"
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="Wallet/index"
-        options={{
-          tabBarButton: ({ onPress }) => (
-            <TabButton
-              onPress={onPress!}
-              isFocused={pathname === '/(tabs)/wallet'}
-              label="Wallet"
-              iconName="chat"
-            />
-          ),
-        }}
-      />
-    </Tabs>
+      >
+        <Tabs.Screen
+          name="Wallet/index"
+          options={{
+            tabBarButton: ({ onPress }) => (
+              <TabButton
+                onPress={onPress!}
+                isFocused={pathname === '/(tabs)/wallet'}
+                label="Wallet"
+                iconName="person.text.rectangle"
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="Info/index"
+          options={{
+            tabBarButton: ({ onPress }) => (
+              <TabButton
+                onPress={onPress!}
+                isFocused={pathname === '/(tabs)/Info'}
+                label="Info"
+                iconName="info.circle"
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="Profile/index"
+          options={{
+            tabBarButton: ({ onPress }) => (
+              <TabButton
+                onPress={onPress!}
+                isFocused={pathname === '/(tabs)/Profile'}
+                label="Profile"
+                iconName="person.fill"
+              />
+            ),
+          }}
+        />
+      </Tabs>
+    </ErrorBoundary>
   )
 }
 export default function TabLayout() {
   return (
-    <WalletProvider gatewayDID="did:web:coralkm-wallet-gateway.developers-6d6.workers.dev">
-      <AuthProvider>
-        <TabsContent />
-      </AuthProvider>
-    </WalletProvider>
+    <AuthProvider>
+      <TabsContent />
+    </AuthProvider>
   )
 }
 
@@ -140,12 +122,13 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    // position: 'absolute',
-    bottom: 16,
+    position: 'absolute',
+    bottom: 0,
     left: 16,
     right: 16,
-    height: 60,
-    borderRadius: 30,
+    height: 80,
+    paddingBottom: 40,
+    // borderRadius: 30,
     backgroundColor: '#1B5678',
     shadowColor: '#000',
     shadowOpacity: 0.15,

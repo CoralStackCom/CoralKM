@@ -1,8 +1,7 @@
-import './shim'
 
-import { ThemedView } from '@/components/others/themed-view'
-import { Background } from '@/components/Shared/Background'
-import AuthScreen from '@/components/ui/AuthScreen/AuthScreen'
+import { ThemedView } from '@/components/ui/ThemedView/themed-view'
+import { SessionService } from '@/providers/auth/session-service'
+import AuthScreen from '@/views/AuthScreen'
 import { router } from 'expo-router'
 import React from 'react'
 
@@ -10,11 +9,10 @@ import React from 'react'
  * Home screen component with authentication interface
  */
 
-export default function HomeScreen() {
+export const HomeScreen: React.FC = () => {
   // Render
   return (
-    <ThemedView style={{ flex: 1 }}>
-      <Background view="sky" />
+    <ThemedView style={{ flex: 1, backgroundColor: 'transparent' }}>
       <AuthScreen
         isAuthenticated={false}
         onGetOOBCode={async (email: string) => {
@@ -30,9 +28,12 @@ export default function HomeScreen() {
           if (oob_code === '111111') {
             throw new Error('Invalid OOB Code')
           }
+          // Record the sign-in so it appears in Login Activity.
+          await SessionService.record('login')
           router.replace('/setup')
         }}
       />
     </ThemedView>
   )
 }
+export default HomeScreen

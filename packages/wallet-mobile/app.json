@@ -4,7 +4,7 @@
     "slug": "oralKm Wallet",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/svg/logo_color.svg",
+    "icon": "./assets/svg/CoralLogo.png",
     "scheme": "@coralkm/wallet-mobile",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,

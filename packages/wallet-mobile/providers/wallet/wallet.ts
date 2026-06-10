@@ -1,4 +1,3 @@
-// wallet-rn.ts
 import type { IIdentifier } from '@veramo/core'
 import type { IDIDCommMessage } from '@veramo/did-comm'
 import type { AbstractPrivateKeyStore, ManagedPrivateKey } from '@veramo/key-manager'
@@ -16,10 +15,12 @@ import type {
 import {
   CoralKMV01MessageTypes,
   DiscoverFeaturesV2MessageTypes,
-  UserProfileV1MessageTypes,
   MemoryGuardianStore,
   MemoryUserProfileStore,
+  UserProfileV1MessageTypes,
 } from '@coralkm/core'
+
+import { createLogger } from '@/utils/logger'
 
 import { userProfiles } from '../../lib/user-profiles'
 import type { AppAgent } from './agent'
@@ -27,6 +28,8 @@ import { createVeramoAgent } from './agent'
 import { EncryptionManager } from './encryption'
 import { ObservableStore } from './observable-store'
 import { WebSocketConnection } from './websocket-connection'
+
+const log = createLogger('Wallet')
 
 /**
  *  Wallet User Information
@@ -116,13 +119,11 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
   }
 
   // Current recovery process state
-  private _currentRecovery:
-    | {
-        id: string
-        namespace: INamespace
-        shares: string[]
-      }
-    | null = null
+  private _currentRecovery: {
+    id: string
+    namespace: INamespace
+    shares: string[]
+  } | null = null
 
   // Initialise agent protocol stores
   private _keyStore: AbstractPrivateKeyStore = new MemoryPrivateKeyStore()
@@ -160,7 +161,7 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
     this._cached_snapshot = {
       version: this._version,
       user: this._walletUser,
-      channels: this._channels,
+      channels: new Map(this._channels), // Create a new Map reference
       namespace: this._namespace,
       walletKey: this._walletKey?.encoded,
       backupData: this._backupData,
@@ -198,7 +199,7 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
       return
     }
     this._isInitialized = true
-    console.log('[Wallet.init] Initializing wallet...')
+    log.info('Initializing wallet')
 
     // Add mediator channel
     await this._addChannel(this._gatewayDID)
@@ -287,7 +288,7 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
    * Rotate the wallet keys and DIDs
    */
   async rotateKeys() {
-    console.log('[Wallet.rotateKeys] Rotating current user keys and DIDs...')
+    log.info('Rotating current user keys and DIDs')
     // Implement key rotation policy:
     // - create new DEK
     // - export identifiers + keys and re-encrypt backup under new DEK
@@ -299,7 +300,7 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
     this._walletKey = { key: newDek, encoded: newEncoded }
     // re-sync wallet backup under new key
     await this.syncWallet()
-    console.log('[Wallet.rotateKeys] ✓ Keys rotated and wallet re-synced')
+    log.info('Keys rotated and wallet re-synced')
   }
 
   /**
@@ -331,7 +332,7 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
    * - Each key (private + public parts)
    */
   async syncWallet() {
-    console.log('[Wallet.syncWallet] Syncing wallet with gateway...')
+    log.info('Syncing wallet with gateway')
     // 1. Get all identifiers
     const identifiers = await this._agent.didManagerFind()
     // 2. Get all keys
@@ -363,7 +364,7 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
     const response = await this._wsConnection.invoke(syncRequest)
     const remoteHash = response.decoded as { request: 'PUT'; hash: string }
     const localHash = await this._sha256Data(encryptedData)
-    console.log('[Wallet.syncWallet] Sync Finished! Hashes:', { remoteHash: remoteHash.hash, localHash })
+    log.info('Sync finished', { remoteHash: remoteHash.hash, localHash })
 
     this._notify()
   }
@@ -374,7 +375,7 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
    * @param guardianDid The DID of the guardian to add
    */
   async addGuardian(gurdianDid: string) {
-    console.log('[Wallet.addGuardian] Adding guardian:', gurdianDid)
+    log.info('Adding guardian', { guardianDid: gurdianDid })
     let requestGranted = false
     const requestMessage = await this._agent.createProtocolMessage({
       type: CoralKMV01MessageTypes.GUARDIAN_REQUEST,
@@ -405,7 +406,7 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
    * @param guardianDid The DID of the guardian to remove
    */
   async removeGuardian(guardianDid: string) {
-    console.log('[Wallet.removeGuardian] Removing guardian:', guardianDid)
+    log.info('Removing guardian', { guardianDid })
     const removeMessage = await this._agent.createProtocolMessage({
       type: CoralKMV01MessageTypes.GUARDIAN_REMOVE,
       to: guardianDid,
@@ -417,7 +418,7 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
     const response = await this._wsConnection.invoke(removeMessage)
     if (response.message.type === CoralKMV01MessageTypes.GUARDIAN_REMOVE_CONFIRM) {
       this._channels.get(guardianDid)!.is_guardian = false
-      console.log('[Wallet.removeGuardian] Guardian removed:', guardianDid)
+      log.info('Guardian removed', { guardianDid })
       await this._updateGuardianShares()
     }
     this._notify()
@@ -429,7 +430,7 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
    * @param namespace The namespace object to recover the wallet
    */
   async recoverWallet(namespace: INamespace) {
-    console.log('[Wallet.recoverWallet] Recovering wallet with namespace:', namespace)
+    log.info('Recovering wallet with namespace', { namespaceId: namespace.id })
 
     // Send recovery request to gateway
     const recoveryRequest = await this._agent.createProtocolMessage({
@@ -455,24 +456,28 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
    * Update guardian shares after changes in guardianship
    */
   private async _updateGuardianShares() {
-    console.log('[Wallet._updateGuardianShares] Resplitting secrets and distributing to guardians...')
+    log.info('Resplitting secrets and distributing to guardians')
     const totalShares = Array.from(this._channels.values()).reduce((acc, channel) => {
       if (channel.is_guardian) return acc + 1
       return acc
     }, 0)
 
     if (totalShares < 2) {
-      console.log('[Wallet._updateGuardianShares] Require at least 2 guardians, skipping.')
+      log.warn('Require at least 2 guardians, skipping share update')
       return
     }
 
     const threshold = Math.max(2, Math.ceil(totalShares / 2))
     // splitDEK expects encoded key (string) in RN EncryptionManager
-    const dekShares = await EncryptionManager.splitDEK(this._walletKey!.encoded, totalShares, threshold)
-    console.log('[Wallet._updateGuardianShares] Generated DEK shares for guardians:', {
+    const dekShares = await EncryptionManager.splitDEK(
+      this._walletKey!.encoded,
+      totalShares,
+      threshold
+    )
+    log.debug('Generated DEK shares for guardians', {
       totalShares,
       threshold,
-      dekShares,
+      shareCount: dekShares.length,
     })
 
     // send each guardian their share
@@ -492,7 +497,7 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
         share: dekShares.shift()!, // take one share per guardian
       })
       const shareResponse = await this._wsConnection.invoke(shareMessage)
-      console.log('[Wallet._updateGuardianShares] Sent share to guardian:', channel.id, shareResponse)
+      log.debug('Sent share to guardian', { channelId: channel.id })
     }
   }
 
@@ -505,75 +510,43 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async _onMessage(message: IDIDCommMessage, isSent: boolean, decoded?: any) {
-    console.debug('[Wallet._onMessage] Wallet received message:', message, isSent, decoded)
-    const channelId =
-      (isSent ? (message.to?.[0] as string | undefined) : (message.from as string | undefined)) ??
-      'recovery-requests'
+    const channelId = (isSent ? message.to?.[0] : message.from) ?? 'recovery-requests'
 
-    // Add new channel if incoming message from unknown DID
-    if (!isSent && channelId && channelId !== 'recovery-requests' && !this._channels.has(channelId)) {
+    if (!this._channels.has(channelId)) {
       await this._addChannel(channelId)
       await this._setupChannel(channelId)
-    } else if (!isSent && channelId === 'recovery-requests' && !this._channels.has(channelId)) {
-      // Add a special recovery requests channel for broadcast messages
-      const channel: IChannel = {
-        id: channelId,
-        did: {} as DIDDocument,
-        profile: { displayName: 'Recovery Requests' } as IAgentUserProfile,
-        supports_guardian: false,
-        is_guardian: false,
-        messages: [],
-      }
-      this._channels.set(channelId, channel)
-      this._notify()
     }
 
-    // Append message to channel
-    const ch = this._channels.get(channelId)
-    if (ch) {
-      ch.messages.push({
-        message,
-        timestamp: new Date().toISOString(),
-        is_sent: isSent,
-        decoded,
-      })
+    const oldChannel = this._channels.get(channelId)!
+
+    let updatedChannel: IChannel = {
+      ...oldChannel,
+      messages: [
+        ...oldChannel.messages,
+        {
+          message,
+          timestamp: new Date().toISOString(),
+          is_sent: isSent,
+          decoded,
+        },
+      ],
     }
 
-    // Handle special messages if needed
-    if (!isSent) {
-      if (message.type === UserProfileV1MessageTypes.PROFILE) {
-        console.debug(`[Wallet._onMessage] Received User Profile message from : ${message.from}`, decoded)
-        this._channels.get(channelId)!.profile = decoded as IAgentUserProfile
-      } else if (message.type === CoralKMV01MessageTypes.GUARDIAN_GRANT) {
-        console.debug(`[Wallet._onMessage] Received Guardianship Grant from : ${message.from}`)
-        this._channels.get(channelId)!.is_guardian = true
-      } else if (message.type === CoralKMV01MessageTypes.GUARDIAN_DENY) {
-        console.debug(`[Wallet._onMessage] Received Guardianship Deny from : ${message.from}`)
-        this._channels.get(channelId)!.is_guardian = false
-      } else if (message.type === CoralKMV01MessageTypes.GUARDIAN_REMOVE_CONFIRM) {
-        console.debug(`[Wallet._onMessage] Received Guardianship Remove Confirm from : ${message.from}`)
-        this._channels.get(channelId)!.is_guardian = false
-      } else if (message.type === CoralKMV01MessageTypes.GUARDIAN_SHARE_UPDATE) {
-        console.debug(`[Wallet._onMessage] Received Guardian Share Update Confirm from : ${message.from}`)
-        // Sync wallet
-        await this.syncWallet()
-      } else if (message.type === CoralKMV01MessageTypes.GUARDIAN_REMOVE) {
-        console.debug(`[Wallet._onMessage] Received Guardian Remove from : ${message.from}`)
-        // Sync wallet
-        await this.syncWallet()
-      } else if (message.type === CoralKMV01MessageTypes.GUARDIAN_RELEASE_SHARE) {
-        console.debug(`[Wallet._onMessage] Received Recovery Share from : ${message.from}`, decoded)
-        // Handle recovery share
-        if (this._currentRecovery) {
-          this._currentRecovery.shares.push(decoded.share as string)
-          if (this._currentRecovery.shares.length >= decoded.threshold) {
-            await this._restoreWallet()
-            this._currentRecovery = null
-          }
-        }
+    if (!isSent && message.type === UserProfileV1MessageTypes.PROFILE) {
+      updatedChannel = {
+        ...updatedChannel,
+        profile: decoded,
       }
     }
 
+    if (!isSent && message.type === CoralKMV01MessageTypes.GUARDIAN_GRANT) {
+      updatedChannel = {
+        ...updatedChannel,
+        is_guardian: true,
+      }
+    }
+
+    this._channels.set(channelId, updatedChannel)
     this._notify()
   }
 
@@ -622,11 +595,12 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
       from: this._walletUser?.routing_id || this._walletUser?.mediator_id,
     })
     const discoveryQueryResponse = await this._wsConnection.invoke(discoveryQueryRequest)
-    this._channels.get(id)!.features = discoveryQueryResponse.decoded as DiscoveryFeatureDisclosure[]
+    this._channels.get(id)!.features =
+      discoveryQueryResponse.decoded as DiscoveryFeatureDisclosure[]
 
     // Check if guardian support is indicated in features
     ;(discoveryQueryResponse.decoded as DiscoveryFeatureDisclosure[]).forEach(f => {
-      if (f.id === 'https://coralstack.com/coralkm/0.1') {
+      if (f.id === 'https://coralkm.com/coralkm/0.1') {
         // Set guardian support flag
         this._channels.get(id)!.supports_guardian = true
       }
@@ -648,7 +622,7 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
    * Restore the wallet from backup data
    */
   private async _restoreWallet() {
-    console.log('[Wallet._restoreWallet] Received sufficient shares, restoring wallet...')
+    log.info('Received sufficient shares, restoring wallet')
 
     if (!this._currentRecovery) {
       throw new Error('No current recovery in progress')
@@ -657,10 +631,7 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
 
     // Reconstruct DEK from shares (combineDEK returns encoded key string)
     const reconstructedDEK = await EncryptionManager.combineDEK(shares)
-    console.log(
-      '[Wallet._restoreWallet] Reconstructed DEK from shares:',
-      await EncryptionManager.exportDEK(reconstructedDEK)
-    )
+    log.debug('Reconstructed DEK from shares')
 
     // Restore backup data from gateway
     const syncRequest = await this._agent.createProtocolMessage({
@@ -686,7 +657,11 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
       namespace,
     }
     this._notify()
-    console.log('[Wallet._restoreWallet] SUCCESS - Restored wallet from backup!!', { data: decryptedData })
+    log.info('Restored wallet from backup', {
+      identifierCount: decryptedData.identifiers.length,
+      keyCount: decryptedData.keys.length,
+      shareCount: decryptedData.shares.length,
+    })
   }
 
   /**
@@ -696,11 +671,11 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
    * @returns     The SHA-256 hash as a hexadecimal string
    */
   private async _sha256Data(data: string): Promise<string> {
-    const hashHex = await (await import('expo-crypto')).digestStringAsync(
-      (await import('expo-crypto')).CryptoDigestAlgorithm.SHA256,
-      data,
-      { encoding: (await import('expo-crypto')).CryptoEncoding.HEX }
-    )
+    const hashHex = await (
+      await import('expo-crypto')
+    ).digestStringAsync((await import('expo-crypto')).CryptoDigestAlgorithm.SHA256, data, {
+      encoding: (await import('expo-crypto')).CryptoEncoding.HEX,
+    })
     return hashHex
   }
 }

@@ -22,6 +22,10 @@ export interface MediationSchema {
 export class D1MediatorStore implements IMediationStore {
   // Cloudflare D1 database connection
   private d1DBConnection: D1Database
+  // In-memory cache for mediation policies (keyed by requester_did)
+  private policyCache: Map<string, MediationPolicy> = new Map()
+  // In-memory cache for recipient -> requester mappings
+  private recipientCache: Map<string, string> = new Map()
 
   /**
    * Initialise the D1MediatorStore with a D1 database connection.
@@ -39,25 +43,49 @@ export class D1MediatorStore implements IMediationStore {
    * @returns The policy for the requester DID, or null if none exists.
    */
   async getMediationPolicy(requesterDid: string): Promise<MediationPolicy | null> {
-    const policy = await this.d1DBConnection
-      .prepare('SELECT requester_did, status FROM mediation_policies WHERE requester_did = ?')
-      .bind(requesterDid)
-      .first<MediationPolicySchema>()
+    // Check cache first
+    const cached = this.policyCache.get(requesterDid)
+    if (cached) {
+      return cached
+    }
 
-    if (!policy) {
+    // Single query with LEFT JOIN to get policy and recipient DIDs
+    const sql = `
+      SELECT
+        p.requester_did,
+        p.status,
+        COALESCE(
+          json_group_array(m.recipient_did) FILTER (WHERE m.recipient_did IS NOT NULL),
+          json('[]')
+        ) AS recipient_dids
+      FROM mediation_policies p
+      LEFT JOIN mediations m ON m.requester_did = p.requester_did
+      WHERE p.requester_did = ?
+      GROUP BY p.requester_did
+    `
+
+    const row = await this.d1DBConnection.prepare(sql).bind(requesterDid).first<any>()
+
+    if (!row) {
       return null
     }
-    // Fetch associated recipient DIDs
-    const mediations = await this.d1DBConnection
-      .prepare('SELECT recipient_did FROM mediations WHERE requester_did = ?')
-      .bind(requesterDid)
-      .all<{ recipient_did: string }>()
 
-    return {
-      requesterDid: policy.requester_did,
-      status: policy.status,
-      recipientDids: mediations.results.map(m => m.recipient_did),
+    const recipientDids =
+      typeof row.recipient_dids === 'string' ? JSON.parse(row.recipient_dids) : []
+
+    const policy: MediationPolicy = {
+      requesterDid: row.requester_did,
+      status: row.status,
+      recipientDids,
     }
+
+    // Cache the result and update recipient cache
+    this.policyCache.set(requesterDid, policy)
+    for (const recipientDid of recipientDids) {
+      this.recipientCache.set(recipientDid, requesterDid)
+    }
+
+    return policy
   }
   /**
    * Insert or update a Mediation policy for a specific requester DID.
@@ -77,8 +105,11 @@ export class D1MediatorStore implements IMediationStore {
       .bind(requesterDid, policy)
       .run()
 
+    // Invalidate cache
+    this.policyCache.delete(requesterDid)
     return (await this.getMediationPolicy(requesterDid)) as MediationPolicy
   }
+
   /**
    * Remove the Mediation policy for a specific requester DID.
    *
@@ -98,14 +129,30 @@ export class D1MediatorStore implements IMediationStore {
       .prepare('DELETE FROM mediation_policies WHERE requester_did = ?')
       .bind(requesterDid)
       .run()
+
+    // Invalidate caches - clear policy and any recipient mappings
+    const cachedPolicy = this.policyCache.get(requesterDid)
+    if (cachedPolicy?.recipientDids) {
+      for (const recipientDid of cachedPolicy.recipientDids) {
+        this.recipientCache.delete(recipientDid)
+      }
+    }
+    this.policyCache.delete(requesterDid)
     return true
   }
+
   /**
    * Get the mediation policy for a specific recipient DID.
    *
    * @param recipientDid The DID of the recipient.
    */
   async getMediation(recipientDid: string): Promise<MediationPolicy | null> {
+    // Check recipient cache first
+    const cachedRequester = this.recipientCache.get(recipientDid)
+    if (cachedRequester) {
+      return this.getMediationPolicy(cachedRequester)
+    }
+
     const requesterDid = await this.d1DBConnection
       .prepare('SELECT requester_did FROM mediations WHERE recipient_did = ? LIMIT 1')
       .bind(recipientDid)
@@ -113,8 +160,12 @@ export class D1MediatorStore implements IMediationStore {
     if (!requesterDid) {
       return null
     }
+
+    // Cache the recipient -> requester mapping
+    this.recipientCache.set(recipientDid, requesterDid.requester_did)
     return this.getMediationPolicy(requesterDid.requester_did)
   }
+
   /**
    * Add a mediation relationship between a recipient DID and a mediator DID.
    *
@@ -130,8 +181,13 @@ export class D1MediatorStore implements IMediationStore {
       )
       .bind(recipientDid, requesterDid)
       .run()
+
+    // Update caches
+    this.recipientCache.set(recipientDid, requesterDid)
+    this.policyCache.delete(requesterDid) // Invalidate to refresh recipientDids list
     return true
   }
+
   /**
    * Remove a mediation relationship for a specific recipient DID.
    *
@@ -139,10 +195,19 @@ export class D1MediatorStore implements IMediationStore {
    * @returns            True if the mediation was removed, false if none existed.
    */
   async removeMediation(recipientDid: string): Promise<boolean> {
+    // Get the requester before deleting to invalidate correct caches
+    const requesterDid = this.recipientCache.get(recipientDid)
+
     await this.d1DBConnection
       .prepare('DELETE FROM mediations WHERE recipient_did = ?')
       .bind(recipientDid)
       .run()
+
+    // Invalidate caches
+    this.recipientCache.delete(recipientDid)
+    if (requesterDid) {
+      this.policyCache.delete(requesterDid) // Invalidate to refresh recipientDids list
+    }
     return true
   }
 }

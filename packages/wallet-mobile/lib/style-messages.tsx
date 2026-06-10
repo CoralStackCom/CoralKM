@@ -129,21 +129,21 @@ export function styleMessage(message: IChannelMessage): {
         color: '#76f772',
       }
 
-    case 'https://coralstack.com/coralkm/0.1/namespace-request':
+    case 'https://coralkm.com/coralkm/0.1/namespace-request':
       return {
         title: 'CoralKM Namespace Request',
         body: '',
         color: '#f7c14d',
       }
 
-    case 'https://coralstack.com/coralkm/0.1/namespace-grant':
+    case 'https://coralkm.com/coralkm/0.1/namespace-grant':
       return {
         title: 'CoralKM Namespace Created',
         body: `Namespace ID: ${didcommMessage.body.namespace.id}`,
         color: '#f7c14d',
       }
 
-    case 'https://coralstack.com/coralkm/0.1/namespace-sync':
+    case 'https://coralkm.com/coralkm/0.1/namespace-sync':
       return {
         title: `Namespace Sync (${didcommMessage.body.request})`,
         body:
@@ -153,7 +153,7 @@ export function styleMessage(message: IChannelMessage): {
         color: '#f7c14d',
       }
 
-    case 'https://coralstack.com/coralkm/0.1/namespace-sync-response':
+    case 'https://coralkm.com/coralkm/0.1/namespace-sync-response':
       return {
         title: `Namespace Sync Response (${didcommMessage.body.request})`,
         body:
@@ -163,56 +163,56 @@ export function styleMessage(message: IChannelMessage): {
         color: '#f7c14d',
       }
 
-    case 'https://coralstack.com/coralkm/0.1/namespace-recovery-request':
+    case 'https://coralkm.com/coralkm/0.1/namespace-recovery-request':
       return {
         title: 'CoralKM Namespace Recovery Request',
         body: `Recovery ID: ${didcommMessage.id}\nNamespace ID: ${didcommMessage.body.namespace.id}\nGateway DID: ${didcommMessage.body.namespace.gateway_did}\nDevice DID: ${didcommMessage.body.device_did}`,
         color: '#f7c14d',
       }
 
-    case 'https://coralstack.com/coralkm/0.1/guardian-request':
+    case 'https://coralkm.com/coralkm/0.1/guardian-request':
       return {
         title: 'Guardianship Request',
         body: '',
         color: '#f7c14d',
       }
 
-    case 'https://coralstack.com/coralkm/0.1/guardian-grant':
+    case 'https://coralkm.com/coralkm/0.1/guardian-grant':
       return {
         title: 'Guardianship Grant',
         body: 'Status: Granted',
         color: '#f7c14d',
       }
 
-    case 'https://coralstack.com/coralkm/0.1/guardian-remove':
+    case 'https://coralkm.com/coralkm/0.1/guardian-remove':
       return {
         title: 'Guardianship Removal Request',
         body: '',
         color: '#f7c14d',
       }
 
-    case 'https://coralstack.com/coralkm/0.1/guardian-remove-confirm':
+    case 'https://coralkm.com/coralkm/0.1/guardian-remove-confirm':
       return {
         title: 'Guardianship Removed',
         body: 'Status: Removed',
         color: '#f7c14d',
       }
 
-    case 'https://coralstack.com/coralkm/0.1/guardian-share-update':
+    case 'https://coralkm.com/coralkm/0.1/guardian-share-update':
       return {
         title: 'Guardian Share Update',
         body: `Share: ${didcommMessage.body.share}`,
         color: '#f7c14d',
       }
 
-    case 'https://coralstack.com/coralkm/0.1/guardian-share-update-confirm':
+    case 'https://coralkm.com/coralkm/0.1/guardian-share-update-confirm':
       return {
         title: 'Guardian Share Update Confirmed',
         body: '',
         color: '#f7c14d',
       }
 
-    case 'https://coralstack.com/coralkm/0.1/guardian-verification-challenge':
+    case 'https://coralkm.com/coralkm/0.1/guardian-verification-challenge':
       return {
         title: 'Guardian Verification Challenge',
         body: {
@@ -226,14 +226,14 @@ export function styleMessage(message: IChannelMessage): {
         color: '#f7c14d',
       }
 
-    case 'https://coralstack.com/coralkm/0.1/guardian-verification-challenge-response':
+    case 'https://coralkm.com/coralkm/0.1/guardian-verification-challenge-response':
       return {
         title: 'Guardian Verification Challenge Response',
         body: `Recovery ID: ${didcommMessage.body.pthid}\nResponse: ${didcommMessage.body.response}`,
         color: '#f7c14d',
       }
 
-    case 'https://coralstack.com/coralkm/0.1/guardian-release-share':
+    case 'https://coralkm.com/coralkm/0.1/guardian-release-share':
       return {
         title: 'Guardian Release Share',
         body: `Recovery ID: ${didcommMessage.body.pthid}\nShare: ${didcommMessage.body.share}`,

@@ -1,10 +1,11 @@
-import { Check, Copy, Info, RotateCcw } from 'lucide-react'
+import { Check, Copy, Info, QrCode, RotateCcw } from 'lucide-react'
 import React from 'react'
 
 import { ChannelList } from '../components/channel-list'
 import { ChannelView } from '../components/channel-view'
 import { MessageComposer } from '../components/message-composer'
 import { UserProfileSelector } from '../components/profile-selector'
+import { DIDQrGenerator } from '../components/qr-code-generator'
 import { RecoverModal } from '../components/recover-modal'
 import { RecoverSuccessModal } from '../components/recover-success-modal'
 import { Button } from '../components/ui/button'
@@ -21,6 +22,8 @@ export default function App() {
   const [isUserDrawerOpen, setIsUserDrawerOpen] = React.useState(false)
   const [copied, setCopied] = React.useState<'did' | 'namespace' | null>(null)
   const [isRotating, setIsRotating] = React.useState(false)
+  const [isScannerDrawerOpen, setIsScannerDrawerOpen] = React.useState(false)
+
   const {
     user: currentUser,
     channels,
@@ -121,6 +124,15 @@ export default function App() {
                 <Info className="h-3.5 w-3.5" />
               </Button>
               <Button
+                title="Scan QR code"
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6 hover:bg-black/10"
+                onClick={() => setIsScannerDrawerOpen(true)}
+              >
+                <QrCode className="h-3.5 w-3.5" />
+              </Button>
+              <Button
                 title="Copy DID"
                 variant="ghost"
                 size="icon"
@@ -210,6 +222,18 @@ export default function App() {
             )}
           </TabsContent>
         </Tabs>
+      </Drawer>
+      <Drawer
+        isOpen={isScannerDrawerOpen}
+        handleCloseDrawer={() => {
+          setIsScannerDrawerOpen(false)
+        }}
+        title="QR Code Generator"
+      >
+        <DIDQrGenerator
+          didValue={currentUser?.routing_id || currentUser?.mediator_id}
+          onClose={() => setIsScannerDrawerOpen(false)}
+        />
       </Drawer>
 
       <div className="flex flex-1 min-h-0">

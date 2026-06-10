@@ -1,0 +1,1 @@
+export { RecoverSuccessModal } from './RecoverSuccessModal'

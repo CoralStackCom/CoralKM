@@ -17,10 +17,10 @@ The demo builds on the [Veramo Agent Framework](https://veramo.io/) from the Ide
 
 Top-level packages (under `./packages`):
 
-- `@coralstack/core` — shared core library, Veramo plugins, DID utilities and protocol handlers
-- `@coralstack/gateway` — Cloudflare Worker gateway, DidComm mediator, and message router
-- `@coralstack/wallet` — React wallet SPA used to demo and interact with the protocol
-- `@coralstack/guardian` — security/validation helpers and monitoring (optional)
+- `@coralkm/core` — shared core library, Veramo plugins, DID utilities and protocol handlers
+- `@coralkm/gateway` — Cloudflare Worker gateway, DidComm mediator, and message router
+- `@coralkm/wallet` — React wallet SPA used to demo and interact with the protocol
+- `@coralkm/guardian` — security/validation helpers and monitoring (optional)
 
 There are also tooling and config files at the repository root (TypeScript base config, Yarn/corepack, CI, etc.). See `.github/copilot-instructions.md` for development conventions used in this repo.
 

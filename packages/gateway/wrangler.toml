@@ -20,6 +20,9 @@ minify = false
 [observability]
 enabled = true
 
+[observability.traces]
+enabled = true
+
 ###############################################################
 ###         SECTION 2: Durable Object Configuration         ###
 ###############################################################

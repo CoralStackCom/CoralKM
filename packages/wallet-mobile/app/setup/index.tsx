@@ -1,17 +1,18 @@
-import { ThemedView } from '@/components/others/themed-view'
-import { Background } from '@/components/Shared/Background'
-import { SetupScreen } from '@/components/ui/SetupScreen'
+import '../shim'
+
+import { ThemedView } from '@/components/ui/ThemedView/themed-view'
+import { SetupScreen } from '@/views'
 import React from 'react'
 
 /**
  * Home screen component with setup interface and background
  */
-export default function HomeScreen() {
+export const Setup: React.FC = () => {
   // Render
   return (
-    <ThemedView style={{ flex: 1 }}>
-      <Background view="sky" />
+    <ThemedView style={{ flex: 1, backgroundColor: 'transparent' }}>
       <SetupScreen />
     </ThemedView>
   )
 }
+export default Setup

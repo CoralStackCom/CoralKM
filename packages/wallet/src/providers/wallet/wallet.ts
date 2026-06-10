@@ -611,7 +611,7 @@ export class Wallet extends ObservableStore<WalletSnapshot> {
 
     // Check if guardian support is indicated in features
     ;(discoveryQueryResponse.decoded as DiscoveryFeatureDisclosure[]).forEach(f => {
-      if (f.id === 'https://coralstack.com/coralkm/0.1') {
+      if (f.id === 'https://coralkm.com/coralkm/0.1') {
         // Set guardian support flag
         this._channels.get(id)!.supports_guardian = true
       }

@@ -1,0 +1,61 @@
+name: Deploy
+
+# Scaffolding for P0.6. Requires manual setup before it can run green:
+#   - Create the 3 D1 databases and fill database_id in packages/gateway/wrangler.toml
+#     (env.staging / env.production blocks).
+#   - GitHub repo secrets: CF_API_TOKEN, CF_ACCOUNT_ID.
+#   - GitHub Environments: "production" with Required reviewers (approval gate).
+
+on:
+  push:
+    branches: [main] # → staging (automatic)
+    tags: ["v*"] # → production (manual approval via environment)
+
+jobs:
+  staging:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: corepack enable && yarn install --immutable
+      - run: yarn build
+      - name: Apply D1 migrations (staging)
+        run: yarn wrangler d1 migrations apply wallet-gateway-db --env staging --remote
+        working-directory: packages/gateway
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+      - name: Deploy (staging)
+        run: yarn wrangler deploy --env staging
+        working-directory: packages/gateway
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+
+  production:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    environment: production # ★ enable Required reviewers on this environment
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: corepack enable && yarn install --immutable
+      - run: yarn build
+      - name: Apply D1 migrations (production)
+        run: yarn wrangler d1 migrations apply wallet-gateway-db --env production --remote
+        working-directory: packages/gateway
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+      - name: Deploy (production)
+        run: yarn wrangler deploy --env production
+        working-directory: packages/gateway
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}

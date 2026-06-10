@@ -52,7 +52,6 @@ export class WebSocketsHub extends DurableObject {
     if (this._agent) {
       return this._agent
     }
-    console.log('Creating new agent for URL:', url)
     if (!this.env.WALLET_GW_DB) {
       throw new Error('WALLET_GW_DB is not available in Durable Object environment')
     }
@@ -96,23 +95,36 @@ export class WebSocketsHub extends DurableObject {
    * @param message     The message received from the client
    */
   override async webSocketMessage(ws: WebSocket, message: ArrayBuffer | string) {
+    const startTime = Date.now()
+    const uniqueId = crypto.randomUUID()
+    console.debug(`[WS_WORKER] (${uniqueId}) START Received WebSocket message`)
     const wsAttachment = ws.deserializeAttachment() as WSAttachment
     const agent = await this._getAgent(wsAttachment.url)
     const packedMessage = JSON.parse(message.toString())
-    console.debug('Received message:', packedMessage)
     try {
+      const startHandleTime = Date.now()
       const response = await agent.handleMessage({ raw: packedMessage })
+      console.debug(
+        `[WS_WORKER] (${uniqueId}) handleMessage response in ${Date.now() - startHandleTime} ms:`,
+        {
+          response,
+        }
+      )
       if (!wsAttachment.requester_did) {
         ws.serializeAttachment({
           ...wsAttachment,
           requester_did: response?.from,
         } as WSAttachment)
-        console.log('Stored requester DID in WebSocket attachment:', response?.from)
+        console.log(
+          `[WS_WORKER] (${uniqueId}) Stored requester DID in WebSocket attachment: ${response?.from}`
+        )
       }
 
       // If recovery request, broadcast to all connections
       if (response.type === CoralKMV01MessageTypes.NAMESPACE_RECOVERY_REQUEST) {
-        console.log('Broadcasting namespace recovery request to all connected clients')
+        console.log(
+          `[WS_WORKER] (${uniqueId}) Broadcasting namespace recovery request to all connected clients`
+        )
         // Send a plaintext DIDComm message to all connected clients
         const packedMessage = await agent.packDIDCommMessage({
           message: {
@@ -129,14 +141,18 @@ export class WebSocketsHub extends DurableObject {
       // Check for response from handleMessage
       const returnRouteResponse = getDIDCommReturnRouteMessage(response)
       if (returnRouteResponse) {
-        console.log('Return route response:', returnRouteResponse)
+        console.log(`[WS_WORKER] (${uniqueId}) Return route response:`, { returnRouteResponse })
         if (returnRouteResponse.id) {
           agent.emit('DIDCommV2Message-sent', returnRouteResponse.message)
         }
+        const startPackTime = Date.now()
         const packedMessage = await agent.packDIDCommMessage({
           message: returnRouteResponse.message,
           packing: 'authcrypt',
         })
+        console.debug(
+          `[WS_WORKER] (${uniqueId}) Time taken to pack DIDComm message (ms): ${Date.now() - startPackTime}`
+        )
         ws.send(JSON.stringify(packedMessage.message))
       }
 
@@ -147,16 +163,27 @@ export class WebSocketsHub extends DurableObject {
         for (const msg of forwardMessages.messages) {
           const requesterWs = this._getRequesterWebSocket(requester_did)
           if (requesterWs && requesterWs.readyState === WebSocket.OPEN) {
-            console.log('Forwarding message to requester DID:', requester_did, msg)
+            console.log(
+              `[WS_WORKER] (${uniqueId}) Forwarding message to requester DID: ${requester_did}`
+            )
             requesterWs.send(msg)
           } else {
-            console.warn('No open WebSocket found for requester DID:', requester_did)
+            console.warn(
+              `[WS_WORKER] (${uniqueId}) No open WebSocket found for requester DID:`,
+              requester_did
+            )
           }
         }
       }
     } catch (e) {
-      console.error('Error handling WebSocket message:', packedMessage, e)
+      console.error(`[WS_WORKER] (${uniqueId}) Error handling WebSocket message:`, {
+        packedMessage,
+        error: e,
+      })
     }
+    console.debug(
+      `[WS_WORKER] (${uniqueId}) END Total time taken to process message (ms): ${Date.now() - startTime}`
+    )
   }
 
   /**
@@ -193,7 +220,7 @@ export class WebSocketsHub extends DurableObject {
 
   override async webSocketError(ws: WebSocket, error: Error) {
     // If the connection experiences an error, the runtime will invoke the webSocketError() handler.
-    console.error('WebSocket error:', error)
+    console.error('[WS_WORKER] WebSocket error:', error)
     ws.close(1011, `WebSocket error occurred: ${error.message}`)
   }
 }

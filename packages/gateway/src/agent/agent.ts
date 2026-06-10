@@ -17,7 +17,6 @@ import {
   DCUserProfileProtocolV1,
   DIDCommProtocolMessageHandler,
   DIDCommProtocols,
-  didDocForIdentifier,
   getResolver as webDidResolver,
 } from '@coralkm/core'
 
@@ -66,18 +65,21 @@ export function createVeramoAgent(d1dbConnection: D1Database, url: URL, secret: 
       new DIDResolverPlugin({
         resolver: new Resolver({
           ...peerDidResolver(),
-          ...webDidResolver(async (did: string) => {
+          ...webDidResolver(async (_did: string, url) => {
+            const startTime = Date.now()
             // For did:web DIDs hosted by this gateway, resolve locally
-            if (did === gatewayDid) {
-              console.debug('Resolving DID Locally:', did)
-              const didStore = new D1DIDStore(d1dbConnection)
-              try {
-                const identifier = await didStore.getDID({ did })
-                return didDocForIdentifier(identifier)
-              } catch (e) {
-                // identifier not found, skip it
-              }
+            const cache = await caches.open('dids')
+            // Will return undefined if not found, but emit 504 error in logs
+            const didDoc = await cache.match(url)
+            if (didDoc) {
+              console.debug(
+                `[DIDResolverPlugin] Time taken to resolve DID Locally (ms): ${Date.now() - startTime}`
+              )
+              return await didDoc.json()
             }
+            console.debug(
+              `[DIDResolverPlugin] Time taken to resolve DID Locally (ms): ${Date.now() - startTime}`
+            )
             return null
           }),
         }),
