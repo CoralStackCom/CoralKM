@@ -21,5 +21,18 @@ export const styles = StyleSheet.create({
     color: VALIDATION_ERROR_COLOR,
     fontSize: 12,
     marginTop: 4,
+    flexShrink: 1,
+  },
+  footerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  counterText: {
+    color: '#9CA3AF',
+    fontSize: 11,
+    marginTop: 4,
+    marginLeft: 8,
   },
 })
+

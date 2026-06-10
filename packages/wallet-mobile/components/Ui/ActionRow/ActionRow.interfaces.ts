@@ -13,4 +13,9 @@ export interface ActionRowProps {
   rightIcon?: React.ReactNode
   /** Optional color for the icons */
   iconColor?: string
+  /**
+   * Optional accent color. When set, the left icon is rendered inside a tinted
+   * rounded chip using this color (matching the Profile menu treatment).
+   */
+  chipColor?: string
 }

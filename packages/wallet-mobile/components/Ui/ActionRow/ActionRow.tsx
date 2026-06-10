@@ -17,6 +17,7 @@ const ActionRowComponent: React.FC<ActionRowProps> = ({
   leftIcon,
   rightIcon,
   iconColor,
+  chipColor,
 }) => {
   // Render
   return (
@@ -32,11 +33,16 @@ const ActionRowComponent: React.FC<ActionRowProps> = ({
         accessibilityState={{ disabled: !onPress }}
       >
         <View style={styles.left}>
-          {leftIcon && (
-            <IconSymbol name={leftIcon} size={24} style={styles.resourceIcon} color={iconColor} />
-          )}
+          {leftIcon &&
+            (chipColor ? (
+              <View style={[styles.chip, { backgroundColor: `${chipColor}1A` }]}>
+                <IconSymbol name={leftIcon} size={20} color={chipColor} />
+              </View>
+            ) : (
+              <IconSymbol name={leftIcon} size={24} style={styles.resourceIcon} color={iconColor} />
+            ))}
           <View style={styles.text}>
-            <Text style={{ color: iconColor, ...styles.text }}>{title}</Text>
+            <Text style={[styles.title, iconColor ? { color: iconColor } : null]}>{title}</Text>
             {description && <Text style={styles.description}>{description}</Text>}
           </View>
         </View>

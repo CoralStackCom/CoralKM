@@ -1,60 +1,60 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native'
+import { cardShadow, palette, radius } from '@/constants/design'
 
 export const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    padding: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    backgroundColor: palette.surface,
+    borderRadius: radius.xl,
+    padding: 22,
+    ...cardShadow,
   },
   content: {
     paddingBottom: 10,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
+    fontSize: 22,
+    fontWeight: '700',
+    color: palette.heading,
+    letterSpacing: -0.4,
     marginBottom: 20,
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: 20,
   },
   button: {
-    paddingVertical: 20,
-    paddingHorizontal: 30,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
+    paddingVertical: 16,
+    paddingHorizontal: 28,
+    borderRadius: radius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   cancelButton: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: palette.border,
     marginRight: 16,
     minWidth: 150,
   },
   cancelButtonText: {
-    color: "#666",
+    color: palette.textSubtle,
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   nextButton: {
-    backgroundColor: "#1B5678",
+    backgroundColor: palette.navy,
     flex: 1,
     maxWidth: 300,
   },
   disabledButton: {
-    backgroundColor: "#ccc",
+    backgroundColor: palette.textMuted,
+    opacity: 0.5,
   },
   nextButtonText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '700',
   },
-});
+})

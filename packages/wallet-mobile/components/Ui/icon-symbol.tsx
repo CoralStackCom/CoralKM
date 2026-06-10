@@ -1,4 +1,9 @@
-// Fallback for using MaterialIcons on Android and web.
+// Cross-platform icon component (MaterialIcons on iOS, Android, and web).
+//
+// Note: this intentionally replaces the previous iOS-only SF Symbols variant.
+// Many of the app's icon names are not valid SF Symbols, so they rendered blank
+// on iOS. Using the MaterialIcons mapping on every platform guarantees a
+// consistent look and no missing glyphs.
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { SymbolWeight } from 'expo-symbols'
@@ -79,6 +84,8 @@ export type IconSymbolName =
   | 'flashlight.off.fill'
   | 'photo.on.rectangle'
   | 'exclamationmark.triangle'
+  | 'xmark'
+  | 'qrcode'
 
 type IconMapping = Record<IconSymbolName, ComponentProps<typeof MaterialIcons>['name']>
 
@@ -161,6 +168,8 @@ const MAPPING: IconMapping = {
   'flashlight.off.fill': 'flash-off',
   'photo.on.rectangle': 'photo-library',
   'exclamationmark.triangle': 'error-outline',
+  xmark: 'close',
+  qrcode: 'qr-code-2',
 }
 
 /**
@@ -180,5 +189,8 @@ export function IconSymbol({
   style?: StyleProp<TextStyle>
   weight?: SymbolWeight
 }) {
-  return <MaterialIcons color={color} size={size} name={MAPPING[name]} style={style} />
+  // Fall back to a visible placeholder rather than rendering nothing if a name
+  // is ever passed that isn't in the mapping.
+  const glyph = MAPPING[name] ?? 'help-outline'
+  return <MaterialIcons color={color} size={size} name={glyph} style={style} />
 }

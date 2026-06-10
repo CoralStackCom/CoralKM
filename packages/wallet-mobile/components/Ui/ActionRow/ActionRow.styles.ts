@@ -32,6 +32,14 @@ export const styles = StyleSheet.create({
     backgroundColor: '#F2F2F2',
   },
 
+  chip: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
   text: {
     gap: 2,
   },

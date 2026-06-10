@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react'
 
-import { EMAIL_REGEX } from '@/constants/validation'
+import { CURRENCY_REGEX, DID_REGEX, EMAIL_REGEX, NAME_REGEX, NUMERIC_REGEX } from '@/constants/validation'
 
 /** A validator function returns an error message string or null if valid */
 export type ValidatorFn = (value: string, allValues?: Record<string, string>) => string | null
@@ -39,6 +39,30 @@ export const validators = {
     (regex: RegExp, msg = 'Invalid format'): ValidatorFn =>
     (value) =>
       value.trim() === '' ? null : !regex.test(value) ? msg : null,
+
+  /** Letters, spaces, apostrophes and hyphens only (no digits/symbols). */
+  name:
+    (msg = 'Only letters, spaces, hyphens and apostrophes are allowed'): ValidatorFn =>
+    (value) =>
+      value.trim() === '' ? null : !NAME_REGEX.test(value.trim()) ? msg : null,
+
+  /** A valid Decentralized Identifier (DID). */
+  did:
+    (msg = 'Enter a valid DID (e.g. did:peer:...)'): ValidatorFn =>
+    (value) =>
+      value.trim() === '' ? null : !DID_REGEX.test(value.trim()) ? msg : null,
+
+  /** A 3-letter ISO currency code (e.g. USD). */
+  currencyCode:
+    (msg = 'Use a 3-letter code, e.g. USD'): ValidatorFn =>
+    (value) =>
+      value.trim() === '' ? null : !CURRENCY_REGEX.test(value.trim().toUpperCase()) ? msg : null,
+
+  /** Digits only. */
+  numeric:
+    (msg = 'Numbers only'): ValidatorFn =>
+    (value) =>
+      value.trim() === '' ? null : !NUMERIC_REGEX.test(value) ? msg : null,
 
   matches:
     (otherField: string, msg = 'Fields do not match'): ValidatorFn =>

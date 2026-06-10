@@ -11,8 +11,11 @@ import { styles } from './input.styles'
  * optional inline validation error display.
  */
 
-export const Input: React.FC<InputProps> = ({ style, error, ...props }) => {
+export const Input: React.FC<InputProps> = ({ style, error, showCounter, ...props }) => {
   const hasError = typeof error === 'string' && error.length > 0
+  const counterVisible =
+    showCounter && typeof props.maxLength === 'number' && typeof props.value === 'string'
+  const currentLength = typeof props.value === 'string' ? props.value.length : 0
 
   return (
     <View>
@@ -21,7 +24,14 @@ export const Input: React.FC<InputProps> = ({ style, error, ...props }) => {
         placeholderTextColor="#9CA3AF"
         {...props}
       />
-      {hasError && <Text style={styles.errorText}>{error}</Text>}
+      <View style={styles.footerRow}>
+        {hasError ? <Text style={styles.errorText}>{error}</Text> : <View />}
+        {counterVisible && (
+          <Text style={styles.counterText}>
+            {currentLength}/{props.maxLength}
+          </Text>
+        )}
+      </View>
     </View>
   )
 }
