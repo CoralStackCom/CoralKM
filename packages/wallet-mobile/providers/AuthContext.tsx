@@ -1,3 +1,4 @@
+import { getJSON, StorageKeys } from '@/lib/storage'
 import * as SecureStore from 'expo-secure-store'
 import type React from 'react'
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
@@ -5,73 +6,68 @@ import { AppState, type AppStateStatus } from 'react-native'
 
 import { createLogger } from '@/utils/logger'
 
+import { NotificationService } from './notifications/notification-service'
 import { BiometricService } from './auth/biometric-service'
+import { SessionService } from './auth/session-service'
 
 const log = createLogger('Auth')
 
 interface AuthContextType {
   /** Whether the app is currently locked and requires authentication */
   isLocked: boolean
-  /** Whether passcode-based authentication is enabled */
+  /** Whether the biometric app lock (two-factor) is enabled */
   isAuthEnabled: boolean
-  /** Whether biometric lock is enabled by user preference */
-  isBiometricEnabled: boolean
+  /** Whether the device can authenticate (biometrics enrolled or device passcode) */
+  isBiometricAvailable: boolean
   /** Human-readable biometric type label (e.g. "Face ID", "Fingerprint") or null */
   biometricType: string | null
-  /** Attempt biometric unlock; returns true on success */
+  /** Enable the biometric app lock; prompts to confirm. Returns true on success. */
+  enableAuth: () => Promise<boolean>
+  /** Disable the biometric app lock; prompts to confirm. Returns true on success. */
+  disableAuth: () => Promise<boolean>
+  /** Attempt to unlock the app via biometrics; records the session on success. */
   unlock: () => Promise<boolean>
-  /** Enable passcode authentication and store the passcode */
-  enableAuth: (passcode: string) => Promise<void>
-  /** Disable passcode authentication and clear stored credentials */
-  disableAuth: () => Promise<void>
-  /** Verify the given passcode against the stored one */
-  verifyPasscode: (passcode: string) => Promise<boolean>
-  /** Manually lock the app (requires authentication to unlock) */
+  /** Manually lock the app (only effective when the lock is enabled) */
   lockApp: () => void
-  /** Unlock the app via biometric authentication */
-  unlockApp: () => Promise<boolean>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-const PASSCODE_KEY = 'app_passcode'
 const AUTH_ENABLED_KEY = 'auth_enabled'
 
+/** Read the persisted "login alerts" preference (defaults to on). */
+const loginAlertsEnabled = async (): Promise<boolean> => {
+  const prefs = await getJSON<{ privacy?: { loginAlerts?: boolean } }>(StorageKeys.preferences)
+  return prefs?.privacy?.loginAlerts ?? true
+}
+
 /**
- * AuthProvider manages application authentication state including
- * passcode verification, biometric lock, and automatic locking
- * when the app goes to background beyond the configured timeout.
+ * AuthProvider manages the biometric app lock (the wallet's second factor):
+ * enabling/disabling it behind a biometric prompt, locking after a background
+ * timeout, recording login sessions, and firing login-alert notifications.
+ * No app PIN is stored — the device's biometrics/passcode are the secret.
  */
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isLocked, setIsLocked] = useState(false)
   const [isAuthEnabled, setIsAuthEnabled] = useState(false)
-  const [isBiometricEnabled, setIsBiometricEnabled] = useState(false)
+  const [isBiometricAvailable, setIsBiometricAvailable] = useState(false)
   const [biometricType, setBiometricType] = useState<string | null>(null)
 
   const appState = useRef(AppState.currentState)
   const isAuthEnabledRef = useRef(false)
-  const isBiometricEnabledRef = useRef(false)
   const lastActiveTime = useRef<number>(Date.now())
 
   useEffect(() => {
     checkAuthStatus()
     checkBiometricSupport()
-    loadBiometricPreference()
 
     const subscription = AppState.addEventListener('change', handleAppStateChange)
-
-    return () => {
-      subscription.remove()
-    }
+    return () => subscription.remove()
   }, [])
 
   useEffect(() => {
     isAuthEnabledRef.current = isAuthEnabled
   }, [isAuthEnabled])
-
-  useEffect(() => {
-    isBiometricEnabledRef.current = isBiometricEnabled
-  }, [isBiometricEnabled])
 
   /** Handle app state transitions for timeout-based locking */
   const handleAppStateChange = async (nextAppState: AppStateStatus) => {
@@ -79,7 +75,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       appState.current === 'active' &&
       (nextAppState === 'background' || nextAppState === 'inactive')
     ) {
-      // Record timestamp when app leaves foreground
       lastActiveTime.current = Date.now()
     }
 
@@ -87,8 +82,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       (appState.current === 'background' || appState.current === 'inactive') &&
       nextAppState === 'active'
     ) {
-      // App is returning to foreground -- check if we should lock
-      if (isBiometricEnabledRef.current || isAuthEnabledRef.current) {
+      if (isAuthEnabledRef.current) {
         const timeout = await BiometricService.getTimeout()
         const elapsed = (Date.now() - lastActiveTime.current) / 1000
         if (elapsed >= timeout) {
@@ -102,40 +96,42 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   /** Load the persisted auth-enabled flag from SecureStore */
   const checkAuthStatus = async () => {
-    const enabled = await SecureStore.getItemAsync(AUTH_ENABLED_KEY)
-    const isEnabled = enabled === 'true'
-    setIsAuthEnabled(isEnabled)
-    isAuthEnabledRef.current = isEnabled
+    const enabled = (await SecureStore.getItemAsync(AUTH_ENABLED_KEY)) === 'true'
+    setIsAuthEnabled(enabled)
+    isAuthEnabledRef.current = enabled
+    // If the lock is on, start locked until the user authenticates.
+    if (enabled) setIsLocked(true)
   }
 
   /** Detect biometric hardware and determine the type label */
   const checkBiometricSupport = async () => {
     const capability = await BiometricService.getCapability()
-    if (capability.isAvailable && capability.hasEnrolledBiometrics) {
-      const label = BiometricService.getBiometricLabel(capability.biometricTypes)
-      setBiometricType(label)
-    } else {
-      setBiometricType(null)
-    }
+    const available = capability.isAvailable && capability.hasEnrolledBiometrics
+    setIsBiometricAvailable(available)
+    setBiometricType(available ? BiometricService.getBiometricLabel(capability.biometricTypes) : null)
   }
 
-  /** Load saved biometric preference from SecureStore */
-  const loadBiometricPreference = async () => {
-    const enabled = await BiometricService.isEnabled()
-    setIsBiometricEnabled(enabled)
-    isBiometricEnabledRef.current = enabled
+  /** Record a login session and fire a login alert if enabled. */
+  const recordSession = async () => {
+    try {
+      const session = await SessionService.record('biometric')
+      if (await loginAlertsEnabled()) {
+        const time = new Date(session.timestamp).toLocaleString()
+        NotificationService.push('system', 'New sign-in', `${session.device} · ${time}`)
+      }
+    } catch (error) {
+      log.error('Failed to record session', error instanceof Error ? error : new Error(String(error)))
+    }
   }
 
   /** Attempt biometric unlock via system prompt */
   const unlock = async (): Promise<boolean> => {
     try {
-      const capability = await BiometricService.getCapability()
-      if (capability.hasEnrolledBiometrics) {
-        const success = await BiometricService.authenticate('Unlock App')
-        if (success) {
-          setIsLocked(false)
-          return true
-        }
+      const success = await BiometricService.authenticate('Unlock CoralKM')
+      if (success) {
+        setIsLocked(false)
+        void recordSession()
+        return true
       }
       return false
     } catch (error) {
@@ -144,53 +140,32 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }
 
-  /** Attempt to unlock the app using biometric authentication */
-  const unlockApp = async (): Promise<boolean> => {
-    try {
-      const success = await BiometricService.authenticate('Unlock App')
-      if (success) {
-        setIsLocked(false)
-        return true
-      }
-      return false
-    } catch (error) {
-      log.error('Biometric unlock error', error instanceof Error ? error : new Error(String(error)))
-      return false
-    }
-  }
-
-  /** Verify the given passcode and unlock if it matches */
-  const verifyPasscode = async (passcode: string): Promise<boolean> => {
-    const storedPasscode = await SecureStore.getItemAsync(PASSCODE_KEY)
-    if (storedPasscode === passcode) {
-      setIsLocked(false)
-      return true
-    }
-    return false
-  }
-
-  /** Enable passcode auth and persist the passcode */
-  const enableAuth = async (passcode: string) => {
-    await SecureStore.setItemAsync(PASSCODE_KEY, passcode)
+  /** Enable the biometric app lock (gated by a successful prompt). */
+  const enableAuth = async (): Promise<boolean> => {
+    const success = await BiometricService.authenticate('Confirm to enable app lock')
+    if (!success) return false
     await SecureStore.setItemAsync(AUTH_ENABLED_KEY, 'true')
+    await BiometricService.setEnabled(true)
     setIsAuthEnabled(true)
     isAuthEnabledRef.current = true
+    return true
   }
 
-  /** Disable passcode auth and clear all stored credentials */
-  const disableAuth = async () => {
-    await SecureStore.deleteItemAsync(PASSCODE_KEY)
+  /** Disable the biometric app lock (gated by a successful prompt). */
+  const disableAuth = async (): Promise<boolean> => {
+    const success = await BiometricService.authenticate('Confirm to disable app lock')
+    if (!success) return false
     await SecureStore.deleteItemAsync(AUTH_ENABLED_KEY)
+    await BiometricService.setEnabled(false)
     setIsAuthEnabled(false)
     setIsLocked(false)
     isAuthEnabledRef.current = false
+    return true
   }
 
-  /** Manually lock the app if auth or biometric lock is enabled */
+  /** Manually lock the app if the lock is enabled */
   const lockApp = () => {
-    if (isAuthEnabledRef.current || isBiometricEnabledRef.current) {
-      setIsLocked(true)
-    }
+    if (isAuthEnabledRef.current) setIsLocked(true)
   }
 
   return (
@@ -198,14 +173,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       value={{
         isLocked,
         isAuthEnabled,
-        isBiometricEnabled,
+        isBiometricAvailable,
         biometricType,
-        unlock,
         enableAuth,
         disableAuth,
-        verifyPasscode,
+        unlock,
         lockApp,
-        unlockApp,
       }}
     >
       {children}

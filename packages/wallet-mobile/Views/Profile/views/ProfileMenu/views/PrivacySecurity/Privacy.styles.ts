@@ -100,4 +100,26 @@ export const styles = StyleSheet.create({
   dangerText: {
     color: '#ff3b30',
   },
+  lockNowButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 12,
+    backgroundColor: '#1B5678',
+    paddingVertical: 14,
+    borderRadius: 14,
+  },
+  lockNowText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  note: {
+    fontSize: 12,
+    color: '#8194A1',
+    marginTop: 10,
+    paddingHorizontal: 4,
+    lineHeight: 18,
+  },
 })

@@ -13,6 +13,8 @@ export interface PrivacySettingItem {
   description: string
   /** Icon name from the icon set */
   leftIcon: IconSymbolName
+  /** Accent color for the icon chip */
+  color: string
   /** Toggle value (if toggle type) */
   value?: boolean
   /** Callback when toggle changes */
